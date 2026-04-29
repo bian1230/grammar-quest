@@ -226,6 +226,20 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 }
 
 /* ═══════════════════════════
+   UNLOCK MODAL
+═══════════════════════════ */
+.unlock-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:9100;align-items:center;justify-content:center;padding:20px;}
+.unlock-modal.show{display:flex;}
+.unlock-box{background:rgba(15,15,35,.98);border:2px solid #ca8a04;box-shadow:0 0 40px rgba(202,138,4,.4);border-radius:12px;padding:32px 24px;max-width:360px;width:100%;text-align:center;display:flex;flex-direction:column;gap:14px;}
+.unlock-input{width:100%;padding:12px 16px;background:rgba(30,27,75,.8);border:2px solid rgba(79,70,229,.4);border-radius:8px;color:#e2e8f0;font-size:16px;font-family:'Courier New',monospace;text-align:center;letter-spacing:3px;outline:none;}
+.unlock-input:focus{border-color:#818cf8;}
+.unlock-msg{font-size:12px;min-height:18px;color:#f87171;}
+.pay-banner{width:100%;max-width:600px;padding:0 16px 8px;flex-shrink:0;}
+.pay-banner-inner{padding:12px 16px;background:rgba(202,138,4,.08);border:2px solid rgba(202,138,4,.35);border-radius:10px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:border-color .2s;}
+.pay-banner-inner:hover{border-color:#ca8a04;}
+.pay-banner-inner.unlocked{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.08);cursor:default;}
+
+/* ═══════════════════════════
    MISTAKES SCREEN
 ═══════════════════════════ */
 #mistakesScreen{background:radial-gradient(ellipse at top,#1e1b4b 0%,#0a0f1a 60%);}
@@ -299,6 +313,16 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
       <div style="font-size:11px;color:#475569">→</div>
     </div>
   </div>
+  <div class="pay-banner" id="payBanner">
+    <div class="pay-banner-inner" id="payBannerInner" onclick="showUnlockModal()">
+      <div style="font-size:26px" id="payBannerIcon">🔑</div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:700;color:#fbbf24" id="payBannerTitle">输入兑换码 解锁全部25关</div>
+        <div style="font-size:11px;color:#a8a29e;margin-top:2px" id="payBannerSub">前5关免费 · 购买后输入兑换码</div>
+      </div>
+      <div style="font-size:11px;color:#ca8a04" id="payBannerArrow">→</div>
+    </div>
+  </div>
   <div style="width:100%;max-width:600px;padding:0 16px 6px;font-size:11px;color:#475569;letter-spacing:1px;flex-shrink:0">▸ 主线关卡</div>
   <div class="map-body" id="mapBody"></div>
   <div class="shop-bar">
@@ -319,6 +343,10 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
       <div>冻结</div>
       <div class="si-cost">20🪙</div>
       <div class="si-count" id="sh-freeze">0</div>
+    </div>
+    <div class="shop-item" onclick="showUnlockModal()" id="shopUnlockBtn" style="background:rgba(202,138,4,.1);border-color:rgba(202,138,4,.35)">
+      <div class="si-icon">🔑</div>
+      <div style="color:#fbbf24" id="shopUnlockLabel">兑换码</div>
     </div>
     <div class="shop-item" onclick="goTitle()" style="background:rgba(220,38,38,.1);border-color:rgba(220,38,38,.3)">
       <div class="si-icon">🚪</div>
@@ -437,6 +465,22 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
     <button class="mk-btn" style="flex:.6;background:rgba(79,70,229,.1);border-color:rgba(79,70,229,.3);color:#818cf8" onclick="goMap()">← 返回</button>
   </div>
   <div class="map-body" id="mistakesBody" style="padding-bottom:24px"></div>
+</div>
+
+<!-- ══ UNLOCK SCREEN ══ -->
+<div class="screen" id="unlockScreen" style="background:radial-gradient(ellipse at center,#1e1b4b 0%,#0a0a1a 70%);justify-content:center;">
+  <div class="intro-wrap">
+    <div style="font-size:72px;animation:heroFloat 2s ease-in-out infinite">🔑</div>
+    <div style="font-size:22px;font-weight:900;color:#fbbf24;letter-spacing:3px">输入兑换码</div>
+    <div style="font-size:13px;color:#94a3b8;line-height:1.8;text-align:center">输入正确的兑换码<br>立即解锁全部 25 个地牢</div>
+    <input class="unlock-input" id="codeInput" type="text" placeholder="请输入兑换码" maxlength="20"
+      oninput="this.value=this.value.toUpperCase()"
+      onkeydown="if(event.key==='Enter')tryUnlock()"
+      style="width:100%;padding:14px 16px;background:rgba(30,27,75,.8);border:2px solid rgba(79,70,229,.4);border-radius:8px;color:#e2e8f0;font-size:18px;font-family:'Courier New',monospace;text-align:center;letter-spacing:4px;outline:none;">
+    <div id="unlockMsg" style="font-size:13px;min-height:20px;color:#f87171;text-align:center"></div>
+    <button class="title-btn" onclick="tryUnlock()">✅ 确认解锁</button>
+    <button class="title-btn secondary" onclick="goMap()">← 返回地图</button>
+  </div>
 </div>
 
 <script>
@@ -1572,9 +1616,15 @@ DUNGEONS.forEach(d=>{
 });
 
 // ══════════════════════════════════════
+// PAID CONFIG  ← 改这里
+// ══════════════════════════════════════
+const FREE_COUNT=5;          // 免费关卡数量（0 到 FREE_COUNT-1）
+const UNLOCK_CODE='GRAMMAR666'; // 兑换码
+
+// ══════════════════════════════════════
 // STATE
 // ══════════════════════════════════════
-function defSave(){return{coins:0,xp:0,lv:1,inv:{hint:0,shield:0,freeze:0},dungeons:{},mistakes:[]};}
+function defSave(){return{coins:0,xp:0,lv:1,inv:{hint:0,shield:0,freeze:0},dungeons:{},mistakes:[],unlocked:false};}
 let SAVE=(()=>{try{const s={...defSave(),...JSON.parse(localStorage.getItem('gq_v1')||'{}')};if(!Array.isArray(s.mistakes))s.mistakes=[];return s;}catch{return defSave();}})();
 function persist(){localStorage.setItem('gq_v1',JSON.stringify(SAVE));}
 
@@ -1684,9 +1734,20 @@ function renderMap(){
   const el=document.getElementById('mapBody');
   el.innerHTML=DUNGEONS.map((d,i)=>{
     const save=SAVE.dungeons[d.id];
-    const locked=i>0&&!SAVE.dungeons[DUNGEONS[i-1].id];
+    const payLocked=!SAVE.unlocked&&i>=FREE_COUNT;
+    const locked=!payLocked&&(i>0&&!SAVE.dungeons[DUNGEONS[i-1].id]);
     const stars=save?save.stars:0;
     const starStr=['☆☆☆','★☆☆','★★☆','★★★'][stars];
+    if(payLocked){
+      return `<div class="dungeon-card pbox" style="background:rgba(15,15,35,.95);border-color:rgba(202,138,4,.25);opacity:.55;cursor:pointer" onclick="showUnlockModal()">
+        <div class="dc-icon" style="color:#ca8a04">🔑</div>
+        <div class="dc-info">
+          <div class="dc-name" style="color:#78716c">${d.name}</div>
+          <div class="dc-sub">${d.sub}</div>
+          <div class="dc-stars" style="color:#ca8a04;font-size:11px">🔑 点击输入兑换码解锁</div>
+        </div>
+      </div>`;
+    }
     return `<div class="dungeon-card pbox${save?' completed':''}"
       style="--ac:${d.color};background:rgba(15,15,35,.95);border-color:${locked?'rgba(79,70,229,.2)':d.color+'44'}"
       onclick="${locked?'showLocked()':'openDungeon('+d.id+')'}"
@@ -1700,9 +1761,29 @@ function renderMap(){
       ${save?`<div class="dc-badge" style="background:${d.color}22;color:${d.color};border:1px solid ${d.color}44">${save.score}/8</div>`:''}
     </div>`;
   }).join('');
+  // 更新 banner 状态
+  const bi=document.getElementById('payBannerInner');
+  const bt=document.getElementById('payBannerTitle');
+  const bs=document.getElementById('payBannerSub');
+  const ba=document.getElementById('payBannerArrow');
+  const bic=document.getElementById('payBannerIcon');
+  if(bi){
+    if(SAVE.unlocked){
+      bi.className='pay-banner-inner unlocked';
+      bic.textContent='✅';bt.textContent='全部关卡已解锁';bt.style.color='#4ade80';
+      bs.textContent='感谢支持！';ba.textContent='';
+      const sl=document.getElementById('shopUnlockLabel');if(sl)sl.textContent='已解锁';
+      const sb=document.getElementById('shopUnlockBtn');if(sb){sb.style.background='rgba(34,197,94,.1)';sb.style.borderColor='rgba(34,197,94,.35)';}
+    }else{
+      bi.className='pay-banner-inner';
+      bic.textContent='🔑';bt.textContent='输入兑换码 解锁全部25关';bt.style.color='#fbbf24';
+      bs.textContent=`前${FREE_COUNT}关免费 · 购买后输入兑换码`;ba.textContent='→';
+    }
+  }
 }
 
 function showLocked(){floatText('🔒 通关前一关解锁！','#f87171',window.innerWidth/2-60,300);}
+function showPayLocked(){showUnlockModal();}
 
 function buyItem(type){
   const cost={hint:15,shield:25,freeze:20}[type];
@@ -1997,6 +2078,33 @@ function removeMistake(idx){
   renderMistakes();
   const mc=document.getElementById('mapMistakeCount');
   if(mc)mc.textContent=SAVE.mistakes.length;
+}
+
+// ══════════════════════════════════════
+// UNLOCK
+// ══════════════════════════════════════
+function showUnlockModal(){
+  if(SAVE.unlocked){floatText('✅ 已解锁全部关卡！','#4ade80',window.innerWidth/2-60,200);return;}
+  document.getElementById('codeInput').value='';
+  document.getElementById('unlockMsg').textContent='';
+  showScreen('unlockScreen');
+  setTimeout(()=>document.getElementById('codeInput').focus(),200);
+}
+
+function tryUnlock(){
+  const val=document.getElementById('codeInput').value.trim().toUpperCase();
+  const msg=document.getElementById('unlockMsg');
+  if(!val){msg.textContent='请输入兑换码';return;}
+  if(val===UNLOCK_CODE){
+    SAVE.unlocked=true;persist();
+    launchConfetti();beep('win');
+    goMap();
+    setTimeout(()=>floatText('🎉 全部25关已解锁！','#fbbf24',window.innerWidth/2-60,200),300);
+  }else{
+    msg.textContent='❌ 兑换码错误，请检查后重新输入';
+    beep('err');
+    document.getElementById('codeInput').select();
+  }
 }
 
 function openMistakes(){
