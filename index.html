@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -82,7 +82,18 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 /* ═══════════════════════════
    BATTLE SCREEN
 ═══════════════════════════ */
-#battleScreen{background:#0a0a1a;justify-content:flex-start;}
+#battleScreen{background:#0a0a1a;justify-content:flex-start;transition:background .4s;}
+#battleScreen.mode-daily{background:linear-gradient(180deg,#110f00 0%,#0a0a1a 60%);}
+#battleScreen.mode-endless{background:linear-gradient(180deg,#130000 0%,#0a0a1a 60%);}
+#battleScreen.mode-mistakes{background:linear-gradient(180deg,#100005 0%,#0a0a1a 60%);}
+#battleScreen.mode-exam{background:linear-gradient(180deg,#00060f 0%,#0a0a1a 60%);}
+#modeBanner{width:100%;max-width:600px;font-size:11px;font-weight:700;text-align:center;letter-spacing:.5px;flex-shrink:0;transition:background .3s;}
+#modeBanner:empty{padding:0;height:0;}
+#modeBanner.mode-daily{padding:5px 16px;background:rgba(251,191,36,.1);color:#fbbf24;border-bottom:1px solid rgba(251,191,36,.2);}
+#modeBanner.mode-endless{padding:5px 16px;background:rgba(239,68,68,.1);color:#f87171;border-bottom:1px solid rgba(239,68,68,.2);}
+#modeBanner.mode-mistakes{padding:5px 16px;background:rgba(192,38,211,.1);color:#e879f9;border-bottom:1px solid rgba(192,38,211,.2);}
+#modeBanner.mode-exam{padding:5px 16px;background:rgba(99,102,241,.08);color:#818cf8;border-bottom:1px solid rgba(99,102,241,.2);}
+.src-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(192,38,211,.12);color:#e879f9;border:1px solid rgba(192,38,211,.3);margin-bottom:5px;}
 .battle-header{width:100%;max-width:600px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,26,.9);border-bottom:1px solid rgba(79,70,229,.2);flex-shrink:0;}
 .b-hearts{display:flex;gap:4px;font-size:22px;}
 .b-combo{font-size:13px;font-weight:700;color:#f59e0b;min-width:60px;}
@@ -95,25 +106,91 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 .timer-bar-fill.urgent{background:linear-gradient(90deg,#dc2626,#f97316);}
 
 /* Battle arena */
-.battle-arena{width:100%;max-width:600px;padding:16px;display:flex;align-items:flex-end;justify-content:space-between;min-height:200px;flex-shrink:0;}
-.fighter{display:flex;flex-direction:column;align-items:center;gap:8px;width:130px;}
+.battle-arena{width:100%;max-width:600px;padding:16px;display:flex;align-items:flex-end;justify-content:space-between;min-height:220px;flex-shrink:0;overflow:visible;}
+.fighter{display:flex;flex-direction:column;align-items:center;gap:8px;width:140px;}
 .fighter-name{font-size:11px;color:#94a3b8;text-align:center;font-weight:700;letter-spacing:1px;}
-.fighter-emoji{font-size:64px;line-height:1;transition:transform .15s;}
-.fighter-emoji.attack{animation:attackAnim .4s ease;}
-.fighter-emoji.hurt{animation:hurtAnim .4s ease;}
+.fighter-emoji{font-size:90px;line-height:1;display:block;transform-origin:bottom center;}
 .hp-bar-wrap{width:100%;height:8px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;}
 .hp-bar{height:100%;border-radius:4px;transition:width .4s ease;}
 .hero-hp-bar{background:linear-gradient(90deg,#22c55e,#4ade80);}
 .monster-hp-bar{background:linear-gradient(90deg,#ef4444,#f97316);}
 .fighter-label{font-size:10px;color:#64748b;}
 
+/* Idle animations — continuous full-body sway */
+#heroEmoji{animation:heroIdle 2.4s ease-in-out infinite;}
+#monsterEmoji{animation:monsterIdle 1.8s ease-in-out infinite;}
+@keyframes heroIdle{
+  0%,100%{transform:translateY(0) rotate(-4deg) scale(1,1);}
+  30%{transform:translateY(-14px) rotate(2deg) scale(.96,1.06);}
+  60%{transform:translateY(-8px) rotate(-2deg) scale(.98,1.03);}
+  80%{transform:translateY(-18px) rotate(3deg) scale(.95,1.07);}
+}
+@keyframes monsterIdle{
+  0%,100%{transform:translateY(0) rotate(5deg) scale(1,1);}
+  35%{transform:translateY(-10px) rotate(-4deg) scale(1.06,.95);}
+  65%{transform:translateY(-6px) rotate(7deg) scale(1.04,.97);}
+}
+
+/* Full-body ATTACK — hero leaps toward monster */
+@keyframes heroFullAttack{
+  0%  {transform:translateX(0)   translateY(0)   scaleX(1)   scaleY(1)   rotate(-4deg);}
+  10% {transform:translateX(-12px) translateY(16px)  scaleX(.78) scaleY(1.22) rotate(-12deg);} /* crouch/squash */
+  32% {transform:translateX(50px)  translateY(-60px) scaleX(1.22) scaleY(.82) rotate(20deg);}  /* leap up */
+  52% {transform:translateX(100px) translateY(-22px) scaleX(1.18) scaleY(.86) rotate(10deg);}  /* strike reach */
+  68% {transform:translateX(32px)  translateY(10px)  scaleX(.9)  scaleY(1.12) rotate(-6deg);}  /* land squash */
+  82% {transform:translateX(8px)   translateY(-4px)  scaleX(1.04) scaleY(.98) rotate(-3deg);}  /* bounce up */
+  100%{transform:translateX(0)   translateY(0)   scaleX(1)   scaleY(1)   rotate(-4deg);}
+}
+.fighter-emoji.attack{animation:heroFullAttack .65s cubic-bezier(.2,.8,.3,1) !important;}
+
+/* Full-body ATTACK — monster charges toward hero */
+@keyframes monsterFullAttack{
+  0%  {transform:translateX(0)    translateY(0)   scaleX(1)   scaleY(1)   rotate(5deg);}
+  10% {transform:translateX(14px)  translateY(16px)  scaleX(.78) scaleY(1.22) rotate(14deg);}
+  32% {transform:translateX(-50px) translateY(-60px) scaleX(1.22) scaleY(.82) rotate(-20deg);}
+  52% {transform:translateX(-100px) translateY(-22px) scaleX(1.18) scaleY(.86) rotate(-10deg);}
+  68% {transform:translateX(-32px) translateY(10px)  scaleX(.9)  scaleY(1.12) rotate(6deg);}
+  82% {transform:translateX(-8px)  translateY(-4px)  scaleX(1.04) scaleY(.98) rotate(4deg);}
+  100%{transform:translateX(0)    translateY(0)   scaleX(1)   scaleY(1)   rotate(5deg);}
+}
+.fighter-emoji.attack-rev{animation:monsterFullAttack .65s cubic-bezier(.2,.8,.3,1) !important;}
+
+/* Full-body HURT — sent flying, spins, lands */
+@keyframes heroHurtFull{
+  0%  {transform:translateX(0)   translateY(0)   rotate(0deg)   scale(1);}
+  18% {transform:translateX(-20px) translateY(-30px) rotate(-50deg) scale(1.1);}
+  42% {transform:translateX(-55px) translateY(8px)  rotate(-100deg) scaleX(.82) scaleY(1.15);}
+  62% {transform:translateX(-30px) translateY(-10px) rotate(-60deg) scale(1.06);}
+  80% {transform:translateX(-8px)  translateY(0)    rotate(-15deg) scale(1);}
+  100%{transform:translateX(0)   translateY(0)   rotate(0deg)   scale(1);}
+}
+@keyframes monsterHurtFull{
+  0%  {transform:translateX(0)  translateY(0)   rotate(0deg)   scale(1);}
+  18% {transform:translateX(20px) translateY(-30px) rotate(50deg) scale(1.1);}
+  42% {transform:translateX(55px) translateY(8px)  rotate(100deg) scaleX(.82) scaleY(1.15);}
+  62% {transform:translateX(30px) translateY(-10px) rotate(60deg) scale(1.06);}
+  80% {transform:translateX(8px)  translateY(0)    rotate(15deg) scale(1);}
+  100%{transform:translateX(0)  translateY(0)   rotate(0deg)   scale(1);}
+}
+#heroEmoji.hurt{animation:heroHurtFull .55s ease !important;}
+#monsterEmoji.hurt{animation:monsterHurtFull .55s ease !important;}
+
+/* Charge glow */
+@keyframes chargeGlow{0%,100%{filter:brightness(1)}50%{filter:brightness(3) drop-shadow(0 0 18px #818cf8) drop-shadow(0 0 6px #fff)}}
+@keyframes chargeGlowRed{0%,100%{filter:brightness(1)}50%{filter:brightness(3) drop-shadow(0 0 18px #ef4444) drop-shadow(0 0 6px #f97316)}}
+.fighter-emoji.charge{animation:chargeGlow .22s ease !important;}
+.fighter-emoji.charge-red{animation:chargeGlowRed .22s ease !important;}
+.boss-rage{animation:bossRage .7s ease-in-out infinite !important;}
+
 .vs-zone{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:22px;}
 .vs-text{font-size:13px;font-weight:700;color:#475569;letter-spacing:2px;}
-.slash-effect{font-size:30px;opacity:0;transition:all .2s;}
-.slash-effect.show{opacity:1;animation:slash .4s ease;}
-@keyframes slash{0%{transform:scale(.5) rotate(-20deg)}50%{transform:scale(1.5) rotate(10deg)}100%{transform:scale(1) rotate(0)}}
-@keyframes attackAnim{0%{transform:translateX(0)}30%{transform:translateX(30px) scale(1.1)}60%{transform:translateX(-10px)}100%{transform:translateX(0)}}
-@keyframes hurtAnim{0%{transform:translateX(0)}20%{transform:translateX(-15px)}40%{transform:translateX(10px)}60%{transform:translateX(-8px)}100%{transform:translateX(0)}}
+.slash-effect{font-size:32px;opacity:0;transition:all .2s;}
+.slash-effect.show{opacity:1;animation:slash .45s ease;}
+@keyframes slash{0%{transform:scale(.3) rotate(-30deg)}40%{transform:scale(2) rotate(15deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes chargeGlowRed{0%,100%{filter:brightness(1)}50%{filter:brightness(2.5) drop-shadow(0 0 14px #ef4444)}}
+.fighter-emoji.attack-rev{animation:attackRevAnim .45s ease;}
+.fighter-emoji.charge{animation:chargeGlow .18s ease;}
+.fighter-emoji.charge-red{animation:chargeGlowRed .18s ease;}
 
 /* Dungeon intro banner */
 .dungeon-banner{width:100%;max-width:600px;padding:10px 16px;text-align:center;border-bottom:1px solid rgba(79,70,229,.2);flex-shrink:0;}
@@ -133,6 +210,10 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 .opt-btn.wrong{border-color:#ef4444;background:rgba(239,68,68,.15);color:#f87171;animation:hurtAnim .4s ease;}
 .opt-btn.reveal{border-color:#22c55e;background:rgba(34,197,94,.08);color:#4ade80;}
 .opt-btn.eliminated{opacity:.25;text-decoration:line-through;}
+.opt-btn.exam-selected{border-color:#60a5fa;background:rgba(96,165,250,.15);color:#93c5fd;}
+.opt-btn.exam-selected .opt-letter{background:#60a5fa;color:#fff;}
+#battleScreen.mode-daily .timer-bar-wrap,
+#battleScreen.mode-mistakes .timer-bar-wrap{opacity:0;}
 .opt-letter{width:26px;height:26px;background:rgba(79,70,229,.3);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#818cf8;flex-shrink:0;}
 .opt-btn.correct .opt-letter{background:#22c55e;color:#fff;}
 .opt-btn.wrong .opt-letter{background:#ef4444;color:#fff;}
@@ -148,17 +229,90 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 .next-btn:hover{transform:translateY(-2px);box-shadow:0 6px 0 #312e81,0 0 24px rgba(79,70,229,.6);}
 
 /* Power-up bar */
-.powerup-bar{width:100%;max-width:600px;display:flex;gap:8px;padding:8px 16px;border-top:1px solid rgba(79,70,229,.15);flex-shrink:0;}
-.pu-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;padding:8px;background:rgba(15,15,35,.8);border:1px solid rgba(79,70,229,.3);border-radius:8px;cursor:pointer;font-size:12px;color:#94a3b8;transition:all .2s;font-family:'Courier New',monospace;}
+.powerup-bar{width:100%;max-width:600px;display:flex;gap:6px;padding:8px 16px;border-top:1px solid rgba(79,70,229,.15);flex-shrink:0;overflow-x:auto;scrollbar-width:none;}
+.powerup-bar::-webkit-scrollbar{display:none;}
+.pu-btn{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:4px;padding:7px 10px;background:rgba(15,15,35,.8);border:1px solid rgba(79,70,229,.3);border-radius:8px;cursor:pointer;font-size:11px;color:#94a3b8;transition:all .2s;font-family:'Courier New',monospace;white-space:nowrap;}
 .pu-btn:hover:not(:disabled){border-color:#818cf8;color:#e2e8f0;}
 .pu-btn:disabled{opacity:.3;cursor:not-allowed;}
 .pu-cnt{background:#4f46e5;color:#fff;border-radius:10px;padding:1px 5px;font-size:10px;font-weight:700;}
+.pu-btn.pu-rare{border-color:rgba(129,140,248,.4);}
+.pu-btn.pu-epic{border-color:rgba(244,114,182,.4);}
+/* Shop rarity badges */
+.badge-common{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;background:rgba(148,163,184,.15);color:#94a3b8;border:1px solid rgba(148,163,184,.3);}
+.badge-rare{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;background:rgba(129,140,248,.15);color:#818cf8;border:1px solid rgba(129,140,248,.3);}
+.badge-epic{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;background:rgba(244,114,182,.15);color:#f472b6;border:1px solid rgba(244,114,182,.3);}
+.shop-card-row{display:flex;align-items:center;gap:14px;padding:14px;background:rgba(15,15,35,.9);border:2px solid rgba(79,70,229,.25);border-radius:12px;cursor:pointer;transition:border-color .2s;}
 
 /* Floating effects */
 .float-text{position:fixed;font-size:20px;font-weight:800;pointer-events:none;z-index:9999;animation:floatUp 1.2s ease forwards;}
 @keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-80px) scale(1.4)}}
 .screen-flash{position:fixed;inset:0;pointer-events:none;z-index:9998;animation:flash .4s ease forwards;}
 @keyframes flash{0%{opacity:.4}100%{opacity:0}}
+
+/* ── CHARACTER SELECT ── */
+#charSelectScreen{background:#0a0a1a;overflow-y:auto;justify-content:flex-start;}
+.cs-header{width:100%;max-width:600px;padding:20px 16px 12px;text-align:center;flex-shrink:0;}
+.cs-title{font-size:22px;font-weight:900;letter-spacing:3px;background:linear-gradient(135deg,#818cf8,#c084fc,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.cs-sub{font-size:10px;color:#64748b;letter-spacing:2px;margin-top:3px;}
+.char-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:600px;padding:0 16px 12px;flex-shrink:0;}
+.char-card{background:rgba(15,15,35,.97);border:2px solid rgba(79,70,229,.22);border-radius:14px;padding:16px 12px;cursor:pointer;transition:transform .18s,box-shadow .18s,border-color .18s;text-align:center;position:relative;overflow:hidden;}
+.char-card:not(.char-locked):hover{transform:translateY(-4px);box-shadow:0 10px 28px rgba(0,0,0,.5);}
+.char-card.char-selected{border-color:var(--cc,#818cf8);box-shadow:0 0 24px var(--cc-g,rgba(129,140,248,.4)),0 0 6px var(--cc-g,rgba(129,140,248,.2));}
+.char-card.char-locked{opacity:.6;cursor:default;}
+.cc-emoji{font-size:68px;line-height:1.15;display:block;}
+.cc-name{font-size:14px;font-weight:900;color:#e2e8f0;margin-top:5px;}
+.cc-title{font-size:9px;color:#64748b;letter-spacing:1.5px;margin-bottom:8px;}
+.cc-desc{font-size:11px;color:#94a3b8;line-height:1.65;text-align:left;margin-bottom:10px;min-height:48px;}
+.cc-stat{display:flex;align-items:center;gap:6px;margin-bottom:4px;}
+.cc-stat-lbl{font-size:9px;color:#475569;width:26px;font-weight:700;letter-spacing:.5px;}
+.cc-stat-bar{flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden;}
+.cc-stat-fill{height:100%;border-radius:3px;}
+.cc-cost{margin-top:10px;font-size:11px;font-weight:700;padding:5px 10px;border-radius:8px;display:inline-block;}
+.cc-cost-free{background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.25);}
+.cc-cost-owned{background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.25);}
+.cc-cost-buy{border:1px solid;cursor:pointer;transition:opacity .15s;}
+.cc-cost-buy:hover{opacity:.8;}
+.cc-cost-locked{background:rgba(239,68,68,.1);color:#f87171;border:1px solid rgba(239,68,68,.2);}
+.cc-lock-veil{position:absolute;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;font-size:30px;border-radius:12px;pointer-events:none;}
+.cs-footer{width:100%;max-width:600px;padding:12px 16px;flex-shrink:0;background:rgba(10,10,26,.95);border-top:1px solid rgba(79,70,229,.18);}
+
+/* ── DYNAMIC EFFECTS ── */
+.screen.active{animation:screenIn .28s cubic-bezier(.2,.8,.4,1);}
+@keyframes screenIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.q-panel-slide{animation:qSlide .22s cubic-bezier(.2,.8,.4,1);}
+@keyframes qSlide{from{opacity:0;transform:translateX(22px)}to{opacity:1;transform:translateX(0)}}
+
+@keyframes screenShake{0%,100%{transform:translateX(0)}12%{transform:translateX(-12px)}28%{transform:translateX(12px)}44%{transform:translateX(-8px)}60%{transform:translateX(8px)}76%{transform:translateX(-4px)}90%{transform:translateX(4px)}}
+.shake{animation:screenShake .42s ease;}
+
+@keyframes hpBarShake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.hp-shake{animation:hpBarShake .28s ease;}
+
+@keyframes comboPop{0%{transform:scale(1)}35%{transform:scale(1.6)}65%{transform:scale(.88)}100%{transform:scale(1)}}
+.combo-pop{animation:comboPop .32s ease;}
+
+@keyframes correctRing{0%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}100%{box-shadow:0 0 0 20px rgba(34,197,94,0)}}
+.correct-ring{animation:correctRing .5s ease forwards;}
+
+@keyframes bossRage{0%,100%{filter:brightness(1) saturate(1)}50%{filter:brightness(2) saturate(2) hue-rotate(20deg)}}
+.boss-rage{animation:bossRage .7s ease-in-out infinite;}
+
+@keyframes bossRageWarn{0%,100%{color:#ef4444}50%{color:#fbbf24}}
+.boss-rage-name{animation:bossRageWarn .7s ease-in-out infinite;font-weight:900;}
+
+/* Battle orb ambient glow */
+.battle-orb{position:fixed;border-radius:50%;pointer-events:none;z-index:0;filter:blur(70px);opacity:.9;}
+.orb1{width:420px;height:420px;background:radial-gradient(circle,rgba(79,70,229,.18),transparent 70%);top:-100px;left:-100px;animation:orbDrift1 16s ease-in-out infinite;}
+.orb2{width:320px;height:320px;background:radial-gradient(circle,rgba(192,132,252,.14),transparent 70%);bottom:-80px;right:-80px;animation:orbDrift2 13s ease-in-out infinite;}
+.orb3{width:260px;height:260px;background:radial-gradient(circle,rgba(244,114,182,.1),transparent 70%);top:45%;left:55%;animation:orbDrift3 19s ease-in-out infinite;}
+@keyframes orbDrift1{0%,100%{transform:translate(0,0)}33%{transform:translate(110px,70px)}66%{transform:translate(50px,-90px)}}
+@keyframes orbDrift2{0%,100%{transform:translate(0,0)}33%{transform:translate(-90px,-60px)}66%{transform:translate(-40px,80px)}}
+@keyframes orbDrift3{0%,100%{transform:translate(-50%,-50%)}25%{transform:translate(-70%,-25%)}50%{transform:translate(-28%,-65%)}75%{transform:translate(-62%,-72%)}}
+
+/* Dungeon card lift + glow on hover */
+.dungeon-card{transition:transform .18s ease,box-shadow .18s ease!important;}
+.dungeon-card:hover:not([onclick*="showLocked"]){transform:translateY(-5px) scale(1.02)!important;box-shadow:0 12px 32px rgba(0,0,0,.5)!important;}
 
 /* ═══════════════════════════
    VICTORY / DEFEAT SCREENS
@@ -215,6 +369,44 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 /* Confetti canvas */
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:9999;}
 
+/* ── T/F QUESTION TYPE ── */
+.tf-btns{display:flex;gap:12px;width:100%;}
+.tf-btn{flex:1;padding:22px 10px;font-size:20px;font-weight:800;font-family:'Courier New',monospace;border-radius:12px;cursor:pointer;transition:all .2s;border:2px solid;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.tf-btn-t{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.4);color:#4ade80;}
+.tf-btn-f{background:rgba(239,68,68,.12);border-color:rgba(239,68,68,.4);color:#f87171;}
+.tf-btn:hover:not(:disabled){transform:translateY(-3px);filter:brightness(1.25);}
+.tf-btn:disabled{cursor:not-allowed;}
+.tf-btn.correct{border-color:#22c55e!important;box-shadow:0 0 18px rgba(34,197,94,.5);}
+.tf-btn.wrong{border-color:#ef4444!important;animation:hurtAnim .4s ease;}
+.tf-btn.reveal-ok{border-color:#22c55e!important;box-shadow:0 0 16px rgba(34,197,94,.4);}
+
+/* ── WORD ORDER TYPE ── */
+.order-area{display:flex;flex-direction:column;gap:10px;width:100%;}
+.word-bank{display:flex;flex-wrap:wrap;gap:8px;}
+.word-tile{padding:8px 14px;background:rgba(79,70,229,.15);border:2px solid rgba(79,70,229,.4);border-radius:8px;cursor:pointer;font-size:15px;font-weight:600;color:#e2e8f0;transition:all .2s;font-family:'Courier New',monospace;}
+.word-tile:hover{border-color:#818cf8;background:rgba(79,70,229,.3);transform:translateY(-2px);}
+.word-tile.used{opacity:.2;pointer-events:none;text-decoration:line-through;}
+.order-answer{min-height:48px;display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;background:rgba(15,15,35,.9);border:2px dashed rgba(79,70,229,.35);border-radius:10px;align-content:flex-start;}
+.order-chip{padding:6px 12px;background:rgba(99,102,241,.25);border:2px solid #818cf8;border-radius:8px;cursor:pointer;font-size:14px;font-weight:600;color:#e2e8f0;font-family:'Courier New',monospace;transition:all .15s;}
+.order-chip:hover{background:rgba(239,68,68,.2);border-color:#f87171;}
+.order-submit{width:100%;padding:12px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border:none;border-radius:8px;color:#fff;font-size:15px;font-weight:700;font-family:'Courier New',monospace;cursor:pointer;box-shadow:0 4px 0 #312e81;transition:all .15s;}
+.order-submit:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 0 #312e81;}
+.order-submit:disabled{opacity:.35;cursor:not-allowed;}
+
+/* ── ERROR SPOT TYPE ── */
+.err-sentence{display:flex;flex-wrap:wrap;gap:8px;padding:14px;background:rgba(79,70,229,.06);border:1px solid rgba(79,70,229,.2);border-radius:10px;}
+.err-word{padding:7px 13px;background:rgba(15,15,35,.7);border:2px solid rgba(79,70,229,.2);border-radius:6px;cursor:pointer;font-size:16px;font-weight:600;color:#e2e8f0;font-family:'Courier New',monospace;transition:all .2s;}
+.err-word:hover:not(:disabled){border-color:#f59e0b;background:rgba(245,158,11,.12);color:#fbbf24;}
+.err-word.found{border-color:#22c55e!important;background:rgba(34,197,94,.18)!important;color:#4ade80!important;box-shadow:0 0 10px rgba(34,197,94,.3);}
+.err-word.wrong-pick{border-color:#ef4444!important;background:rgba(239,68,68,.2)!important;color:#f87171!important;animation:hurtAnim .4s ease;}
+.err-word.reveal{border-color:#ef4444!important;background:rgba(239,68,68,.1)!important;color:#f87171!important;}
+.err-word:disabled{cursor:not-allowed;}
+.type-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-bottom:6px;letter-spacing:1px;}
+.type-badge-mcq{background:rgba(79,70,229,.2);color:#818cf8;border:1px solid rgba(79,70,229,.3);}
+.type-badge-tf{background:rgba(34,197,94,.15);color:#4ade80;border:1px solid rgba(34,197,94,.25);}
+.type-badge-order{background:rgba(245,158,11,.15);color:#fbbf24;border:1px solid rgba(245,158,11,.25);}
+.type-badge-err{background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.25);}
+
 /* Scrollbar */
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-thumb{background:rgba(79,70,229,.4);border-radius:2px;}
@@ -259,20 +451,175 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 .mk-btn-practice:hover{background:rgba(239,68,68,.2);}
 .mk-btn-clear{background:rgba(71,85,105,.15);border-color:rgba(71,85,105,.35);color:#64748b;}
 .mk-btn-clear:hover{border-color:#818cf8;color:#94a3b8;}
+
+/* ═══════════════════════════
+   SPECIAL MODES
+═══════════════════════════ */
+.special-section{width:100%;max-width:600px;padding:0 16px 8px;flex-shrink:0;}
+.special-section-title{font-size:11px;color:#475569;letter-spacing:1px;margin-bottom:8px;}
+.special-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.sp-card{padding:14px 12px;border-radius:10px;cursor:pointer;text-align:center;transition:all .2s;border:2px solid transparent;position:relative;}
+.sp-card:hover{transform:translateY(-2px);}
+.sp-card .sp-icon{font-size:24px;margin-bottom:4px;}
+.sp-card .sp-name{font-size:13px;font-weight:700;margin-bottom:2px;}
+.sp-card .sp-sub{font-size:10px;opacity:.75;}
+.sp-rank{background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.35);}
+.sp-rank .sp-name{color:#818cf8;}
+.sp-theme{background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.35);}
+.sp-theme .sp-name{color:#34d399;}
+.sp-speed{background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.35);}
+.sp-speed .sp-name{color:#fbbf24;}
+.sp-mloop{background:rgba(239,68,68,.1);border-color:rgba(239,68,68,.35);}
+.sp-mloop .sp-name{color:#f87171;}
+.sp-level{background:rgba(168,85,247,.1);border-color:rgba(168,85,247,.35);}
+.sp-level .sp-name{color:#c084fc;}
+.sp-exam{background:rgba(59,130,246,.1);border-color:rgba(59,130,246,.35);}
+.sp-exam .sp-name{color:#60a5fa;}
+.sp-survival{background:rgba(220,38,38,.12);border-color:rgba(220,38,38,.4);}
+.sp-survival .sp-name{color:#f87171;}
+
+/* New Screens shared styles */
+.mode-screen{background:radial-gradient(ellipse at top,#1e1b4b 0%,#0a0f1a 60%);}
+.mode-header{width:100%;max-width:600px;padding:16px;display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.mode-back{padding:8px 14px;background:rgba(79,70,229,.15);border:1px solid rgba(79,70,229,.4);border-radius:8px;color:#818cf8;cursor:pointer;font-family:'Courier New',monospace;font-size:12px;flex-shrink:0;}
+.mode-title-text{font-size:18px;font-weight:700;color:#e2e8f0;}
+.mode-body{width:100%;max-width:600px;padding:0 16px 40px;overflow-y:auto;flex:1;}
+
+/* Rank screen */
+.rank-card{padding:16px;background:rgba(15,15,35,.95);border:2px solid rgba(99,102,241,.3);border-radius:12px;margin-bottom:12px;}
+.rank-current{text-align:center;padding:20px;background:rgba(99,102,241,.1);border:2px solid rgba(99,102,241,.4);border-radius:12px;margin-bottom:12px;}
+.rank-name-big{font-size:24px;font-weight:900;color:#818cf8;margin-top:8px;}
+.rank-pts{font-size:14px;color:#94a3b8;margin-top:4px;}
+.rank-progress-bar{width:100%;height:8px;background:rgba(255,255,255,.06);border-radius:4px;margin:10px 0;}
+.rank-progress-fill{height:100%;background:linear-gradient(90deg,#4f46e5,#818cf8);border-radius:4px;transition:width .5s;}
+.rank-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.05);}
+.rank-row:last-child{border-bottom:none;}
+.rank-row.active-rank{background:rgba(99,102,241,.1);border-radius:8px;padding:10px;}
+.rank-badge-icon{font-size:22px;width:32px;text-align:center;}
+.rank-badge-name{flex:1;font-size:13px;font-weight:700;}
+.rank-badge-pts{font-size:11px;color:#64748b;}
+
+/* Theme screen */
+.theme-card{padding:16px;border-radius:12px;margin-bottom:10px;cursor:pointer;border:2px solid transparent;transition:all .2s;display:flex;align-items:center;gap:14px;}
+.theme-card:hover:not(.locked-theme){transform:translateX(4px);}
+.theme-card.locked-theme{opacity:.4;cursor:not-allowed;}
+.theme-icon-big{font-size:36px;flex-shrink:0;}
+.theme-info{flex:1;}
+.theme-name{font-size:15px;font-weight:700;}
+.theme-desc{font-size:11px;color:#94a3b8;margin-top:3px;}
+.theme-stars{font-size:14px;margin-top:4px;}
+.theme-lock-lbl{font-size:10px;padding:3px 8px;border-radius:10px;background:rgba(255,255,255,.08);color:#64748b;}
+
+/* Speed screen */
+.speed-option{padding:20px;border-radius:12px;margin-bottom:10px;cursor:pointer;text-align:center;border:2px solid transparent;transition:all .2s;}
+.speed-option:hover{transform:scale(1.02);}
+.speed-min{font-size:36px;font-weight:900;}
+.speed-label{font-size:14px;color:#94a3b8;margin-top:4px;}
+.speed-high{font-size:11px;margin-top:6px;}
+
+/* Exam screen */
+.exam-card{padding:18px;border-radius:12px;margin-bottom:10px;cursor:pointer;border:2px solid transparent;transition:all .2s;display:flex;align-items:center;gap:14px;}
+.exam-card:hover{transform:translateX(4px);}
+.exam-icon{font-size:32px;flex-shrink:0;}
+.exam-info{flex:1;}
+.exam-name{font-size:15px;font-weight:700;}
+.exam-meta{font-size:11px;color:#94a3b8;margin-top:3px;}
+.exam-best{font-size:12px;margin-top:4px;color:#fbbf24;}
+
+/* Profile screen */
+.profile-hero-box{text-align:center;padding:20px;background:rgba(15,15,35,.95);border:2px solid rgba(168,85,247,.3);border-radius:12px;margin-bottom:12px;}
+.profile-lv-big{font-size:32px;font-weight:900;color:#c084fc;}
+.xp-bar-wrap{width:100%;height:8px;background:rgba(255,255,255,.06);border-radius:4px;margin:10px 0;}
+.xp-bar-fill{height:100%;background:linear-gradient(90deg,#7c3aed,#c084fc);border-radius:4px;transition:width .5s;}
+.badge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px;}
+.badge-item{padding:12px 8px;background:rgba(15,15,35,.95);border:1px solid rgba(255,255,255,.08);border-radius:10px;text-align:center;transition:all .2s;}
+.badge-item.earned{border-color:rgba(251,191,36,.4);background:rgba(251,191,36,.06);}
+.badge-item.locked-badge{opacity:.35;filter:grayscale(.8);}
+.badge-icon{font-size:24px;}
+.badge-name{font-size:10px;color:#94a3b8;margin-top:4px;line-height:1.3;}
+.badge-item.earned .badge-name{color:#fbbf24;}
+
+/* Speed timer in battle header */
+#bSpeedTimer{font-size:13px;font-weight:700;color:#fbbf24;background:rgba(234,179,8,.15);border:1px solid rgba(234,179,8,.4);padding:4px 10px;border-radius:12px;}
+#bSurvivalLv{font-size:12px;color:#f87171;background:rgba(239,68,68,.12);border:1px solid rgba(239,68,68,.3);padding:4px 10px;border-radius:12px;}
+
+/* ── BOTTOM TAB NAV ── */
+.bottom-tabs{position:sticky;bottom:0;width:100%;max-width:600px;display:flex;background:rgba(6,6,18,.98);border-top:1px solid rgba(79,70,229,.25);z-index:20;flex-shrink:0;}
+.tab-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0 8px;cursor:pointer;font-size:10px;color:#475569;transition:all .2s;gap:3px;letter-spacing:.5px;user-select:none;}
+.tab-item .tab-icon{font-size:22px;line-height:1;transition:filter .2s;}
+.tab-item.active{color:#818cf8;}
+.tab-item.active .tab-icon{filter:drop-shadow(0 0 8px rgba(129,140,248,.7));}
+.tab-content{display:none;flex:1;overflow-y:auto;width:100%;flex-direction:column;align-items:center;}
+.tab-content.active{display:flex;}
+/* remove shop-bar sticky so it doesn't fight bottom-tabs */
+#mapScreen .shop-bar{position:static;margin-top:auto;}
+
+/* ── LOGIN SCREEN ── */
+#loginScreen{background:radial-gradient(ellipse at center,#1e1b4b 0%,#0a0a1a 70%);}
+.login-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px 20px;text-align:center;position:relative;z-index:1;gap:0;}
+.login-logo{font-size:clamp(22px,6vw,40px);font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,#818cf8,#c084fc,#f472b6);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px;}
+.login-sub{font-size:12px;color:#475569;letter-spacing:3px;margin-bottom:24px;}
+.user-card{display:flex;align-items:center;gap:12px;padding:12px 16px;background:rgba(15,15,35,.9);border:2px solid rgba(79,70,229,.3);border-radius:10px;cursor:pointer;transition:all .2s;width:100%;max-width:360px;text-align:left;}
+.user-card:hover{border-color:#818cf8;background:rgba(79,70,229,.1);}
+.user-card-del{padding:6px 10px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:6px;color:#f87171;font-size:11px;cursor:pointer;flex-shrink:0;transition:background .2s;}
+.user-card-del:hover{background:rgba(239,68,68,.25);}
+.login-divider{font-size:11px;color:#334155;letter-spacing:2px;margin:16px 0 10px;}
+.login-input-row{display:flex;gap:8px;width:100%;max-width:360px;}
+.login-input{flex:1;padding:12px 14px;background:rgba(15,15,35,.9);border:2px solid rgba(79,70,229,.4);border-radius:8px;color:#e2e8f0;font-size:14px;font-family:'Courier New',monospace;outline:none;transition:border-color .2s;}
+.login-input:focus{border-color:#818cf8;}
+.login-btn{padding:12px 18px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border:2px solid #818cf8;border-radius:8px;color:#fff;font-size:13px;font-weight:700;font-family:'Courier New',monospace;cursor:pointer;white-space:nowrap;box-shadow:0 0 12px rgba(79,70,229,.4);}
+.login-btn:hover{filter:brightness(1.1);}
+.login-msg{font-size:11px;min-height:16px;margin-top:6px;color:#f87171;}
 </style>
 </head>
 <body>
 
 <canvas id="confetti"></canvas>
 
+<!-- ══ LOGIN SCREEN ══ -->
+<div class="screen active" id="loginScreen">
+  <div class="stars" id="starsLogin"></div>
+  <div class="login-wrap">
+    <div style="font-size:72px;animation:heroFloat 2s ease-in-out infinite;margin-bottom:8px">🧙‍♂️</div>
+    <div class="login-logo">⚔️ GRAMMAR QUEST</div>
+    <div class="login-sub">选择你的勇者</div>
+    <div id="userList" style="width:100%;max-width:360px;display:flex;flex-direction:column;gap:8px"></div>
+    <div class="login-divider" id="loginDivider">── 或输入账号 ──</div>
+    <div style="width:100%;max-width:360px;display:flex;flex-direction:column;gap:8px">
+      <input id="usernameInput" class="login-input" type="text" placeholder="用户名" maxlength="12" oninput="updateLoginHint()">
+      <input id="passwordInput" class="login-input" type="password" placeholder="密码" maxlength="20">
+      <input id="confirmInput" class="login-input" type="password" placeholder="确认密码（新用户）" maxlength="20" style="display:none" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="login-btn" style="width:100%;padding:13px" id="loginMainBtn" onclick="doLogin()">进入游戏 →</button>
+    </div>
+    <div class="login-msg" id="loginMsg"></div>
+  </div>
+</div>
+
+<!-- ══ PASSWORD MODAL ══ -->
+<div id="pwdModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:9200;align-items:center;justify-content:center;padding:20px">
+  <div style="background:rgba(10,10,26,.98);border:2px solid #4f46e5;box-shadow:0 0 30px rgba(79,70,229,.5);border-radius:12px;padding:28px 24px;max-width:320px;width:100%;display:flex;flex-direction:column;gap:14px;text-align:center">
+    <div style="font-size:36px">🔐</div>
+    <div style="font-size:16px;font-weight:700;color:#e2e8f0">欢迎回来，<span id="pwdModalName" style="color:#818cf8"></span></div>
+    <input id="pwdModalInput" class="login-input" type="password" placeholder="输入密码" maxlength="20"
+      onkeydown="if(event.key==='Enter')confirmPwd()" style="text-align:center">
+    <div class="login-msg" id="pwdModalMsg" style="margin:0"></div>
+    <div style="display:flex;gap:8px">
+      <button onclick="closePwdModal()" style="flex:1;padding:11px;background:rgba(71,85,105,.2);border:1px solid rgba(71,85,105,.4);border-radius:8px;color:#94a3b8;cursor:pointer;font-family:'Courier New',monospace;font-size:13px">取消</button>
+      <button onclick="confirmPwd()" style="flex:2;padding:11px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border:2px solid #818cf8;border-radius:8px;color:#fff;cursor:pointer;font-family:'Courier New',monospace;font-size:13px;font-weight:700">确认登录</button>
+    </div>
+  </div>
+</div>
+
 <!-- ══ TITLE SCREEN ══ -->
-<div class="screen active" id="titleScreen">
+<div class="screen" id="titleScreen">
   <div class="stars" id="stars"></div>
   <div class="title-wrap">
-    <div class="hero-display">🧙‍♂️</div>
+    <div class="hero-display" id="titleHeroDisplay">🧙‍♂️</div>
+    <div id="titleHeroName" style="font-size:13px;color:#818cf8;font-weight:700;letter-spacing:2px;margin-bottom:8px;margin-top:-20px">智慧法师</div>
     <div class="title-logo">⚔️ GRAMMAR QUEST</div>
     <div class="title-sub">★ 打败语法怪兽，成为英语勇者 ★</div>
     <button class="title-btn" onclick="goMap()">🗺️ 开始冒险</button>
+    <button class="title-btn secondary" onclick="openCharSelect()">🧙 选择角色</button>
     <button class="title-btn secondary" onclick="showTitleStats()">📊 我的记录</button>
     <div class="title-stats" id="titleStats" style="display:none">
       <div class="t-stat"><div class="t-stat-n" id="ts-coins">0</div><div>金币</div></div>
@@ -282,76 +629,269 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
   </div>
 </div>
 
+<!-- ══ CHAR SELECT SCREEN ══ -->
+<div class="screen" id="charSelectScreen">
+  <div class="cs-header">
+    <div class="cs-title">⚔️ 选择你的勇者</div>
+    <div class="cs-sub">CHOOSE YOUR HERO · 不同角色拥有不同攻击方式</div>
+  </div>
+  <div class="char-grid" id="charGrid"></div>
+  <div class="cs-footer">
+    <button class="title-btn" onclick="confirmChar()" style="width:100%;padding:13px;font-size:14px;margin:0">✅ 出战此英雄</button>
+    <button class="title-btn secondary" onclick="goTitle()" style="width:100%;padding:11px;font-size:13px;margin:8px 0 0">← 返回</button>
+  </div>
+</div>
+
 <!-- ══ MAP SCREEN ══ -->
 <div class="screen" id="mapScreen">
   <div class="map-header">
-    <div class="map-title">🗺️ 世界地图</div>
+    <div style="display:flex;flex-direction:column;gap:2px">
+      <div class="map-title">🗺️ 世界地图</div>
+      <div style="font-size:11px;color:#475569;cursor:pointer" onclick="logout()">🧙‍♂️ <span id="mapUsername">勇者</span> · 切换角色</div>
+    </div>
     <div style="display:flex;gap:8px">
       <div class="hud-coins">🪙 <span id="mapCoins">0</span></div>
       <div class="hud-xp">⭐ Lv.<span id="mapLv">1</span></div>
     </div>
   </div>
-  <!-- Special modes (独立容器，不被renderMap覆盖) -->
-  <div style="width:100%;max-width:600px;padding:0 16px 10px;display:flex;gap:10px;flex-shrink:0">
-    <div onclick="openDaily()" style="flex:1;padding:14px;background:rgba(234,179,8,.1);border:2px solid rgba(234,179,8,.35);border-radius:10px;cursor:pointer;text-align:center;transition:border-color .2s">
-      <div style="font-size:24px">⚡</div>
-      <div style="font-size:13px;font-weight:700;color:#fbbf24;margin-top:4px">每日挑战</div>
-      <div style="font-size:11px;color:#a8a29e;margin-top:2px" id="dailyStatus">今日可挑战</div>
-    </div>
-    <div onclick="openEndless()" style="flex:1;padding:14px;background:rgba(239,68,68,.1);border:2px solid rgba(239,68,68,.35);border-radius:10px;cursor:pointer;text-align:center;transition:border-color .2s">
-      <div style="font-size:24px">♾️</div>
-      <div style="font-size:13px;font-weight:700;color:#f87171;margin-top:4px">无尽模式</div>
-      <div style="font-size:11px;color:#a8a29e;margin-top:2px">最高: <span id="endlessHigh">0</span>题</div>
-    </div>
-  </div>
-  <div style="width:100%;max-width:600px;padding:0 16px 8px;flex-shrink:0">
-    <div onclick="openMistakes()" style="width:100%;padding:12px 16px;background:rgba(220,38,38,.08);border:2px solid rgba(220,38,38,.3);border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:border-color .2s">
-      <div style="font-size:26px">📕</div>
-      <div style="flex:1">
-        <div style="font-size:13px;font-weight:700;color:#f87171">错题本</div>
-        <div style="font-size:11px;color:#a8a29e;margin-top:2px">共 <span id="mapMistakeCount">0</span> 道错题待复习</div>
+  <!-- ── TAB 1: 关卡 ── -->
+  <div class="tab-content active" id="tab-map">
+    <div class="pay-banner" id="payBanner">
+      <div class="pay-banner-inner" id="payBannerInner" onclick="showUnlockModal()">
+        <div style="font-size:26px" id="payBannerIcon">🔑</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:700;color:#fbbf24" id="payBannerTitle">输入兑换码 解锁全部25关</div>
+          <div style="font-size:11px;color:#a8a29e;margin-top:2px" id="payBannerSub">前5关免费 · 购买后输入兑换码</div>
+        </div>
+        <div style="font-size:11px;color:#ca8a04" id="payBannerArrow">→</div>
       </div>
-      <div style="font-size:11px;color:#475569">→</div>
     </div>
-  </div>
-  <div class="pay-banner" id="payBanner">
-    <div class="pay-banner-inner" id="payBannerInner" onclick="showUnlockModal()">
-      <div style="font-size:26px" id="payBannerIcon">🔑</div>
-      <div style="flex:1">
-        <div style="font-size:13px;font-weight:700;color:#fbbf24" id="payBannerTitle">输入兑换码 解锁全部25关</div>
-        <div style="font-size:11px;color:#a8a29e;margin-top:2px" id="payBannerSub">前5关免费 · 购买后输入兑换码</div>
+    <div style="width:100%;max-width:600px;padding:8px 16px 0;display:flex;gap:10px;flex-shrink:0">
+      <div onclick="openDaily()" style="flex:1;padding:13px;background:rgba(234,179,8,.08);border:2px solid rgba(234,179,8,.3);border-radius:10px;cursor:pointer;text-align:center;transition:border-color .2s" onmouseover="this.style.borderColor='#fbbf24'" onmouseout="this.style.borderColor='rgba(234,179,8,.3)'">
+        <div style="font-size:22px">⚡</div>
+        <div style="font-size:12px;font-weight:700;color:#fbbf24;margin-top:3px">每日挑战</div>
+        <div style="font-size:10px;color:#a8a29e;margin-top:2px" id="dailyStatus">今日可挑战</div>
       </div>
-      <div style="font-size:11px;color:#ca8a04" id="payBannerArrow">→</div>
+      <div onclick="openEndless()" style="flex:1;padding:13px;background:rgba(239,68,68,.08);border:2px solid rgba(239,68,68,.3);border-radius:10px;cursor:pointer;text-align:center;transition:border-color .2s" onmouseover="this.style.borderColor='#f87171'" onmouseout="this.style.borderColor='rgba(239,68,68,.3)'">
+        <div style="font-size:22px">♾️</div>
+        <div style="font-size:12px;font-weight:700;color:#f87171;margin-top:3px">无尽模式</div>
+        <div style="font-size:10px;color:#a8a29e;margin-top:2px">最高: <span id="endlessHigh">0</span>题</div>
+      </div>
+      <div onclick="openMistakes()" style="flex:1;padding:13px;background:rgba(220,38,38,.06);border:2px solid rgba(220,38,38,.25);border-radius:10px;cursor:pointer;text-align:center;transition:border-color .2s" onmouseover="this.style.borderColor='#f87171'" onmouseout="this.style.borderColor='rgba(220,38,38,.25)'">
+        <div style="font-size:22px">📕</div>
+        <div style="font-size:12px;font-weight:700;color:#f87171;margin-top:3px">错题本</div>
+        <div style="font-size:10px;color:#a8a29e;margin-top:2px"><span id="mapMistakeCount">0</span> 题</div>
+      </div>
+    </div>
+    <div style="width:100%;max-width:600px;padding:8px 16px 4px;font-size:11px;color:#475569;letter-spacing:1px;flex-shrink:0">▸ 主线关卡</div>
+    <div class="map-body" id="mapBody"></div>
+  </div>
+
+  <!-- ── TAB 2: 模式 ── -->
+  <div class="tab-content" id="tab-modes">
+    <div class="special-section" style="padding-bottom:16px;padding-top:10px">
+      <div class="special-section-title">🎮 特殊模式</div>
+      <div class="special-grid">
+        <div class="sp-card sp-rank" onclick="openRankMode()">
+          <div class="sp-icon">🏅</div>
+          <div class="sp-name">段位晋级</div>
+          <div class="sp-sub">积分匹配 · <span id="mapRankName">新手学徒</span></div>
+        </div>
+        <div class="sp-card sp-theme" onclick="openThemeMode()">
+          <div class="sp-icon">🌐</div>
+          <div class="sp-name">主题秘境</div>
+          <div class="sp-sub">校园/旅行/美食/职场</div>
+        </div>
+        <div class="sp-card sp-speed" onclick="openSpeedMode()">
+          <div class="sp-icon">⚡</div>
+          <div class="sp-name">计时速刷</div>
+          <div class="sp-sub">最高: <span id="mapSpeedHigh">0</span>题</div>
+        </div>
+        <div class="sp-card sp-mloop" onclick="openMistakeLoop()">
+          <div class="sp-icon">🔁</div>
+          <div class="sp-name">错题轮回</div>
+          <div class="sp-sub">答对3次彻底移除</div>
+        </div>
+        <div class="sp-card sp-level" onclick="openLevelMode()">
+          <div class="sp-icon">🎖️</div>
+          <div class="sp-name">等级养成</div>
+          <div class="sp-sub">勋章 · 成就 · 成长</div>
+        </div>
+        <div class="sp-card sp-exam" onclick="openExamMode()">
+          <div class="sp-icon">📝</div>
+          <div class="sp-name">模拟考场</div>
+          <div class="sp-sub">中考/高考/四级</div>
+        </div>
+        <div class="sp-card sp-survival" onclick="openSurvivalMode()" style="grid-column:1/-1">
+          <div class="sp-icon">☠️</div>
+          <div class="sp-name">词汇生存</div>
+          <div class="sp-sub">生存最高: <span id="mapSurvivalHigh">0</span>题 · 速度递增 · 5条命</div>
+        </div>
+      </div>
     </div>
   </div>
-  <div style="width:100%;max-width:600px;padding:0 16px 6px;font-size:11px;color:#475569;letter-spacing:1px;flex-shrink:0">▸ 主线关卡</div>
-  <div class="map-body" id="mapBody"></div>
-  <div class="shop-bar">
-    <div class="shop-item" onclick="buyItem('hint')">
-      <div class="si-icon">💡</div>
-      <div>提示</div>
-      <div class="si-cost">15🪙</div>
-      <div class="si-count" id="sh-hint">0</div>
+
+  <!-- ── TAB 3: 商店 ── -->
+  <div class="tab-content" id="tab-shop">
+    <div style="width:100%;max-width:600px;padding:16px;display:flex;flex-direction:column;gap:12px">
+      <div style="font-size:11px;color:#475569;letter-spacing:1px">🛒 道具商店</div>
+      <div onclick="buyItem('hint')" style="display:flex;align-items:center;gap:14px;padding:16px;background:rgba(15,15,35,.9);border:2px solid rgba(79,70,229,.25);border-radius:12px;cursor:pointer;transition:border-color .2s" onmouseover="this.style.borderColor='#818cf8'" onmouseout="this.style.borderColor='rgba(79,70,229,.25)'">
+        <div style="font-size:36px">💡</div>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:700;color:#e2e8f0">提示</div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:3px">排除两个错误选项</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:14px;font-weight:700;color:#fbbf24">15🪙</div>
+          <div style="font-size:11px;color:#64748b;margin-top:2px">持有: <span id="sh-hint">0</span></div>
+        </div>
+      </div>
+      <div onclick="buyItem('shield')" style="display:flex;align-items:center;gap:14px;padding:16px;background:rgba(15,15,35,.9);border:2px solid rgba(79,70,229,.25);border-radius:12px;cursor:pointer;transition:border-color .2s" onmouseover="this.style.borderColor='#818cf8'" onmouseout="this.style.borderColor='rgba(79,70,229,.25)'">
+        <div style="font-size:36px">🛡️</div>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:700;color:#e2e8f0">护盾</div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:3px">答错时不扣生命值</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:14px;font-weight:700;color:#fbbf24">25🪙</div>
+          <div style="font-size:11px;color:#64748b;margin-top:2px">持有: <span id="sh-shield">0</span></div>
+        </div>
+      </div>
+      <div onclick="buyItem('freeze')" style="display:flex;align-items:center;gap:14px;padding:16px;background:rgba(15,15,35,.9);border:2px solid rgba(79,70,229,.25);border-radius:12px;cursor:pointer;transition:border-color .2s" onmouseover="this.style.borderColor='#818cf8'" onmouseout="this.style.borderColor='rgba(79,70,229,.25)'">
+        <div style="font-size:36px">❄️</div>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:700;color:#e2e8f0">冻结</div>
+          <div style="font-size:12px;color:#94a3b8;margin-top:3px">暂停计时器10秒</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:14px;font-weight:700;color:#fbbf24">20🪙</div>
+          <div style="font-size:11px;color:#64748b;margin-top:2px">持有: <span id="sh-freeze">0</span></div>
+        </div>
+      </div>
+      <!-- 普通道具 -->
+      <div style="font-size:11px;color:#475569;letter-spacing:1px;margin-top:4px">普通道具</div>
+      <div onclick="buyItem('timeboost')" class="shop-card-row" onmouseover="this.style.borderColor='#818cf8'" onmouseout="this.style.borderColor='rgba(79,70,229,.25)'">
+        <div style="font-size:30px">⏱️</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px;font-weight:700;color:#e2e8f0">秒数补给卡</span><span class="badge-common">普通</span></div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px">时光能量补给，关键时刻续命加分</div>
+          <div style="font-size:11px;color:#60a5fa;margin-top:2px">+30秒答题时长</div>
+        </div>
+        <div style="text-align:right"><div style="font-size:13px;font-weight:700;color:#fbbf24">25🪙</div><div style="font-size:11px;color:#64748b;margin-top:2px">持有: <span id="sh-timeboost">0</span></div></div>
+      </div>
+      <div onclick="buyItem('timelock')" class="shop-card-row" onmouseover="this.style.borderColor='#818cf8'" onmouseout="this.style.borderColor='rgba(79,70,229,.25)'">
+        <div style="font-size:30px">⏸️</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px;font-weight:700;color:#e2e8f0">瞬停护盾卡</span><span class="badge-common">普通</span></div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px">一键开启时间屏障，难题从容思考</div>
+          <div style="font-size:11px;color:#60a5fa;margin-top:2px">冻结倒计时20秒</div>
+        </div>
+        <div style="text-align:right"><div style="font-size:13px;font-weight:700;color:#fbbf24">20🪙</div><div style="font-size:11px;color:#64748b;margin-top:2px">持有: <span id="sh-timelock">0</span></div></div>
+      </div>
+      <div onclick="buyItem('timex2')" class="shop-card-row" onmouseover="this.style.borderColor='#818cf8'" onmouseout="this.style.borderColor='rgba(79,70,229,.25)'">
+        <div style="font-size:30px">×2</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px;font-weight:700;color:#e2e8f0">时光延时卡</span><span class="badge-common">普通</span></div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px">拉长答题刻度，放慢做题节奏</div>
+          <div style="font-size:11px;color:#60a5fa;margin-top:2px">剩余时间直接翻倍</div>
+        </div>
+        <div style="text-align:right"><div style="font-size:13px;font-weight:700;color:#fbbf24">20🪙</div><div style="font-size:11px;color:#64748b;margin-top:2px">持有: <span id="sh-timex2">0</span></div></div>
+      </div>
+      <!-- 稀有道具 -->
+      <div style="font-size:11px;color:#818cf8;letter-spacing:1px;margin-top:4px">稀有道具</div>
+      <div onclick="buyItem('freeze60')" class="shop-card-row" style="border-color:rgba(129,140,248,.25)" onmouseover="this.style.borderColor='#818cf8'" onmouseout="this.style.borderColor='rgba(129,140,248,.25)'">
+        <div style="font-size:30px">🧊</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px;font-weight:700;color:#e2e8f0">限时冻结卡</span><span class="badge-rare">稀有</span></div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px">定格赛场时光，给自己充足思考空间</div>
+          <div style="font-size:11px;color:#818cf8;margin-top:2px">全局倒计时冻结60秒</div>
+        </div>
+        <div style="text-align:right"><div style="font-size:13px;font-weight:700;color:#fbbf24">45🪙</div><div style="font-size:11px;color:#64748b;margin-top:2px">持有: <span id="sh-freeze60">0</span></div></div>
+      </div>
+      <div onclick="buyItem('slowmo')" class="shop-card-row" style="border-color:rgba(129,140,248,.25)" onmouseover="this.style.borderColor='#818cf8'" onmouseout="this.style.borderColor='rgba(129,140,248,.25)'">
+        <div style="font-size:30px">🐢</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px;font-weight:700;color:#e2e8f0">全局慢放卡</span><span class="badge-rare">稀有</span></div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px">操控时间流速，从容把控整张试卷</div>
+          <div style="font-size:11px;color:#818cf8;margin-top:2px">倒计时速度减半（本场生效）</div>
+        </div>
+        <div style="text-align:right"><div style="font-size:13px;font-weight:700;color:#fbbf24">50🪙</div><div style="font-size:11px;color:#64748b;margin-top:2px">持有: <span id="sh-slowmo">0</span></div></div>
+      </div>
+      <div onclick="buyItem('rewind')" class="shop-card-row" style="border-color:rgba(129,140,248,.25)" onmouseover="this.style.borderColor='#818cf8'" onmouseout="this.style.borderColor='rgba(129,140,248,.25)'">
+        <div style="font-size:30px">⏮️</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px;font-weight:700;color:#e2e8f0">回溯倒转卡</span><span class="badge-rare">稀有</span></div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px">时光倒流一题，重来不留遗憾</div>
+          <div style="font-size:11px;color:#818cf8;margin-top:2px">退回上一题并恢复完整答题时间</div>
+        </div>
+        <div style="text-align:right"><div style="font-size:13px;font-weight:700;color:#fbbf24">55🪙</div><div style="font-size:11px;color:#64748b;margin-top:2px">持有: <span id="sh-rewind">0</span></div></div>
+      </div>
+      <div onclick="buyItem('skip')" class="shop-card-row" style="border-color:rgba(129,140,248,.25)" onmouseover="this.style.borderColor='#818cf8'" onmouseout="this.style.borderColor='rgba(129,140,248,.25)'">
+        <div style="font-size:30px">⏭️</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px;font-weight:700;color:#e2e8f0">免计时跳过卡</span><span class="badge-rare">稀有</span></div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px">无痕跳题，不浪费一分一秒</div>
+          <div style="font-size:11px;color:#818cf8;margin-top:2px">跳过当前题目，不消耗答题时间</div>
+        </div>
+        <div style="text-align:right"><div style="font-size:13px;font-weight:700;color:#fbbf24">40🪙</div><div style="font-size:11px;color:#64748b;margin-top:2px">持有: <span id="sh-skip">0</span></div></div>
+      </div>
+      <!-- 史诗道具 -->
+      <div style="font-size:11px;color:#f472b6;letter-spacing:1px;margin-top:4px">史诗道具</div>
+      <div onclick="buyItem('timestop')" class="shop-card-row" style="border-color:rgba(244,114,182,.25)" onmouseover="this.style.borderColor='#f472b6'" onmouseout="this.style.borderColor='rgba(244,114,182,.25)'">
+        <div style="font-size:30px">🕐</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px;font-weight:700;color:#e2e8f0">时间静止卡</span><span class="badge-epic">史诗</span></div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px">全域时间定格，掌控整场答题节奏</div>
+          <div style="font-size:11px;color:#f472b6;margin-top:2px">当前题目倒计时完全停止直到作答</div>
+        </div>
+        <div style="text-align:right"><div style="font-size:13px;font-weight:700;color:#fbbf24">80🪙</div><div style="font-size:11px;color:#64748b;margin-top:2px">持有: <span id="sh-timestop">0</span></div></div>
+      </div>
+      <div onclick="buyItem('autofreeze')" class="shop-card-row" style="border-color:rgba(244,114,182,.25)" onmouseover="this.style.borderColor='#f472b6'" onmouseout="this.style.borderColor='rgba(244,114,182,.25)'">
+        <div style="font-size:30px">🔐</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px;font-weight:700;color:#e2e8f0">错题时光锁</span><span class="badge-epic">史诗</span></div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px">答错不慌，时间为你停留改错</div>
+          <div style="font-size:11px;color:#f472b6;margin-top:2px">答错自动冻结10秒，可改答且不扣分</div>
+        </div>
+        <div style="text-align:right"><div style="font-size:13px;font-weight:700;color:#fbbf24">90🪙</div><div style="font-size:11px;color:#64748b;margin-top:2px">持有: <span id="sh-autofreeze">0</span></div></div>
+      </div>
+      <div onclick="buyItem('doublestop')" class="shop-card-row" style="border-color:rgba(244,114,182,.25)" onmouseover="this.style.borderColor='#f472b6'" onmouseout="this.style.borderColor='rgba(244,114,182,.25)'">
+        <div style="font-size:30px">💎</div>
+        <div style="flex:1">
+          <div style="display:flex;align-items:center;gap:6px"><span style="font-size:14px;font-weight:700;color:#e2e8f0">双倍静止卡</span><span class="badge-epic">史诗</span></div>
+          <div style="font-size:11px;color:#94a3b8;margin-top:2px">双重时间禁锢，连续攻克两道难题</div>
+          <div style="font-size:11px;color:#f472b6;margin-top:2px">连续两题享受时间静止</div>
+        </div>
+        <div style="text-align:right"><div style="font-size:13px;font-weight:700;color:#fbbf24">100🪙</div><div style="font-size:11px;color:#64748b;margin-top:2px">持有: <span id="sh-doublestop">0</span></div></div>
+      </div>
+      <!-- 兑换码 & 返回 -->
+      <div onclick="showUnlockModal()" id="shopUnlockBtn" style="display:flex;align-items:center;gap:14px;padding:16px;background:rgba(202,138,4,.08);border:2px solid rgba(202,138,4,.35);border-radius:12px;cursor:pointer;transition:border-color .2s" onmouseover="this.style.borderColor='#ca8a04'" onmouseout="this.style.borderColor='rgba(202,138,4,.35)'">
+        <div style="font-size:36px">🔑</div>
+        <div style="flex:1">
+          <div style="font-size:15px;font-weight:700;color:#fbbf24" id="shopUnlockLabel">兑换码</div>
+          <div style="font-size:12px;color:#a8a29e;margin-top:3px">解锁全部25关卡</div>
+        </div>
+        <div style="font-size:18px;color:#ca8a04">→</div>
+      </div>
+      <div onclick="goTitle()" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;background:rgba(220,38,38,.08);border:2px solid rgba(220,38,38,.25);border-radius:12px;cursor:pointer;color:#f87171;font-size:14px;font-weight:700;transition:border-color .2s" onmouseover="this.style.borderColor='#dc2626'" onmouseout="this.style.borderColor='rgba(220,38,38,.25)'">
+        🚪 返回主菜单
+      </div>
     </div>
-    <div class="shop-item" onclick="buyItem('shield')">
-      <div class="si-icon">🛡️</div>
-      <div>护盾</div>
-      <div class="si-cost">25🪙</div>
-      <div class="si-count" id="sh-shield">0</div>
+  </div>
+
+  <!-- ── BOTTOM TAB NAV ── -->
+  <div class="bottom-tabs">
+    <div class="tab-item active" id="tab-btn-map" onclick="switchTab('map')">
+      <div class="tab-icon">🗺️</div>
+      <div>关卡</div>
     </div>
-    <div class="shop-item" onclick="buyItem('freeze')">
-      <div class="si-icon">❄️</div>
-      <div>冻结</div>
-      <div class="si-cost">20🪙</div>
-      <div class="si-count" id="sh-freeze">0</div>
+    <div class="tab-item" id="tab-btn-modes" onclick="switchTab('modes')">
+      <div class="tab-icon">⚡</div>
+      <div>模式</div>
     </div>
-    <div class="shop-item" onclick="showUnlockModal()" id="shopUnlockBtn" style="background:rgba(202,138,4,.1);border-color:rgba(202,138,4,.35)">
-      <div class="si-icon">🔑</div>
-      <div style="color:#fbbf24" id="shopUnlockLabel">兑换码</div>
-    </div>
-    <div class="shop-item" onclick="goTitle()" style="background:rgba(220,38,38,.1);border-color:rgba(220,38,38,.3)">
-      <div class="si-icon">🚪</div>
-      <div style="color:#f87171">返回</div>
+    <div class="tab-item" id="tab-btn-shop" onclick="switchTab('shop')">
+      <div class="tab-icon">🛒</div>
+      <div>商店</div>
     </div>
   </div>
 </div>
@@ -379,17 +919,23 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 
 <!-- ══ BATTLE SCREEN ══ -->
 <div class="screen" id="battleScreen">
+  <div class="battle-orb orb1"></div>
+  <div class="battle-orb orb2"></div>
+  <div class="battle-orb orb3"></div>
   <div class="battle-header">
     <div class="b-hearts" id="bHearts"></div>
     <div class="b-combo" id="bCombo"></div>
+    <div id="bSpeedTimer" style="display:none"></div>
+    <div id="bSurvivalLv" style="display:none"></div>
     <div class="b-qnum" id="bQNum"></div>
     <div class="b-coins" id="bCoins">🪙 0</div>
   </div>
   <div class="timer-bar-wrap"><div class="timer-bar-fill" id="timerBar" style="width:100%"></div></div>
+  <div id="modeBanner"></div>
   <div class="dungeon-banner"><div class="dungeon-banner-name" id="bDungName"></div><div class="dungeon-banner-sub" id="bDungSub"></div><span class="diff-badge" id="bDiffBadge"></span></div>
   <div class="battle-arena">
     <div class="fighter">
-      <div class="fighter-name">🧙‍♂️ HERO</div>
+      <div class="fighter-name" id="heroNameLabel">🧙‍♂️ HERO</div>
       <div class="fighter-emoji" id="heroEmoji">🧙‍♂️</div>
       <div class="hp-bar-wrap"><div class="hp-bar hero-hp-bar" id="heroBar" style="width:100%"></div></div>
       <div class="fighter-label" id="heroHPLabel">HP: 3/3</div>
@@ -415,6 +961,16 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
     <button class="pu-btn" id="pu-hint" onclick="usePU('hint')">💡 提示 <span class="pu-cnt" id="pu-hint-n">0</span></button>
     <button class="pu-btn" id="pu-shield" onclick="usePU('shield')">🛡️ 护盾 <span class="pu-cnt" id="pu-shield-n">0</span></button>
     <button class="pu-btn" id="pu-freeze" onclick="usePU('freeze')">❄️ 冻结 <span class="pu-cnt" id="pu-freeze-n">0</span></button>
+    <button class="pu-btn" id="pu-timeboost" onclick="usePU('timeboost')">⏱️ 补给 <span class="pu-cnt" id="pu-timeboost-n">0</span></button>
+    <button class="pu-btn" id="pu-timelock" onclick="usePU('timelock')">⏸️ 瞬停 <span class="pu-cnt" id="pu-timelock-n">0</span></button>
+    <button class="pu-btn" id="pu-timex2" onclick="usePU('timex2')">×2 延时 <span class="pu-cnt" id="pu-timex2-n">0</span></button>
+    <button class="pu-btn pu-rare" id="pu-freeze60" onclick="usePU('freeze60')">🧊 冻结60 <span class="pu-cnt" id="pu-freeze60-n">0</span></button>
+    <button class="pu-btn pu-rare" id="pu-slowmo" onclick="usePU('slowmo')">🐢 慢放 <span class="pu-cnt" id="pu-slowmo-n">0</span></button>
+    <button class="pu-btn pu-rare" id="pu-rewind" onclick="usePU('rewind')">⏮️ 回溯 <span class="pu-cnt" id="pu-rewind-n">0</span></button>
+    <button class="pu-btn pu-rare" id="pu-skip" onclick="usePU('skip')">⏭️ 跳过 <span class="pu-cnt" id="pu-skip-n">0</span></button>
+    <button class="pu-btn pu-epic" id="pu-timestop" onclick="usePU('timestop')">🕐 静止 <span class="pu-cnt" id="pu-timestop-n">0</span></button>
+    <button class="pu-btn pu-epic" id="pu-autofreeze" onclick="usePU('autofreeze')">🔐 时光锁 <span class="pu-cnt" id="pu-autofreeze-n">0</span></button>
+    <button class="pu-btn pu-epic" id="pu-doublestop" onclick="usePU('doublestop')">💎 双倍静止 <span class="pu-cnt" id="pu-doublestop-n">0</span></button>
   </div>
 </div>
 
@@ -1622,6 +2178,126 @@ const DUNGEONS=[
    ]},
 ];
 
+// ══════════════════════════════════════
+// RANKS
+// ══════════════════════════════════════
+const RANKS=[
+  {name:'新手学徒',icon:'🌱',min:0,diff:'easy'},
+  {name:'初级战士',icon:'⚔️',min:8,diff:'easy'},
+  {name:'银级猎手',icon:'🗡️',min:18,diff:'normal'},
+  {name:'金级法师',icon:'🔮',min:32,diff:'normal'},
+  {name:'白金骑士',icon:'🛡️',min:50,diff:'hard'},
+  {name:'钻石传说',icon:'💎',min:73,diff:'hard'},
+  {name:'大师',icon:'👑',min:102,diff:'hard'},
+  {name:'学霸至尊',icon:'🏆',min:140,diff:'hard'}
+];
+
+// ══════════════════════════════════════
+// THEMES
+// ══════════════════════════════════════
+const THEMES=[
+  {id:'campus',name:'校园',icon:'🏫',color:'rgba(16,185,129,.1)',border:'rgba(16,185,129,.35)',nameColor:'#34d399',unlockLv:1,qs:[
+    {q:"Every morning, students ___ to school by bus.",o:["go","goes","going","gone"],a:0,e:"主语 students 是复数，现在时用 go。",lv:1},
+    {q:"The library ___ at 8 AM and closes at 9 PM.",o:["open","opens","is open","opening"],a:1,e:"主语 library 是单数三人称，动词加 -s → opens。",lv:1},
+    {q:"She ___ her homework before dinner every day.",o:["finish","finishes","finished","finishing"],a:1,e:"she 是第三人称单数，习惯性动作用一般现在时 finishes。",lv:1},
+    {q:"The exam results ___ posted on the bulletin board yesterday.",o:["was","were","are","be"],a:1,e:"results 是复数，被动语态过去时用 were posted。",lv:2},
+    {q:"I can't find my textbook. I think I ___ it at school.",o:["leave","left","have left","leaving"],a:2,e:"找不到，说明'遗忘'这个状态持续到现在，用现在完成时 have left。",lv:2},
+    {q:"The teacher asked us ___ quietly during the test.",o:["sit","to sit","sitting","sat"],a:1,e:"ask sb. to do sth.（要求某人做某事）→ to sit。",lv:2},
+    {q:"___ the exam was difficult, most students passed it.",o:["Although","Because","If","Unless"],a:0,e:"前后语义转折（难但通过），用 although（尽管）。",lv:2},
+    {q:"Students who ___ hard every day tend to get better grades.",o:["study","studies","studied","studying"],a:0,e:"定语从句中 who 指 students（复数），谓语用 study。",lv:3}
+  ]},
+  {id:'travel',name:'旅行',icon:'✈️',color:'rgba(59,130,246,.1)',border:'rgba(59,130,246,.35)',nameColor:'#60a5fa',unlockLv:3,qs:[
+    {q:"I would like to ___ a single room for three nights.",o:["book","books","booking","booked"],a:0,e:"would like to + 动词原形 → book（预订）。",lv:1},
+    {q:"The flight ___ delayed by two hours due to bad weather.",o:["is","was","were","be"],a:1,e:"主语 flight 是单数，过去被动用 was delayed。",lv:1},
+    {q:"Passengers are required to ___ their boarding passes at the gate.",o:["show","showing","shown","shows"],a:0,e:"be required to + 动词原形 → show。",lv:1},
+    {q:"By the time we arrived at the hotel, the staff ___ prepared our room.",o:["has","have","had","having"],a:2,e:"By the time + 过去时，主句用过去完成时 had prepared。",lv:2},
+    {q:"Could you tell me ___ the nearest train station is?",o:["where","what","how","which"],a:0,e:"间接疑问句询问地点用 where，语序用陈述句 where...is。",lv:2},
+    {q:"The tour guide suggested ___ comfortable shoes for the hike.",o:["wear","wearing","to wear","wore"],a:1,e:"suggest + doing（动名词）→ wearing comfortable shoes。",lv:2},
+    {q:"We ___ at this hotel before, so we know where everything is.",o:["stay","stayed","have stayed","had stayed"],a:2,e:"'之前曾经'的经历，与现在有关联，用现在完成时 have stayed。",lv:3},
+    {q:"The customs officer asked me whether I ___ anything to declare.",o:["have","had","has","having"],a:1,e:"宾语从句在主句过去时语境下时态后移，have → had。",lv:3}
+  ]},
+  {id:'food',name:'美食',icon:'🍜',color:'rgba(245,158,11,.1)',border:'rgba(245,158,11,.35)',nameColor:'#fbbf24',unlockLv:5,qs:[
+    {q:"This dish ___ delicious! What's in it?",o:["taste","tastes","tasting","tasted"],a:1,e:"主语 this dish 是单数，系动词 taste（尝起来）加 -s → tastes。",lv:1},
+    {q:"The chef ___ the vegetables before adding them to the soup.",o:["chop","chops","chopped","chopping"],a:2,e:"描述烹饪过程的一般过去时 chopped。",lv:1},
+    {q:"Would you like ___ more tea?",o:["some","any","a","an"],a:0,e:"肯定句/礼貌疑问用 some（提供时），any 用于否定或一般疑问。",lv:1},
+    {q:"I've never ___ such spicy food before.",o:["eat","ate","eaten","eating"],a:2,e:"现在完成时 have never + 过去分词 eaten。",lv:2},
+    {q:"The restaurant is famous ___ its traditional recipes.",o:["for","of","about","with"],a:0,e:"be famous for sth.（以...而闻名）固定搭配。",lv:2},
+    {q:"She ___ cooking since she was a child.",o:["loves","has loved","loved","is loving"],a:1,e:"since 引导，动作从过去持续至今，用现在完成时 has loved。",lv:2},
+    {q:"The ingredients ___ be fresh for the dish to taste good.",o:["must","should","can","need"],a:0,e:"must（必须）表示强调必要性，材料必须新鲜。",lv:3},
+    {q:"Not only ___ the meal delicious, but it was also very affordable.",o:["is","was","were","be"],a:1,e:"Not only 倒装结构，过去时语境 was + 主语 the meal。",lv:3}
+  ]},
+  {id:'work',name:'职场',icon:'💼',color:'rgba(168,85,247,.1)',border:'rgba(168,85,247,.35)',nameColor:'#c084fc',unlockLv:8,qs:[
+    {q:"The meeting has been ___ until next Monday.",o:["postpone","postponed","postponing","postpones"],a:1,e:"has been + 过去分词，被动语态现在完成时 → postponed。",lv:1},
+    {q:"Please ___ the report to all team members by end of day.",o:["send","sends","sending","sent"],a:0,e:"Please + 动词原形（祈使句）→ send。",lv:1},
+    {q:"I need to ___ with my supervisor about the project deadline.",o:["talk","talking","talked","talks"],a:0,e:"need to + 动词原形 → talk。",lv:1},
+    {q:"The proposal ___ by the board of directors last week.",o:["approved","was approved","has approved","approves"],a:1,e:"主语 proposal 是被动接受者，过去被动时态 was approved。",lv:2},
+    {q:"She ___ on this account for six months when she got promoted.",o:["worked","has worked","had been working","was working"],a:2,e:"在另一过去事件（升职）之前持续进行，用过去完成进行时 had been working。",lv:2},
+    {q:"It's important that every employee ___ the company policy.",o:["follows","follow","followed","following"],a:1,e:"It is important that + 虚拟语气（should）省略 → 动词原形 follow。",lv:2},
+    {q:"The new regulations will ___ effect next quarter.",o:["come into","take","go into","bring"],a:0,e:"come into effect（生效）固定短语。",lv:3},
+    {q:"Had we secured more funding, we ___ the project on time.",o:["complete","completed","would complete","would have completed"],a:3,e:"Had + 主语 + 过去分词 = 与过去事实相反的虚拟条件，主句用 would have + 过去分词。",lv:3}
+  ]}
+];
+
+// ══════════════════════════════════════
+// EXAMS
+// ══════════════════════════════════════
+const EXAMS=[
+  {id:'exam_middle',name:'中考模拟',icon:'📚',color:'rgba(59,130,246,.1)',border:'rgba(59,130,246,.35)',nameColor:'#60a5fa',timePerQ:30,qs:[
+    {q:"She ___ her homework every evening.",o:["do","does","doing","done"],a:1,e:"第三人称单数现在时：does。",lv:1},
+    {q:"There ___ a book and two pens on the desk.",o:["is","are","be","am"],a:0,e:"There be 就近原则，最近的名词 book 是单数，用 is。",lv:1},
+    {q:"He ___ to school yesterday because he was sick.",o:["doesn't go","didn't go","wasn't go","not went"],a:1,e:"一般过去时否定：didn't + 动词原形 go。",lv:1},
+    {q:"___ you ever ___ the Great Wall?",o:["Have/visited","Did/visit","Do/visit","Were/visited"],a:0,e:"询问是否有过经历，用现在完成时 Have you ever visited。",lv:1},
+    {q:"The teacher told us ___ noise in the library.",o:["not make","not to make","don't make","to not make"],a:1,e:"tell sb. not to do sth.（告诉某人不要做某事）→ not to make。",lv:2},
+    {q:"Look! The children ___ in the park now.",o:["play","plays","are playing","played"],a:2,e:"Look! 提示正在进行，用现在进行时 are playing。",lv:2},
+    {q:"When I arrived, she ___ dinner.",o:["cooks","cooked","was cooking","had cooked"],a:2,e:"主句过去时，从句表示当时正在进行的动作，用过去进行时 was cooking。",lv:2},
+    {q:"___ is 200 kilometers from Beijing to Shanghai.",o:["There","It","This","That"],a:1,e:"It 表示距离：It is + 距离 + from...to...。",lv:2},
+    {q:"Neither Tom nor his friends ___ what happened.",o:["know","knows","known","knowing"],a:0,e:"Neither...nor 就近原则，his friends 是复数，谓语用 know。",lv:3},
+    {q:"The book ___ by millions of readers worldwide.",o:["read","reads","is read","was reading"],a:2,e:"书被阅读，被动语态一般现在时 is read。",lv:3}
+  ]},
+  {id:'exam_senior',name:'高考模拟',icon:'📖',color:'rgba(168,85,247,.1)',border:'rgba(168,85,247,.35)',nameColor:'#c084fc',timePerQ:45,qs:[
+    {q:"___ he studies hard, he might fail the exam.",o:["Even if","So that","In order that","Now that"],a:0,e:"Even if（即使）引导让步条件从句，表示假设情况。",lv:2},
+    {q:"It was not until midnight ___ she finished the report.",o:["when","that","which","what"],a:1,e:"强调句 It was...that/who 结构，强调时间状语 not until midnight。",lv:2},
+    {q:"Only by working together ___ we solve the problem.",o:["can","we can","do","did"],a:0,e:"Only + 状语置于句首，主句需要部分倒装 can we。",lv:2},
+    {q:"If I ___ you, I would apologize to her immediately.",o:["am","were","was","be"],a:1,e:"与现在事实相反的虚拟语气，条件从句用 were（所有人称）。",lv:2},
+    {q:"The city ___ I spent my childhood has changed a lot.",o:["which","where","that","in which"],a:1,e:"先行词 city 是地点，定语从句中作地点状语，用 where（=in which）。",lv:2},
+    {q:"Hardly ___ sat down when the phone rang.",o:["had he","he had","did he","he did"],a:0,e:"Hardly...when 倒装：Hardly + 助动词 + 主语 + 谓语。",lv:3},
+    {q:"___ more carefully, he wouldn't have made such a mistake.",o:["Having read","If he read","Had he read","He had read"],a:2,e:"Had + 主语 + 过去分词，虚拟条件倒装省略 if → Had he read。",lv:3},
+    {q:"The reason ___ she was late was that she missed the bus.",o:["why","that","which","for"],a:0,e:"The reason why + 从句（定语从句，why 引导）。",lv:3},
+    {q:"Not until he left home ___ how much his parents loved him.",o:["he realized","did he realize","he did realize","realized he"],a:1,e:"Not until 置于句首，主句部分倒装 did he realize。",lv:3},
+    {q:"It is suggested that every student ___ a foreign language.",o:["learns","learn","learned","to learn"],a:1,e:"suggest/recommend 后 that 从句用虚拟语气（should）省略，动词原形 learn。",lv:3}
+  ]},
+  {id:'exam_cet4',name:'四级模拟',icon:'🎓',color:'rgba(234,179,8,.1)',border:'rgba(234,179,8,.35)',nameColor:'#fbbf24',timePerQ:60,qs:[
+    {q:"The management ___ the importance of employee well-being.",o:["emphasize","emphasizes","are emphasizing","have emphasized"],a:1,e:"management 作集合名词通常视为单数，一般现在时用 emphasizes。",lv:2},
+    {q:"The project has been put ___ due to lack of funding.",o:["off","out","away","on"],a:0,e:"put off = postpone（推迟），固定搭配。",lv:2},
+    {q:"He is ___ a musician ___ a composer—he does both.",o:["not only/but also","either/or","neither/nor","both/and"],a:0,e:"not only...but also（不仅...而且）表示两者兼具。",lv:2},
+    {q:"The data ___ collected over ten years suggests a clear trend.",o:["which","that","what","whose"],a:1,e:"定语从句先行词 data，用 that 引导，从句中 that 作宾语。",lv:2},
+    {q:"___ the survey, over 60% of respondents prefer remote work.",o:["According to","In terms of","Regardless of","By means of"],a:0,e:"According to（根据）引导信息来源，固定搭配。",lv:2},
+    {q:"It is high time that the government ___ action on pollution.",o:["takes","took","take","has taken"],a:1,e:"It is high time that + 虚拟语气（过去式）→ took。",lv:3},
+    {q:"No sooner ___ the conference than the debate broke out.",o:["had started","started","has started","did start"],a:0,e:"No sooner...than 倒装，主句用过去完成时 had started。",lv:3},
+    {q:"The extent ___ social media affects mental health is debated.",o:["to which","in which","at which","for which"],a:0,e:"the extent to which（...的程度）固定搭配，关系代词 which 接介词 to。",lv:3},
+    {q:"She ___ the difficult client were it not for her manager's support.",o:["could not handle","could not have handled","could handle","would handle"],a:1,e:"were it not for = if it were not for，与现在事实相反虚拟，主句用 could not have handled。",lv:3},
+    {q:"The findings ___ to a number of practical applications in medicine.",o:["lend themselves","give themselves","apply themselves","devote themselves"],a:0,e:"lend themselves to（适合于/有助于）固定搭配。",lv:3}
+  ]}
+];
+
+// ══════════════════════════════════════
+// BADGES
+// ══════════════════════════════════════
+const BADGES=[
+  {id:'first_win',icon:'🎯',name:'初出茅庐',desc:'完成第一关',check:s=>Object.keys(s.dungeons).length>=1},
+  {id:'perfect',icon:'⭐',name:'完美主义者',desc:'获得满星通关',check:s=>Object.values(s.dungeons).some(d=>d.stars===3)},
+  {id:'combo5',icon:'🔥',name:'连击达人',desc:'获得5连击（单局）',check:s=>s._tempCombo>=5},
+  {id:'coins500',icon:'💰',name:'富甲一方',desc:'累计500金币',check:s=>s.coins>=500},
+  {id:'lv5',icon:'📈',name:'稳步成长',desc:'达到5级',check:s=>s.lv>=5},
+  {id:'lv10',icon:'🌟',name:'语法高手',desc:'达到10级',check:s=>s.lv>=10},
+  {id:'gold_rank',icon:'🔮',name:'金级晋升',desc:'段位达到金级法师',check:s=>s.rankIdx>=3},
+  {id:'speed20',icon:'⚡',name:'速刷闪电',desc:'速刷模式答对20题',check:s=>Math.max(s.speedHighs[1]||0,s.speedHighs[3]||0,s.speedHighs[5]||0)>=20},
+  {id:'clear_mistakes',icon:'📕',name:'知错能改',desc:'清空错题本',check:s=>Array.isArray(s.mistakes)&&s.mistakes.length===0&&Object.keys(s.dungeons).length>0},
+  {id:'all_themes',icon:'🌐',name:'全能探险家',desc:'解锁所有主题秘境',check:s=>s.lv>=8},
+  {id:'survival50',icon:'☠️',name:'不死传说',desc:'生存模式答对50题',check:s=>s.survivalHigh>=50},
+  {id:'exam_perfect',icon:'🎓',name:'满分学霸',desc:'某场模考满分',check:s=>Object.values(s.examScores||{}).some(arr=>Array.isArray(arr)&&arr.includes(10))}
+];
+
 // 分级：有手动 lv 标签优先，否则按位置（0-7=基础，8-15=中级，16-19=高级）
 DUNGEONS.forEach(d=>{
   if(typeof d.id==='string') return;
@@ -1632,14 +2308,280 @@ DUNGEONS.forEach(d=>{
 // PAID CONFIG  ← 改这里
 // ══════════════════════════════════════
 const FREE_COUNT=5;          // 免费关卡数量（0 到 FREE_COUNT-1）
-const UNLOCK_CODE='GRAMMAR666'; // 兑换码
+const UNLOCK_CODE='GQ-DBYW-MX7R-BNF2'; // 兑换码
 
 // ══════════════════════════════════════
 // STATE
 // ══════════════════════════════════════
-function defSave(){return{coins:0,xp:0,lv:1,inv:{hint:0,shield:0,freeze:0},dungeons:{},mistakes:[],unlocked:false};}
-let SAVE=(()=>{try{const s={...defSave(),...JSON.parse(localStorage.getItem('gq_v1')||'{}')};if(!Array.isArray(s.mistakes))s.mistakes=[];return s;}catch{return defSave();}})();
-function persist(){localStorage.setItem('gq_v1',JSON.stringify(SAVE));}
+// ── USER SYSTEM ──
+let CURRENT_USER='';
+function getUsers(){try{return JSON.parse(localStorage.getItem('gq_users')||'{}');}catch{return {};}}
+function saveUsers(u){localStorage.setItem('gq_users',JSON.stringify(u));}
+
+function mergeWithDefault(s){
+  const d=defSave();
+  const merged={...d,...s};
+  if(!merged.inv||typeof merged.inv!=='object')merged.inv={};
+  merged.inv={...d.inv,...merged.inv};
+  if(!Array.isArray(merged.mistakes))merged.mistakes=[];
+  if(!Array.isArray(merged.badges))merged.badges=[];
+  if(!merged.speedHighs||typeof merged.speedHighs!=='object')merged.speedHighs={1:0,3:0,5:0};
+  if(!merged.themeProgress||typeof merged.themeProgress!=='object')merged.themeProgress={};
+  if(!merged.examScores||typeof merged.examScores!=='object')merged.examScores={};
+  if(!merged.charId)merged.charId='mage';
+  if(!Array.isArray(merged.ownedChars))merged.ownedChars=[];
+  return merged;
+}
+
+let _pwdTarget='';
+
+function loginAs(name){
+  CURRENT_USER=name;
+  const users=getUsers();
+  SAVE=mergeWithDefault(users[name]||{});
+  const un=document.getElementById('mapUsername');if(un)un.textContent=name;
+  updTitleHero();
+  showScreen('titleScreen');
+}
+
+function showPwdModal(name){
+  _pwdTarget=name;
+  document.getElementById('pwdModalName').textContent=name;
+  document.getElementById('pwdModalInput').value='';
+  document.getElementById('pwdModalMsg').textContent='';
+  const m=document.getElementById('pwdModal');
+  m.style.display='flex';
+  setTimeout(()=>document.getElementById('pwdModalInput').focus(),100);
+}
+function closePwdModal(){
+  document.getElementById('pwdModal').style.display='none';
+  _pwdTarget='';
+}
+function confirmPwd(){
+  const users=getUsers();
+  const u=users[_pwdTarget];
+  const entered=document.getElementById('pwdModalInput').value;
+  const msg=document.getElementById('pwdModalMsg');
+  if(!u){msg.textContent='角色不存在';return;}
+  if(u._pwd && u._pwd!==entered){msg.textContent='密码错误，请重试';document.getElementById('pwdModalInput').value='';document.getElementById('pwdModalInput').focus();return;}
+  closePwdModal();
+  loginAs(_pwdTarget);
+}
+
+function updateLoginHint(){
+  const name=(document.getElementById('usernameInput').value||'').trim();
+  const users=getUsers();
+  const exists=Object.keys(users).some(k=>k.toLowerCase()===name.toLowerCase()&&k!=='');
+  const confirmEl=document.getElementById('confirmInput');
+  const btn=document.getElementById('loginMainBtn');
+  if(name.length>=2){
+    if(exists){confirmEl.style.display='none';btn.textContent='登录 →';}
+    else{confirmEl.style.display='block';btn.textContent='注册并进入 →';}
+  }else{confirmEl.style.display='none';btn.textContent='进入游戏 →';}
+}
+function doLogin(){
+  const name=(document.getElementById('usernameInput').value||'').trim();
+  const pwd=(document.getElementById('passwordInput').value||'');
+  const msg=document.getElementById('loginMsg');
+  if(name.length<2){msg.textContent='用户名至少2个字符';return;}
+  if(name.length>12){msg.textContent='用户名最多12个字符';return;}
+  if(!pwd){msg.textContent='请输入密码';return;}
+  const users=getUsers();
+  const existKey=Object.keys(users).find(k=>k.toLowerCase()===name.toLowerCase());
+  if(existKey){
+    if(users[existKey]._pwd && users[existKey]._pwd!==pwd){msg.textContent='密码错误';return;}
+    msg.textContent=''; loginAs(existKey);
+  }else{
+    const cpwd=(document.getElementById('confirmInput').value||'');
+    if(pwd!==cpwd){msg.textContent='两次密码不一致';return;}
+    msg.textContent='';
+    const newSave=defSave(); newSave._pwd=pwd;
+    users[name]=newSave; saveUsers(users); loginAs(name);
+  }
+}
+
+function deleteUser(name,e){
+  e.stopPropagation();
+  if(!confirm(`确定删除角色「${name}」？存档将无法恢复。`))return;
+  const users=getUsers();
+  delete users[name];
+  saveUsers(users);
+  if(CURRENT_USER===name){CURRENT_USER='';}
+  renderUserList();
+}
+
+function logout(){
+  CURRENT_USER='';
+  renderUserList();
+  showScreen('loginScreen');
+}
+
+// ══════════════════════════════════════
+// CHARACTER SELECT
+// ══════════════════════════════════════
+function getHeroChar(){return CHARACTERS.find(c=>c.id===(SAVE.charId||'mage'))||CHARACTERS[0];}
+function isCharOwned(id){
+  const c=CHARACTERS.find(ch=>ch.id===id);
+  if(!c)return false;
+  return c.cost===0||(SAVE.ownedChars||[]).includes(id);
+}
+function renderCharSelect(){
+  const grid=document.getElementById('charGrid');if(!grid)return;
+  const sel=SAVE.charId||'mage';
+  grid.innerHTML=CHARACTERS.map(c=>{
+    const owned=isCharOwned(c.id);
+    const canBuy=!owned&&SAVE.coins>=c.cost;
+    const hardLocked=!owned&&!canBuy;
+    const isSel=sel===c.id;
+    const bars=['atk','def','spd'].map(k=>`
+      <div class="cc-stat">
+        <div class="cc-stat-lbl">${{atk:'ATK',def:'DEF',spd:'SPD'}[k]}</div>
+        <div class="cc-stat-bar"><div class="cc-stat-fill" style="width:${c.stats[k]/5*100}%;background:${c.color}"></div></div>
+      </div>`).join('');
+    let costHtml;
+    if(c.cost===0)costHtml=`<div class="cc-cost cc-cost-free">✅ 默认角色</div>`;
+    else if(owned)costHtml=`<div class="cc-cost cc-cost-owned">✅ 已拥有</div>`;
+    else if(canBuy)costHtml=`<div class="cc-cost cc-cost-buy" style="color:${c.color};border-color:${c.color};background:${c.color}18" onclick="buyChar('${c.id}',event)">🪙 ${c.cost} 购买</div>`;
+    else costHtml=`<div class="cc-cost cc-cost-locked">🔒 需 🪙${c.cost}</div>`;
+    return `<div class="char-card${isSel?' char-selected':''}${hardLocked?' char-locked':''}" id="cc-${c.id}"
+      style="--cc:${c.color};--cc-g:${c.color}44"
+      onclick="selectChar('${c.id}')">
+      <div class="cc-emoji">${c.emoji}</div>
+      <div class="cc-name">${c.name}</div>
+      <div class="cc-title">${c.title}</div>
+      <div class="cc-desc">${c.desc}</div>
+      ${bars}${costHtml}
+      ${hardLocked?'<div class="cc-lock-veil">🔒</div>':''}
+    </div>`;
+  }).join('');
+  updTitleHero();
+}
+function updTitleHero(){
+  const c=getHeroChar();
+  const td=document.getElementById('titleHeroDisplay');if(td)td.textContent=c.emoji;
+  const tn=document.getElementById('titleHeroName');if(tn)tn.textContent=c.name;
+}
+function selectChar(id){
+  if(!isCharOwned(id)){floatText('🔒 先购买才能使用！','#f87171',window.innerWidth/2-60,200);return;}
+  SAVE.charId=id;persist();renderCharSelect();
+}
+function buyChar(id,e){
+  if(e)e.stopPropagation();
+  const c=CHARACTERS.find(ch=>ch.id===id);if(!c)return;
+  if(SAVE.coins<c.cost){floatText('🪙 金币不足！','#f87171',window.innerWidth/2-40,200);return;}
+  SAVE.coins-=c.cost;
+  if(!SAVE.ownedChars)SAVE.ownedChars=[];
+  if(!SAVE.ownedChars.includes(id))SAVE.ownedChars.push(id);
+  SAVE.charId=id;persist();renderCharSelect();
+  floatText(`✅ ${c.name} 已解锁！`,c.color,window.innerWidth/2-70,180);
+}
+function openCharSelect(){renderCharSelect();showScreen('charSelectScreen');}
+function confirmChar(){updTitleHero();goTitle();}
+
+function renderUserList(){
+  const users=getUsers();
+  const names=Object.keys(users);
+  const list=document.getElementById('userList');
+  if(!list)return;
+  if(!names.length){
+    list.innerHTML='<div style="font-size:12px;color:#475569;padding:8px 0">暂无角色，在下方创建吧！</div>';
+    return;
+  }
+  list.innerHTML=names.map(n=>{
+    const s=users[n]||{};
+    const done=Object.keys(s.dungeons||{}).length;
+    return `<div class="user-card" onclick="showPwdModal('${n}')">
+      <div style="font-size:28px">🧙‍♂️</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:700;color:#e2e8f0">${n}</div>
+        <div style="font-size:11px;color:#64748b;margin-top:2px">Lv.${s.lv||1} · ${s.coins||0}🪙 · 通关${done}关</div>
+      </div>
+      <button class="user-card-del" onclick="deleteUser('${n}',event)">删除</button>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════
+// MONSTER ATTACK STYLES
+// ══════════════════════════════════════
+const MONSTER_ATKS={
+  // ── 主线关卡 ──
+  '👺':{proj:'🪨', hitFx:'💢', flash:'rgba(34,197,94,.35)',   atk:'怒掷石块'},
+  '👻':{proj:'💀', hitFx:'🌑', flash:'rgba(124,58,237,.4)',   atk:'幽灵侵蚀'},
+  '🧙':{proj:'🌀', hitFx:'💫', flash:'rgba(8,145,178,.35)',   atk:'遗忘光束'},
+  '🦊':{proj:'❓', hitFx:'❗', flash:'rgba(217,119,6,.35)',   atk:'混乱迷惑'},
+  '🐊':{proj:'💧', hitFx:'🤢', flash:'rgba(220,38,38,.35)',   atk:'沼泽喷射'},
+  '🐉':{proj:'🔥', hitFx:'🔥', flash:'rgba(239,68,68,.45)',   atk:'烈焰喷吐'},
+  '🗡️':{proj:'⚔️', hitFx:'💥', flash:'rgba(157,23,77,.38)',  atk:'利剑斩击'},
+  '🤖':{proj:'🔵', hitFx:'⚡', flash:'rgba(15,118,110,.35)',  atk:'激光射线'},
+  '⛄':{proj:'🌨️',hitFx:'❄️', flash:'rgba(56,189,248,.4)',   atk:'冰雪轰炸'},
+  '🕷️':{proj:'🕸️',hitFx:'😵', flash:'rgba(168,85,247,.4)',  atk:'毒网缠绕'},
+  '🧚':{proj:'✨', hitFx:'🌿', flash:'rgba(34,197,94,.32)',   atk:'精灵诅咒'},
+  '👿':{proj:'☠️', hitFx:'😱', flash:'rgba(245,158,11,.5)',   atk:'魔王终极击'},
+  '🪞':{proj:'🔮', hitFx:'💫', flash:'rgba(236,72,153,.38)',  atk:'幻象反射'},
+  '🤺':{proj:'🗡️', hitFx:'💢', flash:'rgba(249,115,22,.35)', atk:'刺剑突刺'},
+  '⏱️':{proj:'⌛', hitFx:'⏱️', flash:'rgba(139,92,246,.4)',  atk:'时间压缩'},
+  '🤥':{proj:'💬', hitFx:'😵', flash:'rgba(236,72,153,.35)', atk:'谎言轰炸'},
+  '🧮':{proj:'🔢', hitFx:'📊', flash:'rgba(20,184,166,.35)', atk:'数字打击'},
+  '🌱':{proj:'🌿', hitFx:'🌱', flash:'rgba(34,197,94,.35)',   atk:'藤蔓缠绕'},
+  '🧝':{proj:'🏹', hitFx:'💢', flash:'rgba(168,85,247,.35)', atk:'乱序箭雨'},
+  '🧙‍♀️':{proj:'🌀',hitFx:'💫',flash:'rgba(99,102,241,.4)', atk:'幻境迷乱'},
+  '⚙️':{proj:'⚙️', hitFx:'🔩', flash:'rgba(245,158,11,.35)', atk:'齿轮连射'},
+  '📜':{proj:'📜', hitFx:'✨', flash:'rgba(14,165,233,.35)',  atk:'修辞冲击'},
+  '🎭':{proj:'🎭', hitFx:'❓', flash:'rgba(220,38,38,.4)',    atk:'幻术混淆'},
+  '🏆':{proj:'⭐', hitFx:'🏆', flash:'rgba(251,191,36,.45)', atk:'终极爆发'},
+  // ── 特殊模式 ──
+  '😤':{proj:'💢', hitFx:'😤', flash:'rgba(239,68,68,.38)',  atk:'错题反击'},
+  '😈':{proj:'⚡', hitFx:'💥', flash:'rgba(251,191,36,.4)',  atk:'日常诅咒'},
+  '👾':{proj:'👾', hitFx:'💥', flash:'rgba(239,68,68,.4)',   atk:'无尽侵袭'},
+  '💀':{proj:'💀', hitFx:'☠️', flash:'rgba(239,68,68,.45)', atk:'死亡凝视'},
+  '🔄':{proj:'🔄', hitFx:'💫', flash:'rgba(239,68,68,.35)', atk:'轮回封印'},
+  '👨‍🏫':{proj:'📝',hitFx:'✏️',flash:'rgba(99,102,241,.35)',atk:'考卷轰炸'},
+  '🗿':{proj:'🌑', hitFx:'💫', flash:'rgba(100,116,139,.38)',atk:'石化凝视'},
+};
+function getMonsterAtk(d){
+  const e=d&&d.monster?d.monster.emoji:'';
+  return MONSTER_ATKS[e]||{proj:'🔥',hitFx:'💥',flash:'rgba(239,68,68,.38)',atk:'怪兽攻击'};
+}
+
+// ══════════════════════════════════════
+// CHARACTERS
+// ══════════════════════════════════════
+const CHARACTERS=[
+  {id:'mage',    emoji:'🧙‍♂️', name:'智慧法师', title:'WISDOM MAGE',
+   desc:'博学多识的古老法师，以渊博知识为力量。连击越高，魔法弹越强大。',
+   stats:{atk:3,def:2,spd:3}, color:'#818cf8',
+   projs:['⚡','🔮','🌟','💫'], hitFx:'✨', flash:'rgba(129,140,248,.28)', cost:0},
+  {id:'warrior', emoji:'🦸', name:'铁甲战士', title:'IRON WARRIOR',
+   desc:'身披铁甲的无畏勇士，每一击都震撼大地。攻守均衡，初学者最佳选择。',
+   stats:{atk:5,def:5,spd:2}, color:'#f59e0b',
+   projs:['💥','⚔️','🗡️','🔥'], hitFx:'💥', flash:'rgba(245,158,11,.3)', cost:150},
+  {id:'archer',  emoji:'🧝', name:'精灵射手', title:'ELVEN ARCHER',
+   desc:'来自远古森林的精灵游侠，箭术举世无双。速度快，连击时箭矢如雨倾泻。',
+   stats:{atk:3,def:2,spd:5}, color:'#4ade80',
+   projs:['🏹','🏹','🌿','🍃'], hitFx:'💨', flash:'rgba(74,222,128,.28)', cost:300},
+  {id:'witch',   emoji:'🧙‍♀️', name:'炎焰巫女', title:'FLAME WITCH',
+   desc:'掌控烈火的神秘巫女，以愤怒为燃料。攻击极高，连击时引发火山爆发。',
+   stats:{atk:5,def:1,spd:4}, color:'#f97316',
+   projs:['🔥','🔥','🌋','☄️'], hitFx:'🔥', flash:'rgba(249,115,22,.3)', cost:500},
+  {id:'king',    emoji:'🤴', name:'冰霜君王', title:'FROST KING',
+   desc:'统治北境的永恒之王，以绝对冷静凝结一切。防御超群，寒意让敌人颤抖。',
+   stats:{atk:3,def:5,spd:2}, color:'#38bdf8',
+   projs:['❄️','🧊','🌨️','🌊'], hitFx:'❄️', flash:'rgba(56,189,248,.3)', cost:800},
+  {id:'thunder', emoji:'🦹', name:'雷霆刺客', title:'THUNDER ROGUE',
+   desc:'行走于闪电之间的神秘刺客，速度即是力量。终极连击释放三重雷击。',
+   stats:{atk:5,def:2,spd:5}, color:'#fbbf24',
+   projs:['⚡','⚡','⚡⚡','⚡⚡⚡'], hitFx:'⚡', flash:'rgba(251,191,36,.3)', cost:1200},
+];
+
+function defSave(){return{coins:0,xp:0,lv:1,inv:{hint:0,shield:0,freeze:0,timeboost:0,timelock:0,timex2:0,freeze60:0,slowmo:0,rewind:0,skip:0,timestop:0,autofreeze:0,doublestop:0},dungeons:{},mistakes:[],unlocked:false,rankPoints:0,rankIdx:0,speedHighs:{1:0,3:0,5:0},survivalHigh:0,themeProgress:{},examScores:{},badges:[],charId:'mage',ownedChars:[]};}
+let SAVE=defSave();
+function persist(){
+  if(!CURRENT_USER)return;
+  const users=getUsers();
+  users[CURRENT_USER]=SAVE;
+  saveUsers(users);
+}
 
 // Battle state
 let B={
@@ -1700,6 +2642,49 @@ function flashScreen(color){
   const d=document.createElement('div');d.className='screen-flash';d.style.background=color||'rgba(239,68,68,.3)';
   document.body.appendChild(d);setTimeout(()=>d.remove(),500);
 }
+function shakeScreen(){
+  const el=document.getElementById('battleScreen');if(!el)return;
+  el.classList.remove('shake');void el.offsetWidth;el.classList.add('shake');
+  setTimeout(()=>el.classList.remove('shake'),450);
+}
+function ringBtn(idx){
+  const btns=document.querySelectorAll('.opt-btn');
+  if(btns[idx]){btns[idx].classList.remove('correct-ring');void btns[idx].offsetWidth;btns[idx].classList.add('correct-ring');}
+}
+function fireProjectile(fromId,toId,emoji,onHit){
+  const fr=document.getElementById(fromId);
+  const tr=document.getElementById(toId);
+  if(!fr||!tr)return;
+  const fr2=fr.getBoundingClientRect();
+  const tr2=tr.getBoundingClientRect();
+  const sx=fr2.left+fr2.width/2,sy=fr2.top+fr2.height/2;
+  const ex=tr2.left+tr2.width/2,ey=tr2.top+tr2.height/2;
+  const p=document.createElement('div');
+  p.textContent=emoji;
+  p.style.cssText=`position:fixed;font-size:34px;z-index:9999;pointer-events:none;left:${sx}px;top:${sy}px;transform:translate(-50%,-50%) scale(1.2);will-change:transform;`;
+  document.body.appendChild(p);
+  const dx=ex-sx,dy=ey-sy;
+  const anim=p.animate([
+    {transform:'translate(-50%,-50%) scale(1.2)',opacity:1,offset:0},
+    {transform:`translate(calc(-50% + ${dx*.5}px),calc(-50% + ${dy*.5}px)) scale(1.6)`,opacity:1,offset:0.5},
+    {transform:`translate(calc(-50% + ${dx}px),calc(-50% + ${dy}px)) scale(2.2)`,opacity:0.8,offset:1}
+  ],{duration:320,easing:'ease-in',fill:'forwards'});
+  anim.onfinish=()=>{p.remove();if(onHit)onHit();};
+}
+function explodeAt(elId,emoji){
+  const el=document.getElementById(elId);if(!el)return;
+  const r=el.getBoundingClientRect();
+  const cx=r.left+r.width/2,cy=r.top+r.height/2;
+  const e=document.createElement('div');
+  e.textContent=emoji;
+  e.style.cssText=`position:fixed;font-size:52px;z-index:9999;pointer-events:none;left:${cx}px;top:${cy}px;transform:translate(-50%,-50%) scale(0);`;
+  document.body.appendChild(e);
+  e.animate([
+    {transform:'translate(-50%,-50%) scale(0)',opacity:1},
+    {transform:'translate(-50%,-50%) scale(2.4)',opacity:1,offset:.45},
+    {transform:'translate(-50%,-50%) scale(3)',opacity:0}
+  ],{duration:420,easing:'ease-out'}).onfinish=()=>e.remove();
+}
 
 // ══════════════════════════════════════
 // STARS BACKGROUND
@@ -1715,6 +2700,14 @@ function makeStars(){
 function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo(0,0);}
 
 function goTitle(){showScreen('titleScreen');}
+
+function switchTab(name){
+  document.querySelectorAll('#mapScreen .tab-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('#mapScreen .tab-item').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  document.getElementById('tab-btn-'+name).classList.add('active');
+}
+
 function showTitleStats(){
   const el=document.getElementById('titleStats');
   const show=el.style.display==='none';
@@ -1730,9 +2723,10 @@ function goMap(){
   showScreen('mapScreen');
   document.getElementById('mapCoins').textContent=SAVE.coins;
   document.getElementById('mapLv').textContent=SAVE.lv;
-  document.getElementById('sh-hint').textContent=SAVE.inv.hint;
-  document.getElementById('sh-shield').textContent=SAVE.inv.shield;
-  document.getElementById('sh-freeze').textContent=SAVE.inv.freeze;
+  const un=document.getElementById('mapUsername');if(un)un.textContent=CURRENT_USER||'勇者';
+  ['hint','shield','freeze','timeboost','timelock','timex2','freeze60','slowmo','rewind','skip','timestop','autofreeze','doublestop'].forEach(k=>{
+    const el=document.getElementById('sh-'+k);if(el)el.textContent=SAVE.inv[k]||0;
+  });
   renderMap();
   const today=new Date().toDateString();
   const ds=document.getElementById('dailyStatus');
@@ -1741,6 +2735,12 @@ function goMap(){
   if(eh)eh.textContent=SAVE.endlessHigh||0;
   const mc=document.getElementById('mapMistakeCount');
   if(mc)mc.textContent=SAVE.mistakes.length;
+  const rn=document.getElementById('mapRankName');
+  if(rn){const ri=SAVE.rankIdx||0;rn.textContent=(RANKS[ri]?RANKS[ri].icon+' '+RANKS[ri].name:'新手学徒');}
+  const sh=document.getElementById('mapSpeedHigh');
+  if(sh){const hs=SAVE.speedHighs||{1:0,3:0,5:0};sh.textContent=Math.max(hs[1]||0,hs[3]||0,hs[5]||0);}
+  const svh=document.getElementById('mapSurvivalHigh');
+  if(svh)svh.textContent=SAVE.survivalHigh||0;
 }
 
 function renderMap(){
@@ -1798,18 +2798,27 @@ function renderMap(){
 function showLocked(){floatText('🔒 通关前一关解锁！','#f87171',window.innerWidth/2-60,300);}
 function showPayLocked(){showUnlockModal();}
 
+const ITEM_META={
+  hint:{icon:'💡',name:'提示'},shield:{icon:'🛡️',name:'护盾'},freeze:{icon:'❄️',name:'冻结'},
+  timeboost:{icon:'⏱️',name:'秒数补给'},timelock:{icon:'⏸️',name:'瞬停护盾'},timex2:{icon:'×2',name:'时光延时'},
+  freeze60:{icon:'🧊',name:'限时冻结'},slowmo:{icon:'🐢',name:'全局慢放'},rewind:{icon:'⏮️',name:'回溯倒转'},skip:{icon:'⏭️',name:'跳过'},
+  timestop:{icon:'🕐',name:'时间静止'},autofreeze:{icon:'🔐',name:'错题时光锁'},doublestop:{icon:'💎',name:'双倍静止'}
+};
 function buyItem(type){
-  const cost={hint:15,shield:25,freeze:20}[type];
+  const cost={hint:15,shield:25,freeze:20,timeboost:25,timelock:20,timex2:20,freeze60:45,slowmo:50,rewind:55,skip:40,timestop:80,autofreeze:90,doublestop:100}[type];
+  if(!cost){return;}
   if(SAVE.coins<cost){floatText('💸 金币不足！','#f87171',window.innerWidth/2-40,150);return;}
   SAVE.coins-=cost;SAVE.inv[type]=(SAVE.inv[type]||0)+1;persist();
   document.getElementById('mapCoins').textContent=SAVE.coins;
-  document.getElementById('sh-'+type).textContent=SAVE.inv[type];
-  beep('pu');floatText(`+1 ${type==='hint'?'💡':type==='shield'?'🛡️':'❄️'}`,'#fbbf24',window.innerWidth/2-20,150);
+  const el=document.getElementById('sh-'+type);if(el)el.textContent=SAVE.inv[type];
+  const m=ITEM_META[type]||{icon:'✨'};
+  beep('pu');floatText(`+1 ${m.icon} ${m.name}`,'#fbbf24',window.innerWidth/2-50,150);
 }
 
 function openDungeon(id){
   B.dungeon=DUNGEONS[id];
   B.difficulty=B.difficulty||'normal';
+  B.retryFn=()=>openDungeon(id);
   const save=SAVE.dungeons[id];
   document.getElementById('introMonster').textContent=B.dungeon.monster.emoji;
   document.getElementById('introName').textContent=`${B.dungeon.icon} ${B.dungeon.name}`;
@@ -1828,7 +2837,7 @@ function setDiff(d){
   });
 }
 
-function retryDungeon(){openDungeon(B.dungeon.id);}
+function retryDungeon(){if(B.retryFn)B.retryFn();}
 
 // ══════════════════════════════════════
 // BATTLE
@@ -1848,9 +2857,29 @@ function startBattle(){
     else pool=[...d.qs];
     picked=pool.sort(()=>Math.random()-.5).slice(0,8);
   }
-  B={dungeon:d,difficulty:diff,questions:picked,qIdx:0,heroHP:3,maxHP:3,monsterHP:picked.length,
-     combo:0,coins:0,answers:[],timer:null,tLeft:20,frozen:false,shieldOn:false,
-     inv:{...SAVE.inv},answered:false};
+  const sid=String(d.id);
+  const isSurvival=sid==='survival';
+  const isExam=sid.startsWith('exam_');
+  const isSpeed=sid.startsWith('speed_');
+  const initHP=isSurvival?5:3;
+  const prevLoopStreaks=B.loopStreaks||{};
+  const prevRetryFn=B.retryFn;
+  B={dungeon:d,difficulty:diff,questions:picked,qIdx:0,heroHP:initHP,maxHP:initHP,monsterHP:picked.length,
+     combo:0,coins:0,answers:[],timer:null,tLeft:20,tMax:20,frozen:false,shieldOn:false,
+     inv:{...SAVE.inv},answered:false,loopStreaks:prevLoopStreaks,retryFn:prevRetryFn,
+     slowmoActive:false,slowmoTick:0,timestopActive:false,doublestopNext:false,autofreezeOn:false,autofreezeUsed:false,
+     endlessLv:1,endlessCorrect:0};
+  if(isSpeed){
+    const mins=parseInt(d.id.split('_')[1]);
+    B.speedLeft=mins*60;
+    if(B.speedInterval)clearInterval(B.speedInterval);
+    B.speedInterval=setInterval(()=>{
+      B.speedLeft--;
+      const st2=document.getElementById('bSpeedTimer');
+      if(st2){const m2=Math.floor(B.speedLeft/60),s2=B.speedLeft%60;st2.textContent='⏱ '+m2+':'+(s2<10?'0':'')+s2;}
+      if(B.speedLeft<=0){clearInterval(B.speedInterval);endBattle(true);}
+    },1000);
+  }
   document.getElementById('bDungName').textContent=`${d.icon} ${d.name}`;
   document.getElementById('bDungSub').textContent=d.sub;
   const diffLabel={easy:'⭐ 基础',normal:'⭐⭐ 普通',hard:'⭐⭐⭐ 困难'}[diff];
@@ -1859,63 +2888,155 @@ function startBattle(){
   badge.textContent=diffLabel;badge.className='diff-badge '+diffClass;
   document.getElementById('monsterEmoji').textContent=d.monster.emoji;
   document.getElementById('monsterNameLabel').textContent=d.monster.name;
+  const hc=getHeroChar();
+  document.getElementById('heroEmoji').textContent=hc.emoji;
+  const hnl=document.getElementById('heroNameLabel');if(hnl)hnl.textContent=`${hc.emoji} ${hc.name}`;
+  const stEl=document.getElementById('bSpeedTimer');
+  if(stEl){stEl.style.display=isSpeed?'block':'none';if(isSpeed){const mins2=parseInt(d.id.split('_')[1]);const m3=Math.floor(mins2*60/60),s3=0;stEl.textContent='⏱ '+m3+':00';}}
+  const slEl=document.getElementById('bSurvivalLv');
+  if(slEl){slEl.style.display=isSurvival?'block':'none';if(isSurvival)slEl.textContent='阶段 1';}
+  const pub=document.querySelector('.powerup-bar');
+  if(pub)pub.style.display=isExam?'none':'flex';
+  // Dungeon-colored monster bar for normal dungeons
+  const mbar=document.getElementById('monsterBar');
+  if(mbar){
+    const dc=d.color||null;
+    const isSpecial=['daily','endless','mistakes','mistakeloop','survival'].includes(sid)||isExam||isSpeed;
+    mbar.style.background=(!isSpecial&&dc)?`linear-gradient(90deg,${dc},${dc}cc)`:null;
+  }
   updBattleHUD();showScreen('battleScreen');
   renderQuestion();
 }
 
 function updBattleHUD(){
-  // Hearts
-  const hearts=Array.from({length:B.maxHP},(_,i)=>i<B.heroHP?'❤️':'🖤').join('');
-  document.getElementById('bHearts').textContent=hearts;
+  // Hearts (daily shows score instead)
+  const hudSid=String(B.dungeon?B.dungeon.id:'');
+  if(hudSid==='daily'){
+    const okC=B.answers.filter(a=>a.ok).length;
+    const errC=B.answers.filter(a=>!a.ok).length;
+    document.getElementById('bHearts').textContent=`✅${okC} ❌${errC}`;
+  }else{
+    const hearts=Array.from({length:B.maxHP},(_,i)=>i<B.heroHP?'❤️':'🖤').join('');
+    document.getElementById('bHearts').textContent=hearts;
+  }
   // HP bars
   document.getElementById('heroBar').style.width=(B.heroHP/B.maxHP*100)+'%';
   document.getElementById('heroHPLabel').textContent=`HP: ${B.heroHP}/${B.maxHP}`;
   document.getElementById('monsterBar').style.width=(B.monsterHP/B.questions.length*100)+'%';
   document.getElementById('monsterHPLabel').textContent=`HP: ${B.monsterHP}/${B.questions.length}`;
-  // Combo
+  // Combo with bounce animation
   const cb=document.getElementById('bCombo');
-  cb.textContent=B.combo>=2?`🔥 x${B.combo} COMBO`:'';
+  const newComboText=B.combo>=2?`🔥 x${B.combo} COMBO`:'';
+  if(newComboText&&newComboText!==cb.textContent){cb.classList.remove('combo-pop');void cb.offsetWidth;cb.classList.add('combo-pop');}
+  cb.textContent=newComboText;
+  // Boss rage when monster HP < 30%
+  const monEl=document.getElementById('monsterEmoji');
+  const monName=document.getElementById('monsterNameLabel');
+  if(monEl&&B.questions.length>0){
+    const ragePct=B.monsterHP/B.questions.length;
+    if(ragePct>0&&ragePct<=0.3){monEl.classList.add('boss-rage');if(monName)monName.classList.add('boss-rage-name');}
+    else{monEl.classList.remove('boss-rage');if(monName)monName.classList.remove('boss-rage-name');}
+  }
   // Coins
   document.getElementById('bCoins').textContent=`🪙 ${B.coins}`;
   // Q num
   document.getElementById('bQNum').textContent=`${B.qIdx+1}/${B.questions.length}`;
   // Powerups
-  ['hint','shield','freeze'].forEach(k=>{
-    document.getElementById('pu-'+k+'-n').textContent=B.inv[k]||0;
-    document.getElementById('pu-'+k).disabled=!(B.inv[k]>0);
+  ['hint','shield','freeze','timeboost','timelock','timex2','freeze60','slowmo','rewind','skip','timestop','autofreeze','doublestop'].forEach(k=>{
+    const n=document.getElementById('pu-'+k+'-n');if(n)n.textContent=B.inv[k]||0;
+    const b=document.getElementById('pu-'+k);if(b)b.disabled=!(B.inv[k]>0);
   });
+  // Mode banner + screen tint
+  const mb=document.getElementById('modeBanner');
+  const bsc=document.getElementById('battleScreen');
+  const msid=String(B.dungeon?B.dungeon.id:'');
+  if(mb&&bsc){
+    bsc.classList.remove('mode-daily','mode-endless','mode-mistakes','mode-exam');
+    if(msid==='daily'){
+      mb.className='mode-daily';bsc.classList.add('mode-daily');
+      mb.textContent=`📅 每日挑战 — 今日进度 ${B.qIdx+1}/${B.questions.length}`;
+    }else if(msid==='endless'){
+      const cur=B.qIdx;const hi=SAVE.endlessHigh||0;const isRec=cur>0&&cur>hi;
+      mb.className='mode-endless';bsc.classList.add('mode-endless');
+      mb.textContent=`♾️ 无尽存活 — 当前 ${cur} 题 | 最高 ${Math.max(cur,hi)} 题`+(isRec?' 🏆 新纪录！':'');
+    }else if(msid==='mistakes'||msid==='mistakeloop'){
+      const rem=B.questions.length-B.qIdx;
+      mb.className='mode-mistakes';bsc.classList.add('mode-mistakes');
+      mb.textContent=`📕 错题复习 — 还剩 ${rem} 题待掌握`;
+    }else if(msid.startsWith('exam_')){
+      mb.className='mode-exam';bsc.classList.add('mode-exam');
+      mb.textContent=`📝 考试中 — 已答 ${B.qIdx}/${B.questions.length} 题`;
+    }else{
+      mb.className='';mb.textContent='';
+    }
+  }
 }
 
 function renderQuestion(){
-  B.answered=false;
+  B.answered=false;B.autofreezeUsed=false;
   const q=B.questions[B.qIdx];
-  document.getElementById('qText').textContent=q.q;
+  const rqSid=String(B.dungeon?B.dungeon.id:'');
+  const qtEl=document.getElementById('qText');
+  if((rqSid==='mistakes'||rqSid==='mistakeloop')&&q._src){
+    qtEl.innerHTML=`<span class="src-badge">📍 来自：${q._src}</span><br>${q.q}`;
+  }else{
+    qtEl.textContent=q.q;
+  }
   document.getElementById('feedback').className='feedback-box';
   document.getElementById('feedback').innerHTML='';
   document.getElementById('nextBtn').className='next-btn';
   const L=['A','B','C','D'];
-  document.getElementById('qOpts').innerHTML=q.o.map((o,i)=>
+  const shuffleIdx=[0,1,2,3].sort(()=>Math.random()-.5);
+  B.shuffledOpts=shuffleIdx.map(i=>q.o[i]);
+  B.shuffledCorrect=shuffleIdx.indexOf(q.a);
+  document.getElementById('qOpts').innerHTML=B.shuffledOpts.map((o,i)=>
     `<button class="opt-btn" onclick="pick(${i})">
       <span class="opt-letter">${L[i]}</span>${o}
     </button>`).join('');
+  // Slide-in animation on each new question
+  const qp=document.querySelector('.q-panel');
+  if(qp){qp.classList.remove('q-panel-slide');void qp.offsetWidth;qp.classList.add('q-panel-slide');}
   updBattleHUD();
   startTimer();
 }
 
 function startTimer(){
-  clearInterval(B.timer);B.tLeft=20;B.frozen=false;
+  clearInterval(B.timer);
+  const id=String(B.dungeon?B.dungeon.id:'');
+  const isSpeed=id.startsWith('speed_');
+  const isSurvival=id==='survival';
+  // Daily / mistakes: no timer
+  if(id==='daily'||id==='mistakes'||id==='mistakeloop'){
+    document.getElementById('timerBar').style.width='100%';
+    document.getElementById('timerBar').className='timer-bar-fill';
+    return;
+  }
+  let tPerQ=20;
+  if(isSpeed)tPerQ=10;
+  else if(isSurvival)tPerQ=Math.max(8,20-Math.floor(B.qIdx/10)*2);
+  else if(id==='endless')tPerQ=Math.max(6,20-((B.endlessLv||1)-1)*2);
+  else if(id&&id.startsWith('exam_')){const ex=EXAMS.find(e=>e.id===id);tPerQ=ex?ex.timePerQ:30;}
+  B.tLeft=tPerQ;B.tMax=tPerQ;B.frozen=false;B.timestopActive=false;B.slowmoTick=0;
+  if(B.doublestopNext){B.frozen=true;B.timestopActive=true;B.doublestopNext=false;}
   updTimerBar();
   B.timer=setInterval(()=>{
     if(B.frozen||B.answered)return;
+    if(B.slowmoActive){B.slowmoTick=(B.slowmoTick||0)+1;if(B.slowmoTick%2!==0)return;}
     B.tLeft--;updTimerBar();
     if(B.tLeft<=5&&B.tLeft>0)beep('tick');
     if(B.tLeft<=0){clearInterval(B.timer);timeUp();}
   },1000);
+  // Update survival level display
+  if(isSurvival){
+    const slEl=document.getElementById('bSurvivalLv');
+    if(slEl)slEl.textContent='阶段 '+(Math.floor(B.qIdx/10)+1)+' ('+tPerQ+'s)';
+  }
 }
 
 function updTimerBar(){
   const bar=document.getElementById('timerBar');
-  bar.style.width=(B.tLeft/20*100)+'%';
+  const max=B.tMax||20;
+  bar.style.width=(B.tLeft/max*100)+'%';
   bar.className='timer-bar-fill'+(B.tLeft<=5?' urgent':'');
 }
 
@@ -1923,13 +3044,38 @@ function timeUp(){
   if(B.answered)return;
   B.answered=true;
   const q=B.questions[B.qIdx];
+  const tuSid=String(B.dungeon?B.dungeon.id:'');
   document.querySelectorAll('.opt-btn').forEach(b=>b.disabled=true);
-  document.querySelectorAll('.opt-btn')[q.a].classList.add('reveal');
+  // 考试模式超时：不揭晓答案，自动跳题
+  if(tuSid.startsWith('exam_')){
+    B.answers.push({q:q.q,ok:false,right:B.shuffledOpts[B.shuffledCorrect],chosen:'（超时）'});
+    B.heroHP--;updBattleHUD();
+    if(B.heroHP<=0){setTimeout(()=>endBattle(false),800);return;}
+    if(B.qIdx>=B.questions.length-1){setTimeout(()=>endBattle(true),800);return;}
+    setTimeout(()=>{B.qIdx++;renderQuestion();},800);
+    return;
+  }
+  document.querySelectorAll('.opt-btn')[B.shuffledCorrect].classList.add('reveal');
   B.combo=0;
   if(B.shieldOn){B.shieldOn=false;floatText('🛡️ 护盾挡住了！','#818cf8',window.innerWidth/2-40,180);}
-  else{B.heroHP--;flashScreen('rgba(239,68,68,.4)');document.getElementById('heroEmoji').classList.add('hurt');setTimeout(()=>document.getElementById('heroEmoji').classList.remove('hurt'),500);}
-  B.answers.push({q:q.q,ok:false,right:q.o[q.a],chosen:'（超时）'});
-  if(B.dungeon.id!=='mistakes')saveMistake(q,B.dungeon.name);
+  else{
+    B.heroHP--;
+    const monTU=document.getElementById('monsterEmoji');
+    monTU.classList.remove('charge-red');void monTU.offsetWidth;monTU.classList.add('charge-red');
+    setTimeout(()=>monTU.classList.remove('charge-red'),240);
+    monTU.classList.add('attack-rev');setTimeout(()=>monTU.classList.remove('attack-rev'),680);
+    const mAtkTU=getMonsterAtk(B.dungeon);
+    fireProjectile('monsterEmoji','heroEmoji',mAtkTU.proj,()=>{
+      flashScreen(mAtkTU.flash);shakeScreen();
+      const hTU=document.getElementById('heroEmoji');hTU.classList.add('hurt');setTimeout(()=>hTU.classList.remove('hurt'),580);
+      explodeAt('heroEmoji',mAtkTU.hitFx);
+      const hw2=document.getElementById('heroBar');if(hw2){const wp2=hw2.parentElement;wp2.classList.remove('hp-shake');void wp2.offsetWidth;wp2.classList.add('hp-shake');}
+    });
+  }
+  B.answers.push({q:q.q,ok:false,right:B.shuffledOpts[B.shuffledCorrect],chosen:'（超时）'});
+  if(B.dungeon.id!=='mistakes'&&B.dungeon.id!=='mistakeloop')saveMistake(q,B.dungeon.name);
+  // MistakeLoop: reset streak on timeout
+  if(B.dungeon.id==='mistakeloop'){if(!B.loopStreaks)B.loopStreaks={};B.loopStreaks[q.q]=0;}
   showFB(false,'⏱️ 超时！'+q.e);
   beep('err');updBattleHUD();
   if(B.heroHP<=0){setTimeout(()=>endBattle(false),1200);return;}
@@ -1943,47 +3089,146 @@ function pick(idx){
   const q=B.questions[B.qIdx];
   const btns=document.querySelectorAll('.opt-btn');
   btns.forEach(b=>b.disabled=true);
-  const ok=idx===q.a;
+  const ok=idx===B.shuffledCorrect;
+  const psid=String(B.dungeon.id);
+  const isDaily=psid==='daily';
+  const isExam=psid.startsWith('exam_');
+  const isMistakes=psid==='mistakes'||psid==='mistakeloop';
+
+  // ── 考试模式：盲选，不揭晓对错，自动跳题 ──
+  if(isExam){
+    btns[idx].classList.add('exam-selected');
+    B.answers.push({q:q.q,ok,right:B.shuffledOpts[B.shuffledCorrect],chosen:B.shuffledOpts[idx]});
+    if(ok){B.combo++;B.monsterHP--;}else{B.combo=0;B.heroHP--;}
+    updBattleHUD();
+    if(B.heroHP<=0){setTimeout(()=>endBattle(false),800);return;}
+    if(B.monsterHP<=0||B.qIdx>=B.questions.length-1){setTimeout(()=>endBattle(true),800);return;}
+    setTimeout(()=>{B.qIdx++;renderQuestion();},800);
+    return;
+  }
+
   if(ok){
     btns[idx].classList.add('correct');
     B.combo++;B.monsterHP--;
     let gain=10+(B.combo>=4?10:B.combo>=2?5:0);
     B.coins+=gain;
-    // Hero attacks
     const hero=document.getElementById('heroEmoji');
-    hero.classList.add('attack');setTimeout(()=>hero.classList.remove('attack'),500);
-    // Slash
-    const sl=document.getElementById('slashEl');
-    sl.textContent=['⚡','💥','✨','🌟'][~~(Math.random()*4)];
-    sl.classList.add('show');setTimeout(()=>sl.classList.remove('show'),500);
-    // Monster hurt
     const mon=document.getElementById('monsterEmoji');
-    mon.classList.add('hurt');setTimeout(()=>mon.classList.remove('hurt'),500);
+    // 充能闪光
+    hero.classList.remove('charge');void hero.offsetWidth;hero.classList.add('charge');
+    setTimeout(()=>hero.classList.remove('charge'),240);
+    // 英雄冲锋
+    hero.classList.add('attack');setTimeout(()=>hero.classList.remove('attack'),680);
+    // 射出角色专属魔法弹
+    const hChar=getHeroChar();
+    const pIdx=Math.min(B.combo>=3?3:B.combo>=2?2:B.combo>=1?1:0, hChar.projs.length-1);
+    const projE=hChar.projs[pIdx];
+    fireProjectile('heroEmoji','monsterEmoji',projE,()=>{
+      mon.classList.add('hurt');setTimeout(()=>mon.classList.remove('hurt'),580);
+      explodeAt('monsterEmoji',hChar.hitFx);
+      flashScreen(hChar.flash);
+    });
+    const sl=document.getElementById('slashEl');
+    sl.textContent=projE;sl.classList.add('show');setTimeout(()=>sl.classList.remove('show'),500);
     floatText(`+${gain}🪙`,gain>10?'#fbbf24':'#4ade80');
+    ringBtn(idx);
     beep('ok');showFB(true,q.e);
-    B.answers.push({q:q.q,ok:true,right:q.o[q.a],chosen:q.o[idx]});
-    if(B.dungeon.id==='mistakes')removeMistakeSilent(q.q);
+    B.answers.push({q:q.q,ok:true,right:B.shuffledOpts[B.shuffledCorrect],chosen:B.shuffledOpts[idx]});
+    if(isMistakes)removeMistakeSilent(q.q);
+    if(psid==='survival'&&B.combo>0&&B.combo%4===0&&B.heroHP<B.maxHP){B.heroHP++;floatText('+1❤️ 连击加血！','#4ade80',window.innerWidth/2-50,160);}
+    if(psid==='mistakeloop'){
+      if(!B.loopStreaks)B.loopStreaks={};
+      B.loopStreaks[q.q]=(B.loopStreaks[q.q]||0)+1;
+      if(B.loopStreaks[q.q]>=3){removeMistakeSilent(q.q);floatText('🗑️ 彻底掌握！','#4ade80',window.innerWidth/2-50,160);}
+    }
+    // ── 无尽模式：升级 & 里程碑加血 ──
+    if(psid==='endless'){
+      B.endlessCorrect=(B.endlessCorrect||0)+1;
+      if(B.endlessCorrect%10===0){
+        B.endlessLv=(B.endlessLv||1)+1;
+        floatText(`⬆️ LEVEL ${B.endlessLv}！计时缩短！`,'#fbbf24',window.innerWidth/2-70,140);
+      }
+      if(B.endlessCorrect%20===0&&B.heroHP<5){
+        B.heroHP++;floatText('+1❤️ 里程碑奖励！','#4ade80',window.innerWidth/2-60,170);
+      }
+    }
+    updBattleHUD();
+    // ── 错题本：答对自动跳题 ──
+    if(isMistakes){
+      if(B.monsterHP<=0||B.qIdx>=B.questions.length-1){setTimeout(()=>endBattle(true),1200);return;}
+      setTimeout(()=>{B.qIdx++;renderQuestion();},1400);
+      return;
+    }
+    if(B.monsterHP<=0||B.qIdx>=B.questions.length-1){setTimeout(()=>endBattle(true),1400);return;}
+    document.getElementById('nextBtn').className='next-btn show';
   }else{
-    btns[idx].classList.add('wrong');btns[q.a].classList.add('reveal');B.combo=0;
+    if(B.autofreezeOn&&!B.autofreezeUsed){
+      B.autofreezeUsed=true;
+      btns[idx].classList.add('wrong');
+      btns.forEach((b,i)=>{if(i!==idx)b.disabled=false;});
+      B.answered=false;B.frozen=true;
+      floatText('🔐 冻结10秒，可改答！','#fb923c',window.innerWidth/2-60,180);
+      setTimeout(()=>{if(!B.timestopActive&&!B.answered)B.frozen=false;},10000);
+      updBattleHUD();return;
+    }
+    btns[idx].classList.add('wrong');btns[B.shuffledCorrect].classList.add('reveal');B.combo=0;
+    // ── 每日挑战：答错不掉血 ──
+    if(isDaily){
+      beep('err');showFB(false,q.e);
+      B.answers.push({q:q.q,ok:false,right:B.shuffledOpts[B.shuffledCorrect],chosen:B.shuffledOpts[idx]});
+      saveMistake(q,B.dungeon.name);
+      updBattleHUD();
+      if(B.qIdx>=B.questions.length-1){setTimeout(()=>endBattle(true),1400);return;}
+      document.getElementById('nextBtn').className='next-btn show';
+      return;
+    }
+    // ── 错题本：答错留在队列末尾重练 ──
+    if(isMistakes){
+      if(B.shieldOn){B.shieldOn=false;floatText('🛡️ 护盾格挡！','#818cf8',window.innerWidth/2-40,180);}
+      else{
+        B.heroHP--;flashScreen('rgba(239,68,68,.35)');
+        const hero=document.getElementById('heroEmoji');
+        hero.classList.add('hurt');setTimeout(()=>hero.classList.remove('hurt'),500);
+        floatText('❌ 答错了，再练一遍！','#f87171',window.innerWidth/2-60,200);
+        B.questions.push({...q});
+      }
+      beep('err');showFB(false,q.e);
+      B.answers.push({q:q.q,ok:false,right:B.shuffledOpts[B.shuffledCorrect],chosen:B.shuffledOpts[idx]});
+      if(psid==='mistakeloop'){if(!B.loopStreaks)B.loopStreaks={};B.loopStreaks[q.q]=0;}
+      updBattleHUD();
+      if(B.heroHP<=0){setTimeout(()=>endBattle(false),1400);return;}
+      document.getElementById('nextBtn').className='next-btn show';
+      return;
+    }
     if(B.shieldOn){
       B.shieldOn=false;floatText('🛡️ 护盾格挡！','#818cf8',window.innerWidth/2-40,180);
     }else{
       B.heroHP--;
-      flashScreen('rgba(239,68,68,.35)');
-      const hero=document.getElementById('heroEmoji');
-      hero.classList.add('hurt');setTimeout(()=>hero.classList.remove('hurt'),500);
-      floatText('-1❤️','#f87171',window.innerWidth/2-20,200);
+      // 怪兽充能 + 发射反击弹
+      const monAtk=document.getElementById('monsterEmoji');
+      monAtk.classList.remove('charge-red');void monAtk.offsetWidth;monAtk.classList.add('charge-red');
+      setTimeout(()=>monAtk.classList.remove('charge-red'),240);
+      monAtk.classList.add('attack-rev');setTimeout(()=>monAtk.classList.remove('attack-rev'),680);
+      const mAtkPick=getMonsterAtk(B.dungeon);
+      fireProjectile('monsterEmoji','heroEmoji',mAtkPick.proj,()=>{
+        flashScreen(mAtkPick.flash);
+        shakeScreen();
+        const heroEl=document.getElementById('heroEmoji');
+        heroEl.classList.add('hurt');setTimeout(()=>heroEl.classList.remove('hurt'),580);
+        const hw=document.getElementById('heroBar');if(hw){const wp=hw.parentElement;wp.classList.remove('hp-shake');void wp.offsetWidth;wp.classList.add('hp-shake');}
+        explodeAt('heroEmoji',mAtkPick.hitFx);
+        floatText('-1❤️','#f87171',window.innerWidth/2-20,200);
+      });
     }
     beep('err');showFB(false,q.e);
-    B.answers.push({q:q.q,ok:false,right:q.o[q.a],chosen:q.o[idx]});
-    if(B.dungeon.id!=='mistakes')saveMistake(q,B.dungeon.name);
+    B.answers.push({q:q.q,ok:false,right:B.shuffledOpts[B.shuffledCorrect],chosen:B.shuffledOpts[idx]});
+    if(psid!=='mistakes'&&psid!=='mistakeloop')saveMistake(q,B.dungeon.name);
+    if(psid==='mistakeloop'){if(!B.loopStreaks)B.loopStreaks={};B.loopStreaks[q.q]=0;}
+    updBattleHUD();
+    if(B.heroHP<=0){setTimeout(()=>endBattle(false),1400);return;}
+    if(B.monsterHP<=0||B.qIdx>=B.questions.length-1){setTimeout(()=>endBattle(true),1400);return;}
+    document.getElementById('nextBtn').className='next-btn show';
   }
-  updBattleHUD();
-  if(B.heroHP<=0){setTimeout(()=>endBattle(false),1400);return;}
-  if(B.monsterHP<=0||B.qIdx>=B.questions.length-1){
-    setTimeout(()=>endBattle(true),1400);return;
-  }
-  document.getElementById('nextBtn').className='next-btn show';
 }
 
 function showFB(ok,txt){
@@ -2001,21 +3246,61 @@ function nextQ(){
 function usePU(type){
   if(!B.inv[type]||B.answered)return;
   B.inv[type]--;beep('pu');
+  const cx=window.innerWidth/2;
   if(type==='hint'){
-    const q=B.questions[B.qIdx];
     const btns=document.querySelectorAll('.opt-btn');
-    const wrong=[...btns].map((b,i)=>i).filter(i=>i!==q.a&&!btns[i].disabled&&!btns[i].classList.contains('eliminated'));
-    if(!wrong.length)return;
+    const wrong=[...btns].map((b,i)=>i).filter(i=>i!==B.shuffledCorrect&&!btns[i].disabled&&!btns[i].classList.contains('eliminated'));
+    if(!wrong.length){B.inv[type]++;return;}
     const t=wrong[~~(Math.random()*wrong.length)];
     btns[t].classList.add('eliminated');btns[t].disabled=true;
-    floatText('💡 排除一个错误选项！','#fbbf24',window.innerWidth/2-60,180);
+    floatText('💡 排除一个错误选项！','#fbbf24',cx-60,180);
   }else if(type==='shield'){
     B.shieldOn=true;
-    floatText('🛡️ 护盾激活！','#818cf8',window.innerWidth/2-40,180);
+    floatText('🛡️ 护盾激活！','#818cf8',cx-40,180);
   }else if(type==='freeze'){
     B.frozen=true;
-    floatText('❄️ 时间冻结 10秒！','#38bdf8',window.innerWidth/2-50,180);
-    setTimeout(()=>{B.frozen=false;},10000);
+    floatText('❄️ 冻结10秒！','#38bdf8',cx-40,180);
+    setTimeout(()=>{if(!B.timestopActive)B.frozen=false;},10000);
+  }else if(type==='timeboost'){
+    B.tLeft+=30;updTimerBar();
+    floatText('⏱️ +30秒！','#fbbf24',cx-30,180);
+  }else if(type==='timelock'){
+    B.frozen=true;
+    floatText('⏸️ 瞬停20秒！','#38bdf8',cx-40,180);
+    setTimeout(()=>{if(!B.timestopActive)B.frozen=false;},20000);
+  }else if(type==='timex2'){
+    B.tLeft=B.tLeft*2;B.tMax=Math.max(B.tMax,B.tLeft);updTimerBar();
+    floatText('×2 时间翻倍！','#c084fc',cx-40,180);
+  }else if(type==='freeze60'){
+    B.frozen=true;
+    floatText('🧊 冻结60秒！','#38bdf8',cx-40,180);
+    setTimeout(()=>{if(!B.timestopActive)B.frozen=false;},60000);
+  }else if(type==='slowmo'){
+    B.slowmoActive=true;B.slowmoTick=0;
+    floatText('🐢 慢放激活！','#a3e635',cx-40,180);
+  }else if(type==='rewind'){
+    if(B.qIdx===0){floatText('⏮️ 已是第一题！','#94a3b8',cx-50,180);B.inv[type]++;return;}
+    clearInterval(B.timer);
+    B.qIdx--;
+    if(B.answers.length>0)B.answers.pop();
+    B.monsterHP=Math.min(B.monsterHP+1,B.questions.length);
+    B.answered=false;
+    renderQuestion();startTimer();
+    floatText('⏮️ 回到上一题！','#c084fc',cx-50,180);
+  }else if(type==='skip'){
+    clearInterval(B.timer);
+    B.answered=true;
+    floatText('⏭️ 跳过此题！','#60a5fa',cx-40,180);
+    document.getElementById('nextBtn').className='next-btn show';
+  }else if(type==='timestop'){
+    B.frozen=true;B.timestopActive=true;
+    floatText('🕐 时间静止！','#f472b6',cx-40,180);
+  }else if(type==='autofreeze'){
+    B.autofreezeOn=true;
+    floatText('🔐 错题时光锁激活！','#fb923c',cx-60,180);
+  }else if(type==='doublestop'){
+    B.frozen=true;B.timestopActive=true;B.doublestopNext=true;
+    floatText('💎 双倍静止！','#f472b6',cx-40,180);
   }
   updBattleHUD();
 }
@@ -2025,10 +3310,17 @@ function usePU(type){
 // ══════════════════════════════════════
 function endBattle(won){
   clearInterval(B.timer);
+  if(B.speedInterval){clearInterval(B.speedInterval);B.speedInterval=null;}
   const ok=B.answers.filter(a=>a.ok).length;
   const tot=B.answers.length;
   const acc=tot>0?Math.round(ok/tot*100):0;
-  const id=B.dungeon.id;
+  const id=String(B.dungeon.id);
+  // Restore powerup bar visibility
+  const pub=document.querySelector('.powerup-bar');if(pub)pub.style.display='flex';
+  const stEl=document.getElementById('bSpeedTimer');if(stEl)stEl.style.display='none';
+  const slEl=document.getElementById('bSurvivalLv');if(slEl)slEl.style.display='none';
+  // Track max combo for badge check
+  if(B.combo>0)SAVE._tempCombo=Math.max(SAVE._tempCombo||0,B.combo);
   if(won){
     const mistakes=B.maxHP-B.heroHP;
     const stars=mistakes===0?3:mistakes<=1?2:1;
@@ -2036,19 +3328,108 @@ function endBattle(won){
     let xpGain=Math.round((stars*20+ok*5)*diffMult);
     let coinGain=Math.round(B.coins*diffMult);
     // Daily bonus
-    if(id==='daily'){
-      SAVE.dailyDate=new Date().toDateString();
-      coinGain+=100;xpGain+=50;
+    if(id==='daily'){SAVE.dailyDate=new Date().toDateString();coinGain+=100;xpGain+=50;}
+    // Rank mode
+    if(id==='rank'){
+      SAVE.rankPoints=Math.max(RANKS[SAVE.rankIdx]?RANKS[SAVE.rankIdx].min:0,(SAVE.rankPoints||0)+5);
+      let newIdx=SAVE.rankIdx;
+      while(newIdx+1<RANKS.length&&SAVE.rankPoints>=RANKS[newIdx+1].min)newIdx++;
+      if(newIdx>SAVE.rankIdx){floatText('🏅 段位晋升！'+RANKS[newIdx].icon+RANKS[newIdx].name,'#fbbf24',window.innerWidth/2-80,100);SAVE.rankIdx=newIdx;}
+      coinGain+=30;xpGain+=20;
+    }
+    // Speed mode
+    if(id&&id.startsWith('speed_')){
+      const mins=parseInt(id.split('_')[1]);
+      if(!SAVE.speedHighs)SAVE.speedHighs={1:0,3:0,5:0};
+      if(ok>(SAVE.speedHighs[mins]||0)){SAVE.speedHighs[mins]=ok;floatText('⚡ 新纪录 '+ok+'题！','#fbbf24',window.innerWidth/2-60,100);}
+      coinGain+=ok*5;xpGain+=ok*3;
+    }
+    // Survival mode
+    if(id==='survival'){
+      if(ok>(SAVE.survivalHigh||0)){SAVE.survivalHigh=ok;floatText('☠️ 生存新纪录 '+ok+'题！','#f87171',window.innerWidth/2-80,100);}
+      coinGain+=ok*3;xpGain+=ok*5;
+    }
+    // Exam mode
+    if(id&&id.startsWith('exam_')){
+      if(!SAVE.examScores)SAVE.examScores={};
+      if(!SAVE.examScores[id])SAVE.examScores[id]=[];
+      SAVE.examScores[id].push(ok);
+      if(SAVE.examScores[id].length>10)SAVE.examScores[id]=SAVE.examScores[id].slice(-10);
+      coinGain+=ok*10;xpGain+=ok*8;
+    }
+    // Theme mode
+    if(id&&id.startsWith('theme_')){
+      const thId=id.replace('theme_','');
+      if(!SAVE.themeProgress)SAVE.themeProgress={};
+      const prev=SAVE.themeProgress[thId];
+      if(!prev||stars>prev.stars)SAVE.themeProgress[thId]={stars,done:true};
+      coinGain+=stars*20;xpGain+=stars*15;
     }
     // Save dungeon progress (not for special modes)
-    if(id!=='daily'&&id!=='endless'&&id!=='mistakes'){
-      const prev=SAVE.dungeons[id];
-      if(!prev||stars>prev.stars)SAVE.dungeons[id]={stars,score:ok,total:tot};
-    }
+    const specialIds=['daily','endless','mistakes','rank','survival','mistakeloop'];
+    const isSpecial=specialIds.includes(id)||(id&&(id.startsWith('speed_')||id.startsWith('exam_')||id.startsWith('theme_')));
+    if(!isSpecial){const prev=SAVE.dungeons[id];if(!prev||stars>prev.stars)SAVE.dungeons[id]={stars,score:ok,total:tot};}
     SAVE.coins+=coinGain;SAVE.xp+=xpGain;
     const newLv=Math.floor(SAVE.xp/100)+1;
     if(newLv>SAVE.lv){SAVE.lv=newLv;floatText(`🎉 升级! Lv.${newLv}`,'#fbbf24',window.innerWidth/2-50,100);}
-    persist();
+    checkBadges();persist();
+    // Mistakeloop: all cleared
+    if(id==='mistakeloop'&&SAVE.mistakes.length===0){
+      document.getElementById('victoryEmoji').textContent='🎉';
+      document.getElementById('victoryMsg').textContent='所有错题已彻底征服！厉害了！';
+      document.getElementById('starsDisplay').textContent='⭐⭐⭐';
+      document.getElementById('rew-coins').textContent='+'+coinGain;
+      document.getElementById('rew-xp').textContent='+'+xpGain;
+      document.getElementById('rew-acc').textContent=acc+'%';
+      document.getElementById('reviewArea').innerHTML='';
+      launchConfetti();beep('win');showScreen('victoryScreen');return;
+    }
+    // Exam result with percentage
+    if(id&&id.startsWith('exam_')){
+      const pct=Math.round(ok/tot*100);
+      document.getElementById('victoryEmoji').textContent=pct>=90?'🎓':pct>=70?'📖':'📚';
+      document.getElementById('victoryMsg').textContent=`考试完成！答对 ${ok}/${tot} 题，得分率 ${pct}%${pct>=90?' · 优秀！':pct>=70?' · 良好':' · 继续加油'}`;
+      document.getElementById('starsDisplay').textContent=pct>=90?'🎓🎓🎓':pct>=70?'🎓🎓':'🎓';
+      document.getElementById('rew-coins').textContent='+'+coinGain;
+      document.getElementById('rew-xp').textContent='+'+xpGain;
+      document.getElementById('rew-acc').textContent=pct+'%';
+      document.getElementById('reviewArea').innerHTML=B.answers.map((a,i)=>`<div class="rev-item ${a.ok?'rev-ok':'rev-err'}"><div class="rev-q">Q${i+1}: ${a.q}</div><div class="rev-a">正确: <b>${a.right}</b>${!a.ok?` | 你选: <span class="wa">${a.chosen}</span>`:''}</div></div>`).join('');
+      if(pct>=90)launchConfetti();beep('win');showScreen('victoryScreen');return;
+    }
+    // Speed result
+    if(id&&id.startsWith('speed_')){
+      document.getElementById('victoryEmoji').textContent='⚡';
+      document.getElementById('victoryMsg').textContent=`计时结束！答对 ${ok} 题！`;
+      document.getElementById('starsDisplay').textContent='⚡⚡⚡';
+      document.getElementById('rew-coins').textContent='+'+coinGain;
+      document.getElementById('rew-xp').textContent='+'+xpGain;
+      document.getElementById('rew-acc').textContent=acc+'%';
+      document.getElementById('reviewArea').innerHTML='';
+      launchConfetti();beep('win');showScreen('victoryScreen');return;
+    }
+    // Survival result
+    if(id==='survival'){
+      document.getElementById('victoryEmoji').textContent='☠️';
+      document.getElementById('victoryMsg').textContent=`生存结束！答对 ${ok} 题！最高记录：${SAVE.survivalHigh} 题`;
+      document.getElementById('starsDisplay').textContent='☠️☠️☠️';
+      document.getElementById('rew-coins').textContent='+'+coinGain;
+      document.getElementById('rew-xp').textContent='+'+xpGain;
+      document.getElementById('rew-acc').textContent=acc+'%';
+      document.getElementById('reviewArea').innerHTML='';
+      beep('win');showScreen('victoryScreen');return;
+    }
+    // Rank result
+    if(id==='rank'){
+      const ri=SAVE.rankIdx;
+      document.getElementById('victoryEmoji').textContent=RANKS[ri]?RANKS[ri].icon:'🏅';
+      document.getElementById('victoryMsg').textContent=`段位赛胜利！+5积分，当前积分：${SAVE.rankPoints}，段位：${RANKS[ri]?RANKS[ri].name:''}`;
+      document.getElementById('starsDisplay').textContent='🏅🏅🏅';
+      document.getElementById('rew-coins').textContent='+'+coinGain;
+      document.getElementById('rew-xp').textContent='+'+xpGain;
+      document.getElementById('rew-acc').textContent=acc+'%';
+      document.getElementById('reviewArea').innerHTML='';
+      launchConfetti();beep('win');showScreen('victoryScreen');return;
+    }
     document.getElementById('victoryEmoji').textContent=id==='daily'?'🌟':id==='mistakes'?'📕':['🎉','🏆','⭐','🌟'][stars-1]||'🎉';
     document.getElementById('victoryMsg').textContent=id==='daily'?`今日挑战完成！答对 ${ok}/10 题！`:id==='mistakes'?`错题练习完成！答对 ${ok}/${tot} 题，已从错题本移除 ${ok} 道！`:stars===3?'完美通关！一滴血未失！':stars===2?'干得漂亮！':'艰难胜利，再练练吧！';
     document.getElementById('starsDisplay').textContent=id==='daily'?'⚡⚡⚡':id==='mistakes'?'📕📕📕':['','★☆☆','★★☆','★★★'][stars];
@@ -2059,11 +3440,21 @@ function endBattle(won){
     if(stars===3||id==='daily'||id==='mistakes')launchConfetti();
     beep('win');showScreen('victoryScreen');
   }else{
-    // Endless high score
-    if(id==='endless'){
-      if(ok>(SAVE.endlessHigh||0)){SAVE.endlessHigh=ok;persist();}
+    // Rank mode lose: -2 points
+    if(id==='rank'){
+      const minPts=RANKS[SAVE.rankIdx]?RANKS[SAVE.rankIdx].min:0;
+      SAVE.rankPoints=Math.max(minPts,(SAVE.rankPoints||0)-2);
+      persist();
     }
-    document.getElementById('defeatMsg').textContent=id==='endless'?`无尽模式结束！本次答对 ${ok} 题，最高记录：${SAVE.endlessHigh||0} 题！`:`被打倒了！答对了 ${ok}/${tot} 题，再努力！`;
+    // Endless high score
+    if(id==='endless'){if(ok>(SAVE.endlessHigh||0)){SAVE.endlessHigh=ok;persist();}}
+    // Survival high score even on lose
+    if(id==='survival'){if(ok>(SAVE.survivalHigh||0)){SAVE.survivalHigh=ok;}persist();}
+    // Speed high score even on lose
+    if(id&&id.startsWith('speed_')){const mins=parseInt(id.split('_')[1]);if(!SAVE.speedHighs)SAVE.speedHighs={1:0,3:0,5:0};if(ok>(SAVE.speedHighs[mins]||0)){SAVE.speedHighs[mins]=ok;}persist();}
+    checkBadges();persist();
+    const msgMap={endless:`无尽模式结束！本次答对 ${ok} 题，最高记录：${SAVE.endlessHigh||0} 题！`,survival:`生存结束！答对 ${ok} 题，最高记录：${SAVE.survivalHigh||0} 题！`,rank:`段位赛失败，-2积分，当前积分：${SAVE.rankPoints||0}，段位：${SAVE.rankIdx!==undefined&&RANKS[SAVE.rankIdx]?RANKS[SAVE.rankIdx].name:''}`};
+    document.getElementById('defeatMsg').textContent=msgMap[id]||`被打倒了！答对了 ${ok}/${tot} 题，再努力！`;
     document.getElementById('defeatReview').innerHTML=B.answers.map((a,i)=>`<div class="rev-item ${a.ok?'rev-ok':'rev-err'}"><div class="rev-q">Q${i+1}: ${a.q}</div><div class="rev-a">正确: <b>${a.right}</b>${!a.ok?` | 你选: <span class="wa">${a.chosen}</span>`:''}</div></div>`).join('');
     beep('lose');flashScreen('rgba(239,68,68,.5)');showScreen('defeatScreen');
   }
@@ -2091,6 +3482,12 @@ function removeMistake(idx){
   renderMistakes();
   const mc=document.getElementById('mapMistakeCount');
   if(mc)mc.textContent=SAVE.mistakes.length;
+  const rn=document.getElementById('mapRankName');
+  if(rn){const ri=SAVE.rankIdx||0;rn.textContent=(RANKS[ri]?RANKS[ri].icon+' '+RANKS[ri].name:'新手学徒');}
+  const sh=document.getElementById('mapSpeedHigh');
+  if(sh){const hs=SAVE.speedHighs||{1:0,3:0,5:0};sh.textContent=Math.max(hs[1]||0,hs[3]||0,hs[5]||0);}
+  const svh=document.getElementById('mapSurvivalHigh');
+  if(svh)svh.textContent=SAVE.survivalHigh||0;
 }
 
 // ══════════════════════════════════════
@@ -2154,6 +3551,7 @@ function practiceMistakes(){
   if(!SAVE.mistakes||!SAVE.mistakes.length){
     floatText('📕 错题本是空的！','#f87171',window.innerWidth/2-60,200);return;
   }
+  B.retryFn=practiceMistakes;
   const fakeD={id:'mistakes',name:'错题练习',sub:'Practice Your Mistakes',icon:'📕',
     monster:{name:'错题魔王',emoji:'😤'},color:'#ef4444',
     story:`共 ${SAVE.mistakes.length} 道错题，\n答对即从错题本移除！`,
@@ -2189,6 +3587,7 @@ function openDaily(){
   const pool=[];
   DUNGEONS.forEach(d=>d.qs.forEach(q=>pool.push({...q,_src:d.name})));
   const picked=pool.sort(()=>Math.random()-.5).slice(0,10);
+  B.retryFn=openDaily;
   const fakeD={id:'daily',name:'每日挑战',sub:'Daily Challenge',icon:'⚡',
     monster:{name:'今日魔王',emoji:'😈'},color:'#fbbf24',
     story:'10道随机混合题，综合测试你的英语实力！',qs:picked};
@@ -2212,6 +3611,7 @@ function openEndless(){
   const shuffled=pool.sort(()=>Math.random()-.5);
   // Repeat 5x for "infinite" feel
   const bigPool=[...shuffled,...shuffled,...shuffled,...shuffled,...shuffled];
+  B.retryFn=openEndless;
   const fakeD={id:'endless',name:'♾️ 无尽模式',sub:'Endless Survival',icon:'♾️',
     monster:{name:'无尽怪兽',emoji:'👾'},color:'#ef4444',
     story:'怪兽无穷无尽！\n坚持到最后一刻，\n看你能答对几题！（3条命，答错扣血）',qs:bigPool};
@@ -2226,9 +3626,313 @@ function openEndless(){
 
 
 // ══════════════════════════════════════
+// NEW MODES
+// ══════════════════════════════════════
+
+// ── Rank Mode ──
+function getRankFromPoints(pts){
+  let idx=0;
+  for(let i=RANKS.length-1;i>=0;i--){if(pts>=RANKS[i].min){idx=i;break;}}
+  return idx;
+}
+function openRankMode(){renderRankScreen();showScreen('rankScreen');}
+function renderRankScreen(){
+  const ri=SAVE.rankIdx||0;
+  const pts=SAVE.rankPoints||0;
+  const rank=RANKS[ri];
+  const next=RANKS[ri+1];
+  const progPct=next?Math.round((pts-rank.min)/(next.min-rank.min)*100):100;
+  const rh=document.getElementById('rankScreenBody');
+  if(!rh)return;
+  rh.innerHTML=`
+    <div class="rank-current">
+      <div style="font-size:40px">${rank.icon}</div>
+      <div class="rank-name-big">${rank.name}</div>
+      <div class="rank-pts">${pts} 积分${next?' / 下一段位需 '+next.min+' 分':' (最高段位！)'}</div>
+      <div class="rank-progress-bar"><div class="rank-progress-fill" style="width:${progPct}%"></div></div>
+      <div style="font-size:11px;color:#64748b;margin-top:4px">${progPct}% 进度</div>
+    </div>
+    <div style="padding:12px;background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.2);border-radius:10px;margin-bottom:12px;font-size:12px;color:#94a3b8;text-align:center">
+      胜利 +5积分 · 失败 -2积分（不低于当前段位下限）
+    </div>
+    <div class="rank-card">${RANKS.map((r,i)=>`
+      <div class="rank-row${i===ri?' active-rank':''}">
+        <div class="rank-badge-icon">${r.icon}</div>
+        <div class="rank-badge-name" style="${i===ri?'color:#818cf8;font-weight:900':i<ri?'color:#4ade80':''}">${r.name}</div>
+        <div class="rank-badge-pts">${r.min}分起</div>
+        ${i===ri?'<div style="font-size:10px;padding:2px 6px;background:rgba(99,102,241,.2);color:#818cf8;border-radius:8px">当前</div>':''}
+      </div>`).join('')}
+    </div>
+    <button class="title-btn" style="width:100%;margin-top:8px" onclick="startRankBattle()">⚔️ 开始段位赛</button>`;
+}
+function startRankBattle(){
+  const ri=SAVE.rankIdx||0;
+  const diff=RANKS[ri].diff||'normal';
+  const pool=[];
+  DUNGEONS.forEach(d=>d.qs.forEach(q=>pool.push({...q})));
+  let filtered;
+  if(diff==='easy')filtered=pool.filter(q=>q.lv===1);
+  else if(diff==='hard')filtered=pool.filter(q=>q.lv>=2);
+  else filtered=[...pool];
+  const picked=filtered.sort(()=>Math.random()-.5).slice(0,8);
+  B.retryFn=startRankBattle;
+  const fakeD={id:'rank',name:'段位晋级',sub:'Rank Battle',icon:'🏅',
+    monster:{name:'段位对手',emoji:'🤺'},color:'#818cf8',story:'赢得胜利，积累段位积分！',qs:picked};
+  B.dungeon=fakeD;B.difficulty=diff;
+  document.getElementById('introMonster').textContent='🤺';
+  document.getElementById('introName').textContent='🏅 段位晋级';
+  document.getElementById('introStory').textContent=`当前：${RANKS[ri].icon} ${RANKS[ri].name}\n胜利 +5积分，失败 -2积分\n赢了就能更近一步！`;
+  document.getElementById('introBest').textContent=`${SAVE.rankPoints||0}分`;
+  document.getElementById('diffWrapper').style.display='none';
+  showScreen('introScreen');
+}
+
+// ── Theme Mode ──
+function openThemeMode(){renderThemeScreen();showScreen('themeScreen');}
+function renderThemeScreen(){
+  const tb=document.getElementById('themeScreenBody');if(!tb)return;
+  tb.innerHTML=THEMES.map(t=>{
+    const locked=SAVE.lv<t.unlockLv;
+    const prog=SAVE.themeProgress&&SAVE.themeProgress[t.id];
+    const stars=prog?prog.stars:0;
+    const starStr=['☆☆☆','★☆☆','★★☆','★★★'][stars];
+    return `<div class="theme-card${locked?' locked-theme':''}" style="background:${t.color};border-color:${t.border}" onclick="${locked?'':'enterTheme(\''+t.id+'\')'}">
+      <div class="theme-icon-big">${t.icon}</div>
+      <div class="theme-info">
+        <div class="theme-name" style="color:${t.nameColor}">${t.icon} ${t.name}</div>
+        <div class="theme-desc">${locked?'需要 Lv.'+t.unlockLv+' 解锁':'点击开始主题挑战'}</div>
+        <div class="theme-stars">${locked?'':'⭐'+starStr}</div>
+      </div>
+      ${locked?`<div class="theme-lock-lbl">🔒 Lv.${t.unlockLv}</div>`:''}
+    </div>`;
+  }).join('');
+}
+function enterTheme(tid){
+  const t=THEMES.find(x=>x.id===tid);if(!t)return;
+  if(SAVE.lv<t.unlockLv){floatText('🔒 需要 Lv.'+t.unlockLv+'！','#f87171',window.innerWidth/2-60,200);return;}
+  B.retryFn=()=>enterTheme(tid);
+  const fakeD={id:'theme_'+t.id,name:t.name+'秘境',sub:t.name+' Theme',icon:t.icon,
+    monster:{name:'主题守卫',emoji:'🗿'},color:t.border.replace('rgba','rgba').replace('.35','.8'),
+    story:`${t.icon} ${t.name}主题挑战！\n考验你在${t.name}场景的英语能力！`,qs:[...t.qs]};
+  B.dungeon=fakeD;B.difficulty='normal';
+  document.getElementById('introMonster').textContent='🗿';
+  document.getElementById('introName').textContent=`${t.icon} ${t.name}秘境`;
+  document.getElementById('introStory').textContent=`${t.icon} 主题：${t.name}\n共 ${t.qs.length} 道场景题，挑战开始！`;
+  const prog=SAVE.themeProgress&&SAVE.themeProgress[t.id];
+  document.getElementById('introBest').textContent=prog?['☆☆☆','★☆☆','★★☆','★★★'][prog.stars]:'-';
+  document.getElementById('diffWrapper').style.display='none';
+  showScreen('introScreen');
+}
+
+// ── Speed Mode ──
+function openSpeedMode(){renderSpeedScreen();showScreen('speedScreen');}
+function renderSpeedScreen(){
+  const sb=document.getElementById('speedScreenBody');if(!sb)return;
+  const hs=SAVE.speedHighs||{1:0,3:0,5:0};
+  const opts=[{min:1,label:'极速冲刺',color:'rgba(245,158,11,.1)',border:'rgba(245,158,11,.4)',nc:'#fbbf24'},
+    {min:3,label:'标准速刷',color:'rgba(34,197,94,.1)',border:'rgba(34,197,94,.4)',nc:'#4ade80'},
+    {min:5,label:'超长耐力',color:'rgba(99,102,241,.1)',border:'rgba(99,102,241,.4)',nc:'#818cf8'}];
+  sb.innerHTML=opts.map(o=>`
+    <div class="speed-option" style="background:${o.color};border-color:${o.border}" onclick="startSpeedBattle(${o.min})">
+      <div class="speed-min" style="color:${o.nc}">${o.min} 分钟</div>
+      <div class="speed-label">${o.label} · 每题10秒</div>
+      <div class="speed-high" style="color:${o.nc}">最高记录：${hs[o.min]||0} 题</div>
+    </div>`).join('');
+}
+function startSpeedBattle(mins){
+  const pool=[];
+  DUNGEONS.forEach(d=>d.qs.forEach(q=>pool.push({...q})));
+  const shuffled=pool.sort(()=>Math.random()-.5);
+  const bigPool=[...shuffled,...shuffled,...shuffled,...shuffled,...shuffled];
+  B.retryFn=()=>startSpeedBattle(mins);
+  const fakeD={id:'speed_'+mins,name:`⚡ 速刷 ${mins}分钟`,sub:'Speed Mode',icon:'⚡',
+    monster:{name:'时间怪',emoji:'⏱️'},color:'#f59e0b',
+    story:`${mins}分钟速刷！每题仅10秒，看你能答对几道！`,qs:bigPool};
+  B.dungeon=fakeD;B.difficulty='normal';
+  document.getElementById('introMonster').textContent='⏱️';
+  document.getElementById('introName').textContent=`⚡ ${mins}分钟速刷`;
+  document.getElementById('introStory').textContent=`${mins}分钟内尽可能多答题！\n每题仅10秒，答错扣血\n当前最高：${(SAVE.speedHighs&&SAVE.speedHighs[mins])||0} 题`;
+  document.getElementById('introBest').textContent=((SAVE.speedHighs&&SAVE.speedHighs[mins])||0)+'题';
+  document.getElementById('diffWrapper').style.display='none';
+  showScreen('introScreen');
+}
+
+// ── MistakeLoop Mode ──
+function openMistakeLoop(){
+  if(!SAVE.mistakes||!SAVE.mistakes.length){floatText('📕 错题本是空的！','#f87171',window.innerWidth/2-60,200);return;}
+  B.loopStreaks={};
+  const allQs=[];
+  // Build repeated pool (each question can appear multiple times until 3 correct)
+  [...SAVE.mistakes,...SAVE.mistakes,...SAVE.mistakes].sort(()=>Math.random()-.5).forEach(m=>allQs.push({...m}));
+  B.retryFn=openMistakeLoop;
+  const fakeD={id:'mistakeloop',name:'错题轮回',sub:'Mistake Loop',icon:'🔁',
+    monster:{name:'轮回魔',emoji:'🔄'},color:'#ef4444',
+    story:'反复练习错题，每道连续答对3次才彻底移除！',qs:allQs};
+  B.dungeon=fakeD;B.difficulty='normal';
+  document.getElementById('introMonster').textContent='🔄';
+  document.getElementById('introName').textContent='🔁 错题轮回';
+  document.getElementById('introStory').textContent=`共 ${SAVE.mistakes.length} 道错题待轮回！\n每题连续答对3次才彻底移除\n坚持到底，彻底征服错题！`;
+  document.getElementById('introBest').textContent=SAVE.mistakes.length+'题';
+  document.getElementById('diffWrapper').style.display='none';
+  showScreen('introScreen');
+}
+
+// ── Level Mode ──
+function openLevelMode(){renderProfileScreen();showScreen('profileScreen');}
+function renderProfileScreen(){
+  const pb=document.getElementById('profileScreenBody');if(!pb)return;
+  const xpForNext=SAVE.lv*100;
+  const xpCurrent=SAVE.xp-(SAVE.lv-1)*100;
+  const xpPct=Math.min(100,Math.round(xpCurrent/xpForNext*100));
+  const earnedBadges=new Set(SAVE.badges||[]);
+  pb.innerHTML=`
+    <div class="profile-hero-box">
+      <div style="font-size:48px">🧙‍♂️</div>
+      <div class="profile-lv-big">Lv. ${SAVE.lv}</div>
+      <div style="font-size:13px;color:#94a3b8;margin-top:4px">${SAVE.xp} XP 总计</div>
+      <div class="xp-bar-wrap"><div class="xp-bar-fill" style="width:${xpPct}%"></div></div>
+      <div style="font-size:11px;color:#64748b">${xpCurrent}/${xpForNext} XP → 下一级</div>
+      <div style="display:flex;gap:16px;margin-top:12px;justify-content:center">
+        <div style="text-align:center"><div style="font-size:18px;font-weight:900;color:#fbbf24">${SAVE.coins}</div><div style="font-size:10px;color:#64748b">金币</div></div>
+        <div style="text-align:center"><div style="font-size:18px;font-weight:900;color:#818cf8">${Object.keys(SAVE.dungeons).length}</div><div style="font-size:10px;color:#64748b">通关</div></div>
+        <div style="text-align:center"><div style="font-size:18px;font-weight:900;color:#4ade80">${earnedBadges.size}</div><div style="font-size:10px;color:#64748b">勋章</div></div>
+      </div>
+    </div>
+    <div style="font-size:13px;font-weight:700;color:#94a3b8;margin-bottom:8px">🎖️ 勋章收集 (${earnedBadges.size}/${BADGES.length})</div>
+    <div class="badge-grid">${BADGES.map(b=>{
+      const earned=earnedBadges.has(b.id);
+      return `<div class="badge-item${earned?' earned':' locked-badge'}">
+        <div class="badge-icon">${earned?b.icon:'❓'}</div>
+        <div class="badge-name">${earned?b.name:'???'}</div>
+        ${earned?`<div style="font-size:9px;color:#64748b;margin-top:2px">${b.desc}</div>`:''}
+      </div>`;
+    }).join('')}</div>`;
+}
+
+// ── Exam Mode ──
+function openExamMode(){renderExamScreen();showScreen('examScreen');}
+function renderExamScreen(){
+  const eb=document.getElementById('examScreenBody');if(!eb)return;
+  eb.innerHTML=EXAMS.map(ex=>{
+    const scores=SAVE.examScores&&SAVE.examScores[ex.id];
+    const best=scores&&scores.length?Math.max(...scores):null;
+    return `<div class="exam-card" style="background:${ex.color};border-color:${ex.border}" onclick="startExam('${ex.id}')">
+      <div class="exam-icon">${ex.icon}</div>
+      <div class="exam-info">
+        <div class="exam-name" style="color:${ex.nameColor}">${ex.name}</div>
+        <div class="exam-meta">10题 · ${ex.timePerQ}秒/题 · 禁用道具</div>
+        ${best!==null?`<div class="exam-best">最高成绩：${best}/10 (${Math.round(best/10*100)}%)</div>`:'<div class="exam-best" style="color:#475569">尚未挑战</div>'}
+      </div>
+      <div style="font-size:18px">→</div>
+    </div>`;
+  }).join('');
+}
+function startExam(eid){
+  const ex=EXAMS.find(e=>e.id===eid);if(!ex)return;
+  B.retryFn=()=>startExam(eid);
+  const fakeD={id:ex.id,name:ex.name,sub:'Mock Exam',icon:ex.icon,
+    monster:{name:'考官',emoji:'👨‍🏫'},color:ex.border.replace('.35','.8'),
+    story:`${ex.icon} ${ex.name}\n共10题，每题${ex.timePerQ}秒，禁用道具\n好好发挥！`,qs:[...ex.qs]};
+  B.dungeon=fakeD;B.difficulty='normal';
+  document.getElementById('introMonster').textContent='👨‍🏫';
+  document.getElementById('introName').textContent=`${ex.icon} ${ex.name}`;
+  document.getElementById('introStory').textContent=`${ex.icon} 模拟考场\n共 10 题，每题限时 ${ex.timePerQ} 秒\n考试中禁用所有道具，专注作答！`;
+  const scores=SAVE.examScores&&SAVE.examScores[ex.id];
+  const best=scores&&scores.length?Math.max(...scores):null;
+  document.getElementById('introBest').textContent=best!==null?best+'/10':'-';
+  document.getElementById('diffWrapper').style.display='none';
+  showScreen('introScreen');
+}
+
+// ── Survival Mode ──
+function openSurvivalMode(){
+  const pool=[];
+  DUNGEONS.forEach(d=>d.qs.forEach(q=>pool.push({...q})));
+  const shuffled=pool.sort(()=>Math.random()-.5);
+  const bigPool=[...shuffled,...shuffled,...shuffled,...shuffled,...shuffled,...shuffled,...shuffled,...shuffled];
+  B.retryFn=openSurvivalMode;
+  const fakeD={id:'survival',name:'词汇生存',sub:'Survival Mode',icon:'☠️',
+    monster:{name:'生存魔王',emoji:'💀'},color:'#ef4444',
+    story:'5条命，4连击加血！\n每10题速度加快，\n看你能撑多久！',qs:bigPool};
+  B.dungeon=fakeD;B.difficulty='normal';
+  document.getElementById('introMonster').textContent='💀';
+  document.getElementById('introName').textContent='☠️ 词汇生存';
+  document.getElementById('introStory').textContent=`☠️ 生存模式\n5条命，4连击 +1HP\n每10题限时减2秒（最低8秒）\n当前最高：${SAVE.survivalHigh||0} 题`;
+  document.getElementById('introBest').textContent=(SAVE.survivalHigh||0)+'题';
+  document.getElementById('diffWrapper').style.display='none';
+  showScreen('introScreen');
+}
+
+// ── Badges ──
+function checkBadges(){
+  if(!Array.isArray(SAVE.badges))SAVE.badges=[];
+  let newOnes=[];
+  BADGES.forEach(b=>{
+    if(!SAVE.badges.includes(b.id)){
+      try{if(b.check(SAVE)){SAVE.badges.push(b.id);newOnes.push(b);}}catch(e){}
+    }
+  });
+  if(newOnes.length){
+    newOnes.forEach((b,i)=>setTimeout(()=>floatText('🎖️ 勋章解锁：'+b.name,'#fbbf24',window.innerWidth/2-80,80+i*40),300+i*600));
+    persist();
+  }
+}
+
+// ══════════════════════════════════════
 // INIT
 // ══════════════════════════════════════
 makeStars();
+// init login screen stars
+(()=>{const c=document.getElementById('starsLogin');if(!c)return;c.innerHTML=Array.from({length:50},()=>{const s=document.createElement('div');s.className='star';const sz=Math.random()*2+1;s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${(Math.random()*3+1).toFixed(1)}s;--delay:${(Math.random()*3).toFixed(1)}s`;return s.outerHTML;}).join('');})();
+renderUserList();
+showScreen('loginScreen');
 </script>
+
+<!-- ══ RANK SCREEN ══ -->
+<div class="screen mode-screen" id="rankScreen">
+  <div class="mode-header">
+    <button class="mode-back" onclick="goMap()">← 返回</button>
+    <div class="mode-title-text">🏅 段位晋级大厅</div>
+  </div>
+  <div class="mode-body" id="rankScreenBody"></div>
+</div>
+
+<!-- ══ THEME SCREEN ══ -->
+<div class="screen mode-screen" id="themeScreen">
+  <div class="mode-header">
+    <button class="mode-back" onclick="goMap()">← 返回</button>
+    <div class="mode-title-text">🌐 主题秘境</div>
+  </div>
+  <div class="mode-body" id="themeScreenBody"></div>
+</div>
+
+<!-- ══ SPEED SCREEN ══ -->
+<div class="screen mode-screen" id="speedScreen">
+  <div class="mode-header">
+    <button class="mode-back" onclick="goMap()">← 返回</button>
+    <div class="mode-title-text">⚡ 计时速刷</div>
+  </div>
+  <div class="mode-body" id="speedScreenBody">
+    <div style="text-align:center;padding:20px;font-size:13px;color:#94a3b8">选择挑战时间，在限时内尽可能多答题！每题仅 10 秒。</div>
+  </div>
+</div>
+
+<!-- ══ EXAM SCREEN ══ -->
+<div class="screen mode-screen" id="examScreen">
+  <div class="mode-header">
+    <button class="mode-back" onclick="goMap()">← 返回</button>
+    <div class="mode-title-text">📝 模拟考场</div>
+  </div>
+  <div class="mode-body" id="examScreenBody"></div>
+</div>
+
+<!-- ══ PROFILE SCREEN ══ -->
+<div class="screen mode-screen" id="profileScreen">
+  <div class="mode-header">
+    <button class="mode-back" onclick="goMap()">← 返回</button>
+    <div class="mode-title-text">🎖️ 等级养成</div>
+  </div>
+  <div class="mode-body" id="profileScreenBody"></div>
+</div>
 </body>
 </html>
