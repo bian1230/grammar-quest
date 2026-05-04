@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>⚔️ Grammar Quest</title>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>window.addEventListener('touchstart',function(){},{passive:true});</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -813,8 +811,32 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 <!-- ══ 云端连接加载遮罩 ══ -->
 <div id="fbLoadingOverlay" style="display:none;position:fixed;inset:0;z-index:99999;background:#0a0a1a;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-family:'Courier New',monospace">
   <div style="font-size:44px;animation:heroFloat 2s ease-in-out infinite">⚔️</div>
-  <div style="font-size:15px;color:#818cf8;font-weight:700;letter-spacing:2px">连接云端存档...</div>
+  <div style="font-size:15px;color:#818cf8;font-weight:700;letter-spacing:2px">加载中...</div>
   <div style="font-size:11px;color:#334155;margin-top:4px">Grammar Quest</div>
+</div>
+
+<div id="syncModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#0f0f23;border:1px solid rgba(79,70,229,.4);border-radius:16px;padding:24px;max-width:360px;width:90%;color:#e2e8f0;">
+    <div style="font-size:18px;font-weight:700;margin-bottom:4px;">☁️ 云同步设置</div>
+    <div style="font-size:12px;color:#64748b;margin-bottom:16px;">JSONBin.io · 免费 · 多端实时同步</div>
+    <div id="syncStatus" style="display:none;margin-bottom:12px;padding:8px 12px;border-radius:8px;font-size:13px;border:1px solid transparent;"></div>
+    <div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">Master Key</div>
+    <input id="syncKeyInput" type="password" placeholder="$2a$10$..." style="width:100%;box-sizing:border-box;margin-bottom:12px;padding:8px 10px;background:#1e1b4b;border:1px solid rgba(79,70,229,.3);border-radius:8px;color:#e2e8f0;font-size:13px;outline:none;">
+    <div style="font-size:12px;color:#94a3b8;margin-bottom:4px;">Bin ID <span style="color:#475569;">（第一台设备留空自动创建，其他设备填写）</span></div>
+    <input id="syncBinInput" type="text" placeholder="留空则自动创建" style="width:100%;box-sizing:border-box;margin-bottom:16px;padding:8px 10px;background:#1e1b4b;border:1px solid rgba(79,70,229,.3);border-radius:8px;color:#e2e8f0;font-size:13px;outline:none;">
+    <div id="syncBinIdDisplay" style="display:none;margin-bottom:16px;padding:10px 12px;background:rgba(79,70,229,.1);border:1px solid rgba(79,70,229,.35);border-radius:8px;">
+      <div style="font-size:11px;color:#94a3b8;margin-bottom:6px;">📋 你的 Bin ID — 在其他设备的"Bin ID"栏粘贴此值：</div>
+      <div id="syncBinIdText" onclick="copySyncBinId(this)" style="font-family:monospace;font-size:13px;color:#818cf8;word-break:break-all;cursor:pointer;padding:6px 8px;background:rgba(79,70,229,.2);border-radius:4px;"></div>
+      <div style="font-size:10px;color:#475569;margin-top:4px;">点击复制</div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="closeSyncModal()" style="flex:1;padding:10px;background:rgba(30,27,75,.8);border:1px solid rgba(79,70,229,.3);border-radius:8px;color:#94a3b8;cursor:pointer;font-size:14px;">关闭</button>
+      <button onclick="doSyncConnect()" style="flex:2;padding:10px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border:none;border-radius:8px;color:#fff;cursor:pointer;font-size:14px;font-weight:600;">连接 / 创建</button>
+    </div>
+    <div style="margin-top:12px;text-align:center;font-size:11px;color:#334155;">
+      还没账号？<a href="https://jsonbin.io" target="_blank" style="color:#818cf8;text-decoration:none;">注册 jsonbin.io（免费）</a> → API Keys → Create Access Key
+    </div>
+  </div>
 </div>
 
 <div class="screen" id="titleScreen">
@@ -828,6 +850,7 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
     <button class="title-btn secondary" onclick="openCharSelect()">🧙 选择角色</button>
     <button class="title-btn secondary" onclick="showTitleStats()">📊 我的记录</button>
     <button class="title-btn secondary" id="adminPanelBtn" onclick="openAdminPanel()" style="display:none;border-color:#ef4444;color:#f87171">⚙️ 管理员面板</button>
+    <button class="title-btn secondary" onclick="openSyncModal()" style="font-size:13px;padding:10px;">☁️ 云同步设置</button>
     <div class="title-stats" id="titleStats" style="display:none">
       <div class="t-stat"><div class="t-stat-n" id="ts-coins">0</div><div>金币</div></div>
       <div class="t-stat"><div class="t-stat-n" id="ts-lv">1</div><div>等级</div></div>
@@ -1294,61 +1317,95 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 // ══════════════════════════════════════
 // FIREBASE 云端同步配置
 // 使用步骤：
-// 1. 访问 https://console.firebase.google.com 创建项目
-// 2. 左侧选择 Realtime Database → 创建数据库（测试模式）
-// 3. 点击项目设置 → 添加应用（Web）→ 复制配置到下方
 // ══════════════════════════════════════
-const _FB_CFG={
-  apiKey:           "YOUR_API_KEY",
-  authDomain:       "YOUR_PROJECT_ID.firebaseapp.com",
-  databaseURL:      "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
-  projectId:        "YOUR_PROJECT_ID",
-  storageBucket:    "YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId:"YOUR_SENDER_ID",
-  appId:            "YOUR_APP_ID"
-};
-const _FB_PATH='gq_users';
+// CLOUD SYNC · JSONBin.io
+// ══════════════════════════════════════
+const _JB_LS_KEY='gq_jb_key';
+const _JB_LS_BIN='gq_jb_bin';
 let _userCache={};
-let _fbDB=null;
+let _jbKey='';
+let _jbBinId='';
+let _jbPushTimer=null;
 
 function getUsers(){return _userCache;}
 function saveUsers(u){
   _userCache=u;
   try{localStorage.setItem('gq_users',JSON.stringify(u));}catch(e){}
-  // update() 只更新/新增字段，不会删除其他用户数据（比 set() 更安全）
-  if(_fbDB)_fbDB.ref(_FB_PATH).update(u).catch(err=>console.warn('[FB]',err));
+  _jbPush();
 }
-function _fbRemoveUser(name){
-  // 删除用户时需要单独调 remove()，update() 无法删除 key
-  if(_fbDB)_fbDB.ref(_FB_PATH+'/'+name).remove().catch(err=>console.warn('[FB remove]',err));
-}
-async function _initFirebase(){
-  // 先从 localStorage 加载（保证离线也能秒开）
-  try{_userCache=JSON.parse(localStorage.getItem('gq_users')||'{}');}catch(e){}
-  if(!_FB_CFG.apiKey||_FB_CFG.apiKey==='YOUR_API_KEY'){
-    console.warn('[GQ] Firebase 未配置，仅使用本地存储');return;
-  }
+function _fbRemoveUser(){}
+
+async function _jbPush(){
+  if(!_jbKey||!_jbBinId)return;
   try{
-    if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);
-    _fbDB=firebase.database();
-    // 首次拉取全量数据
-    const snap=await _fbDB.ref(_FB_PATH).once('value');
-    _userCache=snap.val()||{};
-    try{localStorage.setItem('gq_users',JSON.stringify(_userCache));}catch(e){}
-    // 实时监听：任何设备写入都会推送过来
-    _fbDB.ref(_FB_PATH).on('value',s=>{
-      _userCache=s.val()||{};
-      try{localStorage.setItem('gq_users',JSON.stringify(_userCache));}catch(e){}
-      const adEl=document.getElementById('adminScreen');
-      if(adEl&&adEl.classList.contains('active'))renderAdminPanel();
-      const lgEl=document.getElementById('loginScreen');
-      if(lgEl&&lgEl.classList.contains('active'))renderUserList();
+    await fetch('https://api.jsonbin.io/v3/b/'+_jbBinId,{
+      method:'PUT',
+      headers:{'Content-Type':'application/json','X-Master-Key':_jbKey},
+      body:JSON.stringify(_userCache)
     });
-    console.log('[GQ] Firebase 连接成功 ✅');
-  }catch(err){
-    console.warn('[GQ] Firebase 连接失败，使用本地存储:',err.message);
+  }catch(e){console.warn('[JB push]',e);}
+}
+function _jbPushDebounced(){
+  clearTimeout(_jbPushTimer);
+  _jbPushTimer=setTimeout(_jbPush,2000);
+}
+async function _jbPull(){
+  if(!_jbKey||!_jbBinId)return false;
+  try{
+    const r=await fetch('https://api.jsonbin.io/v3/b/'+_jbBinId+'/latest',{
+      headers:{'X-Master-Key':_jbKey}
+    });
+    if(!r.ok)return false;
+    const d=await r.json();
+    _userCache=d.record||{};
+    try{localStorage.setItem('gq_users',JSON.stringify(_userCache));}catch(e){}
+    // 刷新当前登录用户的存档
+    if(typeof CURRENT_USER!=='undefined'&&CURRENT_USER&&_userCache[CURRENT_USER]){
+      if(typeof SAVE!=='undefined')Object.assign(SAVE,_userCache[CURRENT_USER]);
+    }
+    // 刷新登录页用户列表
+    const lgEl=document.getElementById('loginScreen');
+    if(lgEl&&lgEl.classList.contains('active')&&typeof renderUserList==='function')renderUserList();
+    const adEl=document.getElementById('adminScreen');
+    if(adEl&&adEl.classList.contains('active')&&typeof renderAdminPanel==='function')renderAdminPanel();
+    return true;
+  }catch(e){console.warn('[JB pull]',e);return false;}
+}
+async function _jbConnect(key,binId){
+  if(!binId){
+    const r=await fetch('https://api.jsonbin.io/v3/b',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Master-Key':key,'X-Bin-Name':'grammar-quest-users','X-Bin-Private':'true'},
+      body:JSON.stringify(_userCache)
+    });
+    if(!r.ok){const e=await r.json();throw new Error(e.message||String(r.status));}
+    const d=await r.json();
+    binId=d.metadata.id;
+  }
+  const rv=await fetch('https://api.jsonbin.io/v3/b/'+binId+'/latest',{headers:{'X-Master-Key':key}});
+  if(!rv.ok){const e=await rv.json();throw new Error(e.message||String(rv.status));}
+  const dv=await rv.json();
+  _jbKey=key;_jbBinId=binId;
+  localStorage.setItem(_JB_LS_KEY,key);
+  localStorage.setItem(_JB_LS_BIN,binId);
+  const cloud=dv.record||{};
+  _userCache=Object.assign({},_userCache,cloud);
+  try{localStorage.setItem('gq_users',JSON.stringify(_userCache));}catch(e){}
+  return binId;
+}
+async function _initSync(){
+  try{_userCache=JSON.parse(localStorage.getItem('gq_users')||'{}');}catch(e){}
+  _jbKey=localStorage.getItem(_JB_LS_KEY)||'$2a$10$G0gb7RVETkF4xt7koye3fuOkvzMk0l5VVel4pjWewi1w9QuSm8e2i';
+  _jbBinId=localStorage.getItem(_JB_LS_BIN)||'69f88e9f856a682189a4d219';
+  if(_jbKey&&_jbBinId){
+    const ok=await _jbPull();
+    if(ok)console.log('[GQ] 云同步已连接 ✅');
+    else console.warn('[GQ] 云同步拉取失败，使用本地数据');
   }
 }
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible'&&_jbKey&&_jbBinId)_jbPull();
+});
 
 // ══════════════════════════════════════
 // DATA
@@ -3506,7 +3563,7 @@ function persist(){
   _userCache[CURRENT_USER]=SAVE;
   try{localStorage.setItem('gq_users',JSON.stringify(_userCache));}catch(e){}
   // 只写当前用户路径，避免多设备同时写导致互相覆盖
-  if(_fbDB)_fbDB.ref(_FB_PATH+'/'+CURRENT_USER).set(SAVE).catch(e=>console.warn('[FB persist]',e));
+  _jbPushDebounced();
 }
 
 // Battle state
@@ -4938,6 +4995,49 @@ function checkBadges(){
 }
 
 // ══════════════════════════════════════
+// SYNC MODAL
+// ══════════════════════════════════════
+function openSyncModal(){
+  const m=document.getElementById('syncModal');
+  m.style.display='flex';
+  document.getElementById('syncKeyInput').value=_jbKey||'';
+  document.getElementById('syncBinInput').value=_jbBinId||'';
+  document.getElementById('syncStatus').style.display='none';
+  const disp=document.getElementById('syncBinIdDisplay');
+  if(_jbBinId){
+    document.getElementById('syncBinIdText').textContent=_jbBinId;
+    disp.style.display='block';
+  }else{disp.style.display='none';}
+}
+function closeSyncModal(){document.getElementById('syncModal').style.display='none';}
+function setSyncStatus(msg,type){
+  const el=document.getElementById('syncStatus');
+  el.style.display='block';el.textContent=msg;
+  const c={success:['rgba(74,222,128,.15)','#4ade80','rgba(74,222,128,.3)'],error:['rgba(239,68,68,.15)','#f87171','rgba(239,68,68,.3)'],info:['rgba(79,70,229,.15)','#818cf8','rgba(79,70,229,.3)']}[type]||['rgba(79,70,229,.15)','#818cf8','rgba(79,70,229,.3)'];
+  el.style.background=c[0];el.style.color=c[1];el.style.borderColor=c[2];
+}
+async function doSyncConnect(){
+  const key=document.getElementById('syncKeyInput').value.trim();
+  const binId=document.getElementById('syncBinInput').value.trim();
+  if(!key){setSyncStatus('请先填写 Master Key','error');return;}
+  setSyncStatus('连接中...','info');
+  try{
+    const id=await _jbConnect(key,binId||null);
+    document.getElementById('syncBinIdText').textContent=id;
+    document.getElementById('syncBinIdDisplay').style.display='block';
+    setSyncStatus('✅ 连接成功！数据已同步','success');
+    renderUserList();
+  }catch(e){setSyncStatus('❌ 连接失败：'+e.message,'error');}
+}
+function copySyncBinId(el){
+  const txt=el.textContent;
+  navigator.clipboard.writeText(txt).then(()=>{
+    el.textContent='✅ 已复制！';
+    setTimeout(()=>el.textContent=txt,1500);
+  });
+}
+
+// ══════════════════════════════════════
 // INIT
 // ══════════════════════════════════════
 makeStars();
@@ -4945,7 +5045,7 @@ makeStars();
 (async function(){
   const ov=document.getElementById('fbLoadingOverlay');
   if(ov)ov.style.display='flex';
-  await _initFirebase();
+  await _initSync();
   if(ov)ov.style.display='none';
   renderUserList();
   try{
