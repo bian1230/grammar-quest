@@ -850,7 +850,7 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
     <button class="title-btn secondary" onclick="openCharSelect()">🧙 选择角色</button>
     <button class="title-btn secondary" onclick="showTitleStats()">📊 我的记录</button>
     <button class="title-btn secondary" id="adminPanelBtn" onclick="openAdminPanel()" style="display:none;border-color:#ef4444;color:#f87171">⚙️ 管理员面板</button>
-    <button class="title-btn secondary" onclick="openSyncModal()" style="font-size:13px;padding:10px;">☁️ 云同步设置</button>
+    <button class="title-btn secondary" id="syncSettingBtn" onclick="openSyncModal()" style="display:none;font-size:13px;padding:10px;">☁️ 云同步设置</button>
     <div class="title-stats" id="titleStats" style="display:none">
       <div class="t-stat"><div class="t-stat-n" id="ts-coins">0</div><div>金币</div></div>
       <div class="t-stat"><div class="t-stat-n" id="ts-lv">1</div><div>等级</div></div>
@@ -1351,25 +1351,26 @@ function _jbPushDebounced(){
 }
 async function _jbPull(){
   if(!_jbKey||!_jbBinId)return false;
+  const ctrl=new AbortController();
+  const tid=setTimeout(()=>ctrl.abort(),6000);
   try{
     const r=await fetch('https://api.jsonbin.io/v3/b/'+_jbBinId+'/latest',{
-      headers:{'X-Master-Key':_jbKey}
+      headers:{'X-Master-Key':_jbKey},signal:ctrl.signal
     });
+    clearTimeout(tid);
     if(!r.ok)return false;
     const d=await r.json();
     _userCache=d.record||{};
     try{localStorage.setItem('gq_users',JSON.stringify(_userCache));}catch(e){}
-    // 刷新当前登录用户的存档
     if(typeof CURRENT_USER!=='undefined'&&CURRENT_USER&&_userCache[CURRENT_USER]){
       if(typeof SAVE!=='undefined')Object.assign(SAVE,_userCache[CURRENT_USER]);
     }
-    // 刷新登录页用户列表
     const lgEl=document.getElementById('loginScreen');
     if(lgEl&&lgEl.classList.contains('active')&&typeof renderUserList==='function')renderUserList();
     const adEl=document.getElementById('adminScreen');
     if(adEl&&adEl.classList.contains('active')&&typeof renderAdminPanel==='function')renderAdminPanel();
     return true;
-  }catch(e){console.warn('[JB pull]',e);return false;}
+  }catch(e){clearTimeout(tid);if(e.name!=='AbortError')console.warn('[JB pull]',e);return false;}
 }
 async function _jbConnect(key,binId){
   if(!binId){
@@ -1393,14 +1394,13 @@ async function _jbConnect(key,binId){
   try{localStorage.setItem('gq_users',JSON.stringify(_userCache));}catch(e){}
   return binId;
 }
-async function _initSync(){
+function _initSync(){
   try{_userCache=JSON.parse(localStorage.getItem('gq_users')||'{}');}catch(e){}
   _jbKey=localStorage.getItem(_JB_LS_KEY)||'$2a$10$G0gb7RVETkF4xt7koye3fuOkvzMk0l5VVel4pjWewi1w9QuSm8e2i';
   _jbBinId=localStorage.getItem(_JB_LS_BIN)||'69f88e9f856a682189a4d219';
+  // 后台静默同步，不阻塞启动
   if(_jbKey&&_jbBinId){
-    const ok=await _jbPull();
-    if(ok)console.log('[GQ] 云同步已连接 ✅');
-    else console.warn('[GQ] 云同步拉取失败，使用本地数据');
+    _jbPull().then(ok=>{if(ok)console.log('[GQ] 云同步完成 ✅');});
   }
 }
 document.addEventListener('visibilitychange',()=>{
@@ -2354,6 +2354,7 @@ const DUNGEONS=[
 {q:"For fear that anyone ___ the plan, he kept it secret.",lv:3,o:["discovers","discover","might discover","discovered"],a:2,e:"for fear that + might/should + 动词原形，表示担心某事发生 → might discover。"},
 {q:"The judge ordered that the documents ___ sealed immediately.",lv:3,o:["are","be","were","being"],a:1,e:"order that + 动词原形被动（虚拟语气）→ be sealed。"},
 {q:"___ it not for your help, I would have failed completely.",lv:3,o:["Were","Had","Should","If"],a:0,e:"Were it not for = If it were not for（正式倒装，表示现在假设）。"},
+{q:"It is high time the government ___ action on climate change.",lv:3,o:["takes","took","has taken","will take"],a:1,e:"It is high time (that) + 过去式虚拟语气，表示「早该...了」→ took。"},
    ]},
   {id:21,name:"词形变化工厂",sub:"Word Formation",icon:"🏭",
    monster:{name:"词根怪",emoji:"⚙️"},color:"#f59e0b",
@@ -2442,6 +2443,8 @@ const DUNGEONS=[
 {q:"Such ___ her beauty that poets wrote verses about her.",lv:3,o:["is","was","were","has been"],a:1,e:"Such was...that...（如此...以至于...）倒装强调 → Such was her beauty that。"},
 {q:"Under no circumstances ___ leave the building without permission.",lv:3,o:["you should","should you","you must","must you"],a:1,e:"Under no circumstances 句首否定状语，主谓倒装 → should you（情态动词前置）。"},
 {q:"___ do many people realise how much effort it takes.",lv:3,o:["Little","Hardly","Seldom","Rarely"],a:0,e:"Little do people realise...（人们几乎不知道...）→ Little，强调否定倒装。"},
+{q:"It is to this research ___ we owe many of today's medical breakthroughs.",lv:3,o:["that","which","what","where"],a:0,e:"强调句强调介词短语：It is to...that（正是凭借...我们才有...）→ that。"},
+{q:"Only through constant practice ___ true mastery of any skill.",lv:3,o:["do you achieve","you achieve","you can achieve","achieving"],a:0,e:"Only + 介词短语句首，主谓倒装：助动词 do 前置 → do you achieve。"},
    ]},
   {id:23,name:"易混词终极迷宫",sub:"Confusing Words & False Friends",icon:"🪄",
    monster:{name:"混淆魔法师",emoji:"🎭"},color:"#dc2626",
@@ -2486,6 +2489,7 @@ const DUNGEONS=[
 {q:"He ___ from fatigue but pushed through to the finish line.",lv:3,o:["suffered","struggled","laboured","all correct"],a:3,e:"suffered from fatigue、struggled with fatigue 均可；laboured under fatigue 更书面，all correct。"},
 {q:"The proposal was ___ to the board for consideration.",lv:3,o:["presented","submitted","put forward","all correct"],a:3,e:"presented、submitted、put forward 均可表示「向董事会提出/提交」，all correct。"},
 {q:"Her dedication to the cause ___ everyone who worked with her.",lv:3,o:["inspired","motivated","impressed","all correct"],a:3,e:"inspired、motivated、impressed 均可描述对他人的积极影响，all correct。"},
+{q:"The scientist ___ a new theory that challenged decades of conventional thinking.",lv:3,o:["proposed","put forward","advanced","all correct"],a:3,e:"propose、put forward、advance 均可表示「提出/倡导（理论）」，all correct。"},
    ]},
   {id:24,name:"句子改写竞技场",sub:"Sentence Transformation",icon:"⚡",
    monster:{name:"终极挑战者",emoji:"🏆"},color:"#fbbf24",
@@ -2529,6 +2533,8 @@ const DUNGEONS=[
 {q:"It wasn't until she read the article that she understood. → She didn't understand ___ she read the article.",lv:3,o:["until","when","although","unless"],a:0,e:"It wasn't until...that → She didn't...until（改写强调句）→ until she read。"},
 {q:"Assuming that you are right, what should we do next? → ___ you are right, what should we do?",lv:3,o:["If","Unless","Although","Provided"],a:0,e:"assuming that（假设）→ if（条件从句）→ If you are right。"},
 {q:"She not only finished first but also broke the record. → In addition to ___ first, she also broke the record.",lv:3,o:["finishing","finished","to finish","finish"],a:0,e:"not only...but also → in addition to + -ing（介词后接动名词）→ finishing first。"},
+{q:"It is pointless to argue about past decisions. → There is no point ___ about past decisions.",lv:3,o:["to argue","in arguing","of arguing","for arguing"],a:1,e:"it is pointless to do → there is no point in doing（固定搭配 no point in + -ing）→ in arguing。"},
+{q:"If the data had been accurate, we would have reached a different conclusion. → ___ the data been accurate, we would have reached a different conclusion.",lv:3,o:["Had","Were","Should","Did"],a:0,e:"If + 过去完成时 → 省略 if 的倒装条件句：Had + 主语 + 过去分词 → Had the data been accurate。"},
    ]},
 ];
 
@@ -3128,6 +3134,7 @@ function loginAs(name){
   const un=document.getElementById('mapUsername');if(un)un.textContent=name+(SAVE._isAdmin?' 👑':'');
   updTitleHero();
   const ab=document.getElementById('adminPanelBtn');if(ab)ab.style.display=SAVE._isAdmin?'block':'none';
+  const sb=document.getElementById('syncSettingBtn');if(sb)sb.style.display=SAVE._isAdmin?'block':'none';
   localStorage.setItem('gq_autologin',JSON.stringify({u:name,t:Date.now()}));
   showScreen('titleScreen');
 }
@@ -3227,6 +3234,7 @@ function logout(){
   CURRENT_USER='';
   localStorage.removeItem('gq_autologin');
   const ab=document.getElementById('adminPanelBtn');if(ab)ab.style.display='none';
+  const sb=document.getElementById('syncSettingBtn');if(sb)sb.style.display='none';
   renderUserList();
   showScreen('loginScreen');
 }
@@ -3946,7 +3954,18 @@ function startBattle(){
     if(diff==='easy') pool=d.qs.filter(q=>q.lv===1);
     else if(diff==='hard') pool=d.qs.filter(q=>q.lv>=2);
     else pool=[...d.qs];
-    picked=pool.sort(()=>Math.random()-.5).slice(0,8);
+    if(pool.length<8) pool=[...d.qs]; // 题量不足时用全库
+    // 不重复出题：从未见过的题里抽，全部见完后自动重置
+    const sid2=String(d.id);
+    if(!SAVE.dungeons[sid2])SAVE.dungeons[sid2]={};
+    let seen=SAVE.dungeons[sid2].seen||[];
+    const allIdx=pool.map(q=>d.qs.indexOf(q));
+    let unseen=allIdx.filter(i=>!seen.includes(i));
+    if(unseen.length<8){seen=[];unseen=allIdx;} // 全部刷完，重置
+    const pickIdx=unseen.sort(()=>Math.random()-.5).slice(0,8);
+    picked=pickIdx.map(i=>d.qs[i]);
+    SAVE.dungeons[sid2].seen=[...new Set([...seen,...pickIdx])];
+    persist();
   }
   const sid=String(d.id);
   const isSurvival=sid==='survival';
@@ -5042,11 +5061,8 @@ function copySyncBinId(el){
 // ══════════════════════════════════════
 makeStars();
 (()=>{const c=document.getElementById('starsLogin');if(!c)return;c.innerHTML=Array.from({length:50},()=>{const s=document.createElement('div');s.className='star';const sz=Math.random()*2+1;s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${(Math.random()*3+1).toFixed(1)}s;--delay:${(Math.random()*3).toFixed(1)}s`;return s.outerHTML;}).join('');})();
-(async function(){
-  const ov=document.getElementById('fbLoadingOverlay');
-  if(ov)ov.style.display='flex';
-  await _initSync();
-  if(ov)ov.style.display='none';
+(function(){
+  _initSync();
   renderUserList();
   try{
     const al=localStorage.getItem('gq_autologin');
