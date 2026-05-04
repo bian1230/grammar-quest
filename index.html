@@ -53,11 +53,45 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
    MAP SCREEN
 ═══════════════════════════ */
 #mapScreen{background:radial-gradient(ellipse at top,#1e1b4b 0%,#0a0f1a 60%);}
-.map-header{width:100%;max-width:600px;padding:16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.map-header{width:100%;max-width:600px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-shrink:0;}
+.map-home-btn{flex-shrink:0;width:34px;height:34px;border-radius:8px;border:1px solid rgba(79,70,229,.35);background:rgba(79,70,229,.12);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;}
+.map-home-btn:active{background:rgba(79,70,229,.3);}
 .map-title{font-size:18px;font-weight:700;color:#818cf8;letter-spacing:2px;}
 .hud-coins{display:flex;align-items:center;gap:6px;background:rgba(202,138,4,.15);border:1px solid rgba(202,138,4,.4);padding:6px 12px;border-radius:20px;font-size:14px;font-weight:700;color:#fbbf24;}
 .hud-xp{display:flex;align-items:center;gap:6px;background:rgba(79,70,229,.15);border:1px solid rgba(79,70,229,.4);padding:6px 12px;border-radius:20px;font-size:14px;font-weight:700;color:#818cf8;}
-.map-body{width:100%;max-width:600px;padding:8px 16px 80px;overflow-y:auto;flex:1;}
+.map-body{width:100%;max-width:600px;overflow-y:auto;flex:1;min-height:0;position:relative;}
+#tab-map{overflow-y:hidden;}
+/* ─── Dungeon List ─── */
+.dung-list{width:100%;max-width:600px;padding:4px 12px 24px;}
+.world-sect-head{display:flex;align-items:center;gap:8px;padding:14px 4px 7px;margin-top:2px;}
+.wsh-texts{flex:1;min-width:0;}.wsh-name{font-size:13px;font-weight:700;letter-spacing:.5px;}.wsh-desc{font-size:10px;color:#475569;margin-top:1px;}
+.wsh-prog{font-size:12px;font-weight:700;flex-shrink:0;}
+.wsh-div{height:1px;margin:0 0 5px;}
+.dung-row{display:flex;align-items:center;gap:10px;padding:11px 10px;border-radius:10px;margin-bottom:4px;border:1px solid transparent;transition:background .15s;}
+.dung-row.dr-frontier{border-color:rgba(99,102,241,.3);background:rgba(99,102,241,.06);cursor:pointer;}
+.dung-row.dr-done{border-color:rgba(255,255,255,.07);cursor:pointer;}
+.dung-row.dr-done:active,.dung-row.dr-frontier:active{background:rgba(255,255,255,.07);}
+.dung-row.dr-locked,.dung-row.dr-paylocked{opacity:.28;pointer-events:none;}
+.dr-num{font-size:10px;color:#475569;width:16px;text-align:right;flex-shrink:0;}
+.dr-icon{font-size:26px;width:36px;text-align:center;flex-shrink:0;line-height:1;}
+.dr-info{flex:1;min-width:0;}.dr-name{font-size:13px;font-weight:600;color:#e2e8f0;}.dr-sub{font-size:10px;color:#475569;margin-top:2px;}
+.dr-right{flex-shrink:0;min-width:44px;text-align:right;}
+.dr-stars{font-size:12px;color:#fbbf24;letter-spacing:.5px;}
+.dr-challenge{font-size:11px;font-weight:700;color:#818cf8;}
+/* ─── World Reveal Overlay ─── */
+#worldRevealOverlay{position:fixed;inset:0;z-index:9999;background:rgba(4,4,18,.96);display:none;flex-direction:column;align-items:center;justify-content:center;padding:20px 16px;overflow-y:auto;}
+.wro-title{font-size:20px;font-weight:700;color:#fbbf24;text-align:center;margin-bottom:6px;}
+.wro-sub{font-size:13px;color:#94a3b8;text-align:center;margin-bottom:22px;}
+.wro-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:340px;}
+.wro-world{border-radius:14px;padding:16px 12px;text-align:center;border:1.5px solid rgba(255,255,255,.07);position:relative;overflow:hidden;}
+.wro-world.wro-locked{filter:grayscale(1);opacity:.18;}
+.wro-world.wro-active{animation:wroGlow .7s ease-out both;}
+.wro-world.wro-full{border-color:rgba(251,191,36,.4);}
+.wro-last{grid-column:1/-1;}
+.wro-wicon{font-size:28px;margin-bottom:4px;}.wro-wname{font-size:12px;font-weight:700;letter-spacing:.5px;}.wro-wprog{font-size:10px;color:rgba(255,255,255,.45);margin-top:3px;}
+.wro-bar{height:3px;border-radius:2px;background:rgba(255,255,255,.1);margin-top:8px;}
+.wro-bar-fill{height:100%;border-radius:2px;transition:width .6s ease .15s;}
+@keyframes wroGlow{0%{transform:scale(.93);box-shadow:none;}50%{transform:scale(1.05);box-shadow:0 0 30px var(--wc,#818cf8),0 0 8px rgba(255,255,255,.15);}100%{transform:scale(1);box-shadow:0 0 12px var(--wc,#818cf8);}}
 .shop-bar{width:100%;max-width:600px;padding:10px 16px;display:flex;gap:8px;background:rgba(10,10,26,.95);border-top:1px solid rgba(79,70,229,.3);position:sticky;bottom:0;}
 .shop-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px;background:rgba(15,15,35,.8);border:1px solid rgba(79,70,229,.3);border-radius:8px;cursor:pointer;transition:all .2s;font-size:11px;color:#94a3b8;}
 .shop-item:hover{border-color:#818cf8;color:#e2e8f0;}
@@ -79,6 +113,34 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 .dc-lock{font-size:22px;margin-left:auto;flex-shrink:0;}
 .dc-badge{position:absolute;top:8px;right:8px;font-size:10px;padding:2px 6px;border-radius:4px;font-weight:700;}
 
+/* ═══ SNAKE PATH + WORLD NAV ═══ */
+.snake-svg{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;}
+.snake-node{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;z-index:3;}
+.sn-dot{width:64px;height:64px;border-radius:50%;border:3px solid rgba(255,255,255,.12);background:rgba(6,8,20,.82);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;font-size:27px;position:relative;transition:all .3s;}
+.sn-name{font-size:9px;color:rgba(255,255,255,.45);text-align:center;max-width:72px;line-height:1.2;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;text-shadow:0 1px 4px #000;}
+.sn-stars{position:absolute;top:-9px;left:50%;transform:translateX(-50%);font-size:7px;color:#fbbf24;white-space:nowrap;}
+.sn-num{position:absolute;bottom:-4px;right:-4px;width:16px;height:16px;border-radius:50%;background:rgba(15,20,40,.9);border:1.5px solid rgba(255,255,255,.2);font-size:8px;font-weight:700;color:rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;line-height:1;}
+.sn-boss-crown{position:absolute;top:-22px;left:50%;transform:translateX(-50%);font-size:16px;filter:drop-shadow(0 0 6px #fbbf24);animation:crownFloat 2s ease-in-out infinite alternate;}
+.snake-node.done .sn-dot{border-color:var(--nc,#818cf8);background:rgba(6,8,20,.9);box-shadow:0 0 16px var(--nc,#818cf8),0 0 6px rgba(0,0,0,.6);}
+.snake-node.done .sn-name{color:rgba(255,255,255,.55);}
+.snake-node.frontier .sn-dot{border-color:var(--nc,#818cf8);background:rgba(6,8,20,.9);box-shadow:0 0 8px var(--nc,#818cf8);animation:snPulse 1.4s ease-in-out infinite alternate;}
+.snake-node.frontier .sn-name{color:rgba(255,255,255,.75);}
+.snake-node.locked .sn-dot,.snake-node.paylocked .sn-dot{filter:grayscale(1);opacity:.22;}
+.snake-world-tag{position:absolute;top:7px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;letter-spacing:1.5px;pointer-events:none;white-space:nowrap;z-index:2;text-shadow:0 0 12px currentColor;}
+@keyframes crownFloat{from{transform:translateX(-50%) translateY(0);}to{transform:translateX(-50%) translateY(-4px);}}
+@keyframes snPulse{from{box-shadow:0 0 8px rgba(129,140,248,.35);}to{box-shadow:0 0 22px #818cf8,0 0 36px rgba(129,140,248,.55);}}
+@keyframes snUnlock{0%{transform:scale(0) rotate(-20deg);opacity:0;}55%{transform:scale(1.3) rotate(5deg);}80%{transform:scale(.94);}100%{transform:scale(1);opacity:1;}}
+.snake-node.just-unlocked .sn-dot{animation:snUnlock .75s cubic-bezier(.2,.8,.3,1) both;}
+.world-nav-bar{width:100%;max-width:600px;display:flex;background:rgba(6,6,18,.98);border-top:1px solid rgba(79,70,229,.22);flex-shrink:0;z-index:10;}
+.world-nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 2px 4px;cursor:pointer;transition:all .2s;border-top:2.5px solid transparent;}
+.world-nav-item.active{border-top-color:var(--wc,#818cf8);}
+.world-nav-item.wni-locked{opacity:.18;pointer-events:none;}
+.wni-icon{font-size:19px;line-height:1;}
+.wni-name{font-size:7px;color:#334155;letter-spacing:.3px;}
+.wni-prog{font-size:6px;color:#334155;opacity:.7;}
+.world-nav-item.active .wni-name{color:var(--wc,#818cf8);}
+.world-nav-item.active .wni-prog{color:var(--wc,#818cf8);}
+
 /* ═══════════════════════════
    BATTLE SCREEN
 ═══════════════════════════ */
@@ -94,7 +156,9 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 #modeBanner.mode-mistakes{padding:5px 16px;background:rgba(192,38,211,.1);color:#e879f9;border-bottom:1px solid rgba(192,38,211,.2);}
 #modeBanner.mode-exam{padding:5px 16px;background:rgba(99,102,241,.08);color:#818cf8;border-bottom:1px solid rgba(99,102,241,.2);}
 .src-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(192,38,211,.12);color:#e879f9;border:1px solid rgba(192,38,211,.3);margin-bottom:5px;}
-.battle-header{width:100%;max-width:600px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,26,.9);border-bottom:1px solid rgba(79,70,229,.2);flex-shrink:0;}
+.battle-header{width:100%;max-width:600px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,10,26,.9);border-bottom:1px solid rgba(79,70,229,.2);flex-shrink:0;gap:6px;}
+.b-back-btn{flex-shrink:0;width:32px;height:32px;border-radius:8px;border:1px solid rgba(79,70,229,.35);background:rgba(79,70,229,.12);color:#818cf8;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;transition:background .15s;}
+.b-back-btn:active{background:rgba(79,70,229,.3);}
 .b-hearts{display:flex;gap:4px;font-size:22px;}
 .b-combo{font-size:13px;font-weight:700;color:#f59e0b;min-width:60px;}
 .b-qnum{font-size:12px;color:#64748b;}
@@ -106,7 +170,7 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 .timer-bar-fill.urgent{background:linear-gradient(90deg,#dc2626,#f97316);}
 
 /* Battle arena */
-.battle-arena{width:100%;max-width:600px;padding:16px;display:flex;align-items:flex-end;justify-content:space-between;min-height:220px;flex-shrink:0;overflow:visible;}
+.battle-arena{width:100%;padding:16px;display:flex;align-items:flex-end;justify-content:space-between;min-height:220px;flex-shrink:0;overflow:visible;}
 .fighter{display:flex;flex-direction:column;align-items:center;gap:8px;width:140px;}
 .fighter-name{font-size:11px;color:#94a3b8;text-align:center;font-weight:700;letter-spacing:1px;}
 .fighter-emoji{font-size:90px;line-height:1;display:block;transform-origin:bottom center;}
@@ -198,7 +262,7 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 .dungeon-banner-sub{font-size:11px;color:#94a3b8;margin-top:2px;}
 
 /* Question panel */
-.q-panel{width:100%;max-width:600px;padding:14px 16px;flex:1;display:flex;flex-direction:column;gap:12px;}
+.q-panel{width:100%;padding:14px 16px;flex:1;display:flex;flex-direction:column;gap:12px;}
 .q-text{font-size:18px;font-weight:700;line-height:1.6;color:#e2e8f0;text-align:center;padding:16px;background:rgba(79,70,229,.08);border:1px solid rgba(79,70,229,.2);border-radius:10px;}
 .q-blank{color:#818cf8;border-bottom:2px solid #818cf8;padding:0 6px;}
 .opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
@@ -229,14 +293,22 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 .next-btn:hover{transform:translateY(-2px);box-shadow:0 6px 0 #312e81,0 0 24px rgba(79,70,229,.6);}
 
 /* Power-up bar */
-.powerup-bar{width:100%;max-width:600px;display:flex;gap:6px;padding:8px 16px;border-top:1px solid rgba(79,70,229,.15);flex-shrink:0;overflow-x:auto;scrollbar-width:none;}
-.powerup-bar::-webkit-scrollbar{display:none;}
-.pu-btn{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:4px;padding:7px 10px;background:rgba(15,15,35,.8);border:1px solid rgba(79,70,229,.3);border-radius:8px;cursor:pointer;font-size:11px;color:#94a3b8;transition:all .2s;font-family:'Courier New',monospace;white-space:nowrap;}
-.pu-btn:hover:not(:disabled){border-color:#818cf8;color:#e2e8f0;}
-.pu-btn:disabled{opacity:.3;cursor:not-allowed;}
-.pu-cnt{background:#4f46e5;color:#fff;border-radius:10px;padding:1px 5px;font-size:10px;font-weight:700;}
-.pu-btn.pu-rare{border-color:rgba(129,140,248,.4);}
-.pu-btn.pu-epic{border-color:rgba(244,114,182,.4);}
+.battle-main{display:flex;flex:1;overflow:hidden;width:100%;max-width:600px;}
+.battle-content{flex:1;display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;min-width:0;-webkit-overflow-scrolling:touch;}
+.powerup-bottom{width:100%;max-width:600px;display:flex;flex-direction:row;gap:8px;padding:8px 12px;overflow-x:auto;overflow-y:hidden;background:rgba(5,5,18,.92);border-top:1px solid rgba(79,70,229,.22);flex-shrink:0;scrollbar-width:none;scroll-snap-type:x mandatory;-webkit-mask-image:linear-gradient(to right,black 80%,transparent 100%);mask-image:linear-gradient(to right,black 80%,transparent 100%);}
+.powerup-bottom::-webkit-scrollbar{display:none;}
+.pu-btn{min-width:64px;height:66px;flex-shrink:0;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:6px 4px;background:rgba(15,15,35,.85);border:1px solid rgba(79,70,229,.3);border-radius:10px;cursor:pointer;color:#94a3b8;transition:all .2s;font-family:'Courier New',monospace;touch-action:manipulation;-webkit-tap-highlight-color:rgba(129,140,248,.2);}
+.pu-zero{display:none!important;}
+.pu-btn:hover:not(:disabled){border-color:#818cf8;background:rgba(79,70,229,.18);color:#e2e8f0;}
+.pu-btn:disabled{opacity:.25;cursor:not-allowed;}
+.pu-emoji{font-size:22px;line-height:1;}
+.pu-name{font-size:9px;color:#64748b;text-align:center;line-height:1.2;letter-spacing:.2px;}
+.pu-cnt{background:#4f46e5;color:#fff;border-radius:8px;padding:1px 6px;font-size:11px;font-weight:700;min-width:18px;text-align:center;line-height:1.5;}
+.pu-btn.pu-rare{border-color:rgba(129,140,248,.45);}
+.pu-btn.pu-rare .pu-name{color:#818cf8;}
+.pu-btn.pu-epic{border-color:rgba(244,114,182,.45);}
+.pu-btn.pu-epic .pu-name{color:#f472b6;}
+.pu-btn.pu-active{border-color:#fbbf24;background:rgba(251,191,36,.12);}
 /* Shop rarity badges */
 .badge-common{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;background:rgba(148,163,184,.15);color:#94a3b8;border:1px solid rgba(148,163,184,.3);}
 .badge-rare{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:8px;background:rgba(129,140,248,.15);color:#818cf8;border:1px solid rgba(129,140,248,.3);}
@@ -366,6 +438,30 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 .diff-badge-normal{background:rgba(129,140,248,.2);color:#818cf8;border:1px solid #818cf844;}
 .diff-badge-hard{background:rgba(245,158,11,.2);color:#fbbf24;border:1px solid #f59e0b44;}
 
+/* ── LEARN SCREEN ── */
+#learnScreen{background:radial-gradient(ellipse at top,#0f1a2e 0%,#0a0a1a 70%);justify-content:flex-start;overflow-y:auto;}
+.learn-wrap{display:flex;flex-direction:column;width:100%;max-width:540px;padding:20px 16px 32px;gap:14px;}
+.learn-top{display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px solid rgba(79,70,229,.2);}
+.learn-icon{font-size:48px;line-height:1;flex-shrink:0;}
+.learn-title-block{flex:1;min-width:0;}
+.learn-dungeon-name{font-size:18px;font-weight:900;letter-spacing:2px;color:#e2e8f0;}
+.learn-dungeon-sub{font-size:11px;color:#64748b;letter-spacing:1px;margin-top:2px;}
+.learn-label{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:1px;margin-bottom:8px;}
+.learn-label-kp{background:rgba(99,102,241,.15);color:#818cf8;border:1px solid rgba(99,102,241,.35);}
+.learn-label-pit{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.3);}
+.learn-section{background:rgba(10,12,30,.8);border:1px solid rgba(79,70,229,.2);border-radius:10px;padding:14px 14px 10px;}
+.learn-pit-section{border-color:rgba(239,68,68,.25);}
+.learn-kp-list{display:flex;flex-direction:column;gap:7px;}
+.learn-kp-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:#cbd5e1;line-height:1.6;}
+.learn-kp-dot{width:6px;height:6px;border-radius:50%;background:#818cf8;flex-shrink:0;margin-top:7px;}
+.learn-pit-list{display:flex;flex-direction:column;gap:8px;}
+.learn-pit-item{font-size:12px;color:#fca5a5;line-height:1.7;padding:8px 10px;background:rgba(239,68,68,.06);border-left:3px solid rgba(239,68,68,.5);border-radius:0 6px 6px 0;}
+.learn-start-btn{padding:15px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border:2px solid #818cf8;border-radius:10px;color:#fff;font-size:15px;font-weight:700;font-family:'Courier New',monospace;cursor:pointer;box-shadow:0 4px 0 #312e81,0 0 20px rgba(79,70,229,.5);transition:all .15s;letter-spacing:1px;margin-top:4px;}
+.learn-start-btn:hover{transform:translateY(-2px);box-shadow:0 6px 0 #312e81,0 0 30px rgba(79,70,229,.7);}
+.learn-start-btn:active{transform:translateY(2px);box-shadow:0 2px 0 #312e81;}
+.learn-back-btn{padding:10px;background:transparent;border:1px solid rgba(79,70,229,.25);border-radius:8px;color:#64748b;font-size:12px;font-family:'Courier New',monospace;cursor:pointer;transition:all .15s;}
+.learn-back-btn:hover{color:#94a3b8;border-color:rgba(79,70,229,.5);}
+
 /* Confetti canvas */
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:9999;}
 
@@ -411,11 +507,33 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-thumb{background:rgba(79,70,229,.4);border-radius:2px;}
 
-@media(max-width:420px){
-  .opts-grid{grid-template-columns:1fr;}
-  .opt-btn{padding:12px 10px;}
-  .battle-arena{min-height:160px;}
+/* ── 手机通用（≤480px） ── */
+@media(max-width:480px){
+  .pu-btn{min-width:48px;height:52px;padding:4px 3px;gap:1px;}
+  .pu-emoji{font-size:16px;}
+  .pu-name{font-size:7.5px;}
+  .pu-cnt{font-size:9px;padding:0 4px;}
+  .battle-arena{min-height:150px;padding:10px 8px;}
+  .fighter-emoji{font-size:60px;}
+  .fighter-name{font-size:9px;}
+  .fighter-label{font-size:9px;}
+  .q-panel{padding:10px 10px;gap:8px;}
+  .q-text{font-size:15px;padding:12px 10px;}
+  .opts-grid{gap:7px;}
+  .opt-btn{padding:11px 8px;font-size:13px;min-height:44px;touch-action:manipulation;}
+}
+/* ── 小屏手机（≤380px） ── */
+@media(max-width:380px){
+  .pu-btn{min-width:44px;height:48px;padding:4px 2px;}
+  .pu-name{font-size:7px;}
+  .pu-emoji{font-size:15px;}
+  .pu-cnt{font-size:9px;}
   .fighter-emoji{font-size:48px;}
+  .battle-arena{min-height:130px;padding:8px 6px;}
+  .q-text{font-size:13px;padding:10px 8px;}
+  .opts-grid{gap:6px;grid-template-columns:1fr;}
+  .opt-btn{padding:10px 6px;font-size:12px;min-height:44px;}
+  .q-panel{padding:8px 8px;}
 }
 
 /* ═══════════════════════════
@@ -554,6 +672,53 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 /* remove shop-bar sticky so it doesn't fight bottom-tabs */
 #mapScreen .shop-bar{position:static;margin-top:auto;}
 
+/* ── ADMIN PANEL ── */
+#adminScreen{background:radial-gradient(ellipse at center,#1a0505 0%,#0a0a1a 70%);}
+.admin-wrap{width:100%;max-width:480px;padding:20px 16px;display:flex;flex-direction:column;gap:12px;}
+.admin-header-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0 12px;}
+.admin-title{font-size:18px;font-weight:900;letter-spacing:2px;color:#f87171;}
+.admin-badge-lbl{font-size:10px;color:#f87171;letter-spacing:2px;margin-top:2px;border:1px solid rgba(239,68,68,.5);display:inline-block;padding:1px 8px;border-radius:3px;background:rgba(239,68,68,.1);}
+.admin-section{background:rgba(15,15,35,.9);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:14px;width:100%;}
+.admin-section-title{font-size:10px;color:#f87171;letter-spacing:2px;margin-bottom:10px;text-transform:uppercase;}
+.admin-user-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid rgba(79,70,229,.12);}
+.admin-user-row:last-child{border-bottom:none;}
+.admin-user-name{flex:1;font-size:13px;color:#e2e8f0;font-weight:700;}
+.admin-user-stats{font-size:10px;color:#64748b;line-height:1.6;}
+.admin-del-btn{padding:4px 10px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:4px;color:#f87171;font-size:11px;cursor:pointer;flex-shrink:0;}
+.admin-del-btn:hover{background:rgba(239,68,68,.25);}
+.admin-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.admin-stat-box{background:rgba(79,70,229,.08);border:1px solid rgba(79,70,229,.25);border-radius:6px;padding:10px;text-align:center;}
+.admin-stat-num{font-size:22px;font-weight:900;color:#818cf8;}
+.admin-stat-lbl{font-size:10px;color:#64748b;margin-top:2px;}
+.admin-crown{display:inline-block;font-size:11px;margin-left:4px;vertical-align:middle;}
+.admin-edit-btn{padding:4px 10px;background:rgba(79,70,229,.15);border:1px solid rgba(79,70,229,.4);border-radius:4px;color:#818cf8;font-size:11px;cursor:pointer;flex-shrink:0;}
+.admin-edit-btn:hover{background:rgba(79,70,229,.3);}
+#adminEditModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:999;align-items:center;justify-content:center;padding:16px;}
+.admin-modal-box{background:#0f0f23;border:2px solid rgba(239,68,68,.5);border-radius:10px;padding:20px;width:100%;max-width:340px;display:flex;flex-direction:column;gap:12px;}
+.admin-modal-title{font-size:14px;font-weight:900;color:#f87171;letter-spacing:1px;}
+.admin-field-row{display:flex;flex-direction:column;gap:4px;}
+.admin-field-lbl{font-size:10px;color:#64748b;letter-spacing:1px;}
+.admin-field-input{padding:8px 10px;background:rgba(15,15,35,.9);border:1px solid rgba(79,70,229,.4);border-radius:6px;color:#e2e8f0;font-size:13px;font-family:'Courier New',monospace;outline:none;width:100%;}
+.admin-field-input:focus{border-color:#818cf8;}
+.admin-coin-row{display:flex;gap:6px;}
+.admin-coin-btn{flex:1;padding:7px 0;background:rgba(79,70,229,.1);border:1px solid rgba(79,70,229,.3);border-radius:5px;color:#818cf8;font-size:11px;cursor:pointer;text-align:center;}
+.admin-coin-btn:hover{background:rgba(79,70,229,.25);}
+.admin-action-row{display:flex;gap:8px;margin-top:4px;}
+.admin-action-danger{flex:1;padding:8px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:6px;color:#f87171;font-size:11px;cursor:pointer;}
+.admin-action-danger:hover{background:rgba(239,68,68,.25);}
+.admin-action-success{flex:1;padding:8px;background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.3);border-radius:6px;color:#4ade80;font-size:11px;cursor:pointer;}
+.admin-action-success:hover{background:rgba(74,222,128,.2);}
+.admin-confirm-row{display:flex;gap:8px;}
+.admin-cancel-btn{flex:1;padding:10px;background:rgba(100,116,139,.1);border:1px solid rgba(100,116,139,.3);border-radius:6px;color:#94a3b8;font-size:12px;cursor:pointer;}
+.admin-save-btn{flex:2;padding:10px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border:2px solid #818cf8;border-radius:6px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;}
+#adminConfirmBox{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:1000;align-items:center;justify-content:center;padding:16px;}
+.admin-confirm-modal{background:#0f0f23;border:2px solid rgba(239,68,68,.6);border-radius:10px;padding:20px;width:100%;max-width:320px;display:flex;flex-direction:column;gap:14px;}
+.admin-confirm-text{font-size:13px;color:#e2e8f0;line-height:1.6;text-align:center;}
+.admin-confirm-btns{display:flex;gap:8px;}
+.admin-confirm-cancel-btn{flex:1;padding:10px;background:rgba(100,116,139,.15);border:1px solid rgba(100,116,139,.3);border-radius:6px;color:#94a3b8;font-size:12px;cursor:pointer;}
+.admin-confirm-ok-btn{flex:2;padding:10px;background:rgba(239,68,68,.15);border:2px solid #ef4444;border-radius:6px;color:#f87171;font-size:12px;font-weight:700;cursor:pointer;}
+.admin-confirm-ok-btn:hover{background:rgba(239,68,68,.3);}
+
 /* ── LOGIN SCREEN ── */
 #loginScreen{background:radial-gradient(ellipse at center,#1e1b4b 0%,#0a0a1a 70%);}
 .login-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:24px 20px;text-align:center;position:relative;z-index:1;gap:0;}
@@ -567,9 +732,19 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 .login-input-row{display:flex;gap:8px;width:100%;max-width:360px;}
 .login-input{flex:1;padding:12px 14px;background:rgba(15,15,35,.9);border:2px solid rgba(79,70,229,.4);border-radius:8px;color:#e2e8f0;font-size:14px;font-family:'Courier New',monospace;outline:none;transition:border-color .2s;}
 .login-input:focus{border-color:#818cf8;}
+.login-input.input-ok{border-color:#4ade80;}
+.login-input.input-err{border-color:#f87171;}
 .login-btn{padding:12px 18px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border:2px solid #818cf8;border-radius:8px;color:#fff;font-size:13px;font-weight:700;font-family:'Courier New',monospace;cursor:pointer;white-space:nowrap;box-shadow:0 0 12px rgba(79,70,229,.4);}
 .login-btn:hover{filter:brightness(1.1);}
 .login-msg{font-size:11px;min-height:16px;margin-top:6px;color:#f87171;}
+.login-tabs{display:flex;width:100%;max-width:360px;margin:16px 0 0;border:2px solid rgba(79,70,229,.35);border-radius:10px;overflow:hidden;}
+.login-tab{flex:1;padding:10px 0;text-align:center;font-size:12px;font-weight:700;letter-spacing:1px;cursor:pointer;transition:all .2s;color:#475569;background:rgba(15,15,35,.8);}
+.login-tab.active{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;}
+.login-tab-panel{display:none;width:100%;max-width:360px;flex-direction:column;gap:8px;padding-top:12px;}
+.login-tab-panel.active{display:flex;}
+.reg-hint{font-size:11px;min-height:14px;margin-top:-2px;padding-left:2px;}
+.reg-hint.ok{color:#4ade80;}
+.reg-hint.err{color:#f87171;}
 </style>
 </head>
 <body>
@@ -584,14 +759,31 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
     <div class="login-logo">⚔️ GRAMMAR QUEST</div>
     <div class="login-sub">选择你的勇者</div>
     <div id="userList" style="width:100%;max-width:360px;display:flex;flex-direction:column;gap:8px"></div>
-    <div class="login-divider" id="loginDivider">── 或输入账号 ──</div>
-    <div style="width:100%;max-width:360px;display:flex;flex-direction:column;gap:8px">
-      <input id="usernameInput" class="login-input" type="text" placeholder="用户名" maxlength="12" oninput="updateLoginHint()">
-      <input id="passwordInput" class="login-input" type="password" placeholder="密码" maxlength="20">
-      <input id="confirmInput" class="login-input" type="password" placeholder="确认密码（新用户）" maxlength="20" style="display:none" onkeydown="if(event.key==='Enter')doLogin()">
-      <button class="login-btn" style="width:100%;padding:13px" id="loginMainBtn" onclick="doLogin()">进入游戏 →</button>
+    <div class="login-divider">── 或手动输入 ──</div>
+
+    <!-- 登录 / 注册 标签 -->
+    <div class="login-tabs">
+      <div class="login-tab active" id="tabLogin" onclick="switchLoginTab('login')">🔑 登录</div>
+      <div class="login-tab" id="tabRegister" onclick="switchLoginTab('register')">✨ 注册</div>
     </div>
-    <div class="login-msg" id="loginMsg"></div>
+
+    <!-- 登录面板 -->
+    <div class="login-tab-panel active" id="panelLogin">
+      <input id="loginName" class="login-input" type="text" placeholder="用户名" maxlength="12" onkeydown="if(event.key==='Enter')doLoginForm()">
+      <input id="loginPwd" class="login-input" type="password" placeholder="密码" maxlength="20" onkeydown="if(event.key==='Enter')doLoginForm()">
+      <button class="login-btn" style="width:100%;padding:13px" onclick="doLoginForm()">登录 →</button>
+      <div class="login-msg" id="loginMsg"></div>
+    </div>
+
+    <!-- 注册面板 -->
+    <div class="login-tab-panel" id="panelRegister">
+      <input id="regName" class="login-input" type="text" placeholder="用户名（2-12字符）" maxlength="12" oninput="checkRegName()">
+      <div class="reg-hint" id="regNameHint"></div>
+      <input id="regPwd" class="login-input" type="password" placeholder="设置密码" maxlength="20">
+      <input id="regPwd2" class="login-input" type="password" placeholder="确认密码" maxlength="20" onkeydown="if(event.key==='Enter')doRegister()">
+      <button class="login-btn" style="width:100%;padding:13px" onclick="doRegister()">注册并进入 →</button>
+      <div class="login-msg" id="regMsg"></div>
+    </div>
   </div>
 </div>
 
@@ -621,6 +813,7 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
     <button class="title-btn" onclick="goMap()">🗺️ 开始冒险</button>
     <button class="title-btn secondary" onclick="openCharSelect()">🧙 选择角色</button>
     <button class="title-btn secondary" onclick="showTitleStats()">📊 我的记录</button>
+    <button class="title-btn secondary" id="adminPanelBtn" onclick="openAdminPanel()" style="display:none;border-color:#ef4444;color:#f87171">⚙️ 管理员面板</button>
     <div class="title-stats" id="titleStats" style="display:none">
       <div class="t-stat"><div class="t-stat-n" id="ts-coins">0</div><div>金币</div></div>
       <div class="t-stat"><div class="t-stat-n" id="ts-lv">1</div><div>等级</div></div>
@@ -645,6 +838,7 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 <!-- ══ MAP SCREEN ══ -->
 <div class="screen" id="mapScreen">
   <div class="map-header">
+    <button class="map-home-btn" onclick="goTitle()" title="返回主页">🏠</button>
     <div style="display:flex;flex-direction:column;gap:2px">
       <div class="map-title">🗺️ 世界地图</div>
       <div style="font-size:11px;color:#475569;cursor:pointer" onclick="logout()">🧙‍♂️ <span id="mapUsername">勇者</span> · 切换角色</div>
@@ -683,7 +877,6 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
         <div style="font-size:10px;color:#a8a29e;margin-top:2px"><span id="mapMistakeCount">0</span> 题</div>
       </div>
     </div>
-    <div style="width:100%;max-width:600px;padding:8px 16px 4px;font-size:11px;color:#475569;letter-spacing:1px;flex-shrink:0">▸ 主线关卡</div>
     <div class="map-body" id="mapBody"></div>
   </div>
 
@@ -896,6 +1089,29 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
   </div>
 </div>
 
+<!-- ══ LEARN SCREEN ══ -->
+<div class="screen" id="learnScreen">
+  <div class="learn-wrap">
+    <div class="learn-top">
+      <div class="learn-icon" id="learnIcon">📖</div>
+      <div class="learn-title-block">
+        <div class="learn-dungeon-name" id="learnDungName"></div>
+        <div class="learn-dungeon-sub" id="learnDungSub"></div>
+      </div>
+    </div>
+    <div class="learn-section">
+      <div class="learn-label learn-label-kp">📚 核心知识点</div>
+      <div class="learn-kp-list" id="learnKpList"></div>
+    </div>
+    <div class="learn-section learn-pit-section">
+      <div class="learn-label learn-label-pit">⚠️ 常见易错点</div>
+      <div class="learn-pit-list" id="learnPitList"></div>
+    </div>
+    <button class="learn-start-btn" onclick="goIntroFromLearn()">✅ 已掌握，开始挑战 →</button>
+    <button class="learn-back-btn" onclick="goMap()">← 返回地图</button>
+  </div>
+</div>
+
 <!-- ══ INTRO SCREEN ══ -->
 <div class="screen" id="introScreen">
   <div class="intro-wrap">
@@ -923,6 +1139,8 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
   <div class="battle-orb orb2"></div>
   <div class="battle-orb orb3"></div>
   <div class="battle-header">
+    <button class="b-back-btn" onclick="confirmQuitBattle()" title="返回地图">←</button>
+    <button class="b-back-btn" onclick="confirmGoHome()" title="返回主页" style="font-size:13px">🏠</button>
     <div class="b-hearts" id="bHearts"></div>
     <div class="b-combo" id="bCombo"></div>
     <div id="bSpeedTimer" style="display:none"></div>
@@ -933,44 +1151,50 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
   <div class="timer-bar-wrap"><div class="timer-bar-fill" id="timerBar" style="width:100%"></div></div>
   <div id="modeBanner"></div>
   <div class="dungeon-banner"><div class="dungeon-banner-name" id="bDungName"></div><div class="dungeon-banner-sub" id="bDungSub"></div><span class="diff-badge" id="bDiffBadge"></span></div>
-  <div class="battle-arena">
-    <div class="fighter">
-      <div class="fighter-name" id="heroNameLabel">🧙‍♂️ HERO</div>
-      <div class="fighter-emoji" id="heroEmoji">🧙‍♂️</div>
-      <div class="hp-bar-wrap"><div class="hp-bar hero-hp-bar" id="heroBar" style="width:100%"></div></div>
-      <div class="fighter-label" id="heroHPLabel">HP: 3/3</div>
-    </div>
-    <div class="vs-zone">
-      <div class="slash-effect" id="slashEl">⚡</div>
-      <div class="vs-text">VS</div>
-    </div>
-    <div class="fighter">
-      <div class="fighter-name" id="monsterNameLabel">MONSTER</div>
-      <div class="fighter-emoji" id="monsterEmoji">👺</div>
-      <div class="hp-bar-wrap"><div class="hp-bar monster-hp-bar" id="monsterBar" style="width:100%"></div></div>
-      <div class="fighter-label" id="monsterHPLabel">HP: 8/8</div>
+  <div class="battle-main">
+    <!-- 战斗内容 -->
+    <div class="battle-content">
+      <div class="battle-arena">
+        <div class="fighter">
+          <div class="fighter-name" id="heroNameLabel">🧙‍♂️ HERO</div>
+          <div class="fighter-emoji" id="heroEmoji">🧙‍♂️</div>
+          <div class="hp-bar-wrap"><div class="hp-bar hero-hp-bar" id="heroBar" style="width:100%"></div></div>
+          <div class="fighter-label" id="heroHPLabel">HP: 3/3</div>
+        </div>
+        <div class="vs-zone">
+          <div class="slash-effect" id="slashEl">⚡</div>
+          <div class="vs-text">VS</div>
+        </div>
+        <div class="fighter">
+          <div class="fighter-name" id="monsterNameLabel">MONSTER</div>
+          <div class="fighter-emoji" id="monsterEmoji">👺</div>
+          <div class="hp-bar-wrap"><div class="hp-bar monster-hp-bar" id="monsterBar" style="width:100%"></div></div>
+          <div class="fighter-label" id="monsterHPLabel">HP: 8/8</div>
+        </div>
+      </div>
+      <div class="q-panel">
+        <div class="q-text" id="qText">Loading...</div>
+        <div class="opts-grid" id="qOpts"></div>
+        <div class="feedback-box" id="feedback"></div>
+        <button class="next-btn" id="nextBtn" onclick="nextQ()">次の敵へ → NEXT</button>
+      </div>
     </div>
   </div>
-  <div class="q-panel">
-    <div class="q-text" id="qText">Loading...</div>
-    <div class="opts-grid" id="qOpts"></div>
-    <div class="feedback-box" id="feedback"></div>
-    <button class="next-btn" id="nextBtn" onclick="nextQ()">次の敵へ → NEXT</button>
-  </div>
-  <div class="powerup-bar">
-    <button class="pu-btn" id="pu-hint" onclick="usePU('hint')">💡 提示 <span class="pu-cnt" id="pu-hint-n">0</span></button>
-    <button class="pu-btn" id="pu-shield" onclick="usePU('shield')">🛡️ 护盾 <span class="pu-cnt" id="pu-shield-n">0</span></button>
-    <button class="pu-btn" id="pu-freeze" onclick="usePU('freeze')">❄️ 冻结 <span class="pu-cnt" id="pu-freeze-n">0</span></button>
-    <button class="pu-btn" id="pu-timeboost" onclick="usePU('timeboost')">⏱️ 补给 <span class="pu-cnt" id="pu-timeboost-n">0</span></button>
-    <button class="pu-btn" id="pu-timelock" onclick="usePU('timelock')">⏸️ 瞬停 <span class="pu-cnt" id="pu-timelock-n">0</span></button>
-    <button class="pu-btn" id="pu-timex2" onclick="usePU('timex2')">×2 延时 <span class="pu-cnt" id="pu-timex2-n">0</span></button>
-    <button class="pu-btn pu-rare" id="pu-freeze60" onclick="usePU('freeze60')">🧊 冻结60 <span class="pu-cnt" id="pu-freeze60-n">0</span></button>
-    <button class="pu-btn pu-rare" id="pu-slowmo" onclick="usePU('slowmo')">🐢 慢放 <span class="pu-cnt" id="pu-slowmo-n">0</span></button>
-    <button class="pu-btn pu-rare" id="pu-rewind" onclick="usePU('rewind')">⏮️ 回溯 <span class="pu-cnt" id="pu-rewind-n">0</span></button>
-    <button class="pu-btn pu-rare" id="pu-skip" onclick="usePU('skip')">⏭️ 跳过 <span class="pu-cnt" id="pu-skip-n">0</span></button>
-    <button class="pu-btn pu-epic" id="pu-timestop" onclick="usePU('timestop')">🕐 静止 <span class="pu-cnt" id="pu-timestop-n">0</span></button>
-    <button class="pu-btn pu-epic" id="pu-autofreeze" onclick="usePU('autofreeze')">🔐 时光锁 <span class="pu-cnt" id="pu-autofreeze-n">0</span></button>
-    <button class="pu-btn pu-epic" id="pu-doublestop" onclick="usePU('doublestop')">💎 双倍静止 <span class="pu-cnt" id="pu-doublestop-n">0</span></button>
+  <!-- 底部横向可滑动道具栏（全部13个道具） -->
+  <div class="powerup-bottom">
+    <button class="pu-btn" id="pu-hint" onclick="usePU('hint')"><span class="pu-emoji">💡</span><span class="pu-name">提示</span><span class="pu-cnt" id="pu-hint-n">0</span></button>
+    <button class="pu-btn" id="pu-shield" onclick="usePU('shield')"><span class="pu-emoji">🛡️</span><span class="pu-name">护盾</span><span class="pu-cnt" id="pu-shield-n">0</span></button>
+    <button class="pu-btn" id="pu-freeze" onclick="usePU('freeze')"><span class="pu-emoji">❄️</span><span class="pu-name">冻结</span><span class="pu-cnt" id="pu-freeze-n">0</span></button>
+    <button class="pu-btn" id="pu-timeboost" onclick="usePU('timeboost')"><span class="pu-emoji">⏱️</span><span class="pu-name">补给</span><span class="pu-cnt" id="pu-timeboost-n">0</span></button>
+    <button class="pu-btn" id="pu-timelock" onclick="usePU('timelock')"><span class="pu-emoji">⏸️</span><span class="pu-name">瞬停</span><span class="pu-cnt" id="pu-timelock-n">0</span></button>
+    <button class="pu-btn" id="pu-timex2" onclick="usePU('timex2')"><span class="pu-emoji">×2</span><span class="pu-name">延时</span><span class="pu-cnt" id="pu-timex2-n">0</span></button>
+    <button class="pu-btn pu-rare" id="pu-freeze60" onclick="usePU('freeze60')"><span class="pu-emoji">🧊</span><span class="pu-name">冻60s</span><span class="pu-cnt" id="pu-freeze60-n">0</span></button>
+    <button class="pu-btn pu-rare" id="pu-slowmo" onclick="usePU('slowmo')"><span class="pu-emoji">🐢</span><span class="pu-name">慢放</span><span class="pu-cnt" id="pu-slowmo-n">0</span></button>
+    <button class="pu-btn pu-rare" id="pu-rewind" onclick="usePU('rewind')"><span class="pu-emoji">⏮️</span><span class="pu-name">回溯</span><span class="pu-cnt" id="pu-rewind-n">0</span></button>
+    <button class="pu-btn pu-rare" id="pu-skip" onclick="usePU('skip')"><span class="pu-emoji">⏭️</span><span class="pu-name">跳过</span><span class="pu-cnt" id="pu-skip-n">0</span></button>
+    <button class="pu-btn pu-epic" id="pu-timestop" onclick="usePU('timestop')"><span class="pu-emoji">🕐</span><span class="pu-name">静止</span><span class="pu-cnt" id="pu-timestop-n">0</span></button>
+    <button class="pu-btn pu-epic" id="pu-autofreeze" onclick="usePU('autofreeze')"><span class="pu-emoji">🔐</span><span class="pu-name">时光锁</span><span class="pu-cnt" id="pu-autofreeze-n">0</span></button>
+    <button class="pu-btn pu-epic" id="pu-doublestop" onclick="usePU('doublestop')"><span class="pu-emoji">💎</span><span class="pu-name">双倍停</span><span class="pu-cnt" id="pu-doublestop-n">0</span></button>
   </div>
 </div>
 
@@ -989,7 +1213,7 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
     <div class="review-area" id="reviewArea"></div>
     <div class="end-btns">
       <button class="end-btn end-btn-secondary" onclick="retryDungeon()">🔄 再挑战</button>
-      <button class="end-btn end-btn-primary" onclick="goMap()">🗺️ 世界地图</button>
+      <button class="end-btn end-btn-primary" onclick="goMapOrReveal()">🗺️ 世界地图</button>
     </div>
   </div>
 </div>
@@ -2179,6 +2403,433 @@ const DUNGEONS=[
 ];
 
 // ══════════════════════════════════════
+// DUNGEON KNOWLEDGE (知识点 & 易错点)
+// ══════════════════════════════════════
+const DUNGEON_KNOWLEDGE={
+  0:{
+    knowledge:[
+      "用于表达习惯性/经常性动作：I play tennis every week.",
+      "用于客观真理或科学事实：The sun rises in the east.",
+      "主语为第三人称单数（he/she/it）时，动词末尾加 -s 或 -es",
+      "以 ch / sh / x / o / s 结尾的动词加 -es（watches, goes）",
+      "以「辅音 + y」结尾的动词，去 y 加 -ies（fly → flies）",
+      "否定句：do / does + not + 动词原形",
+      "疑问句：Do / Does + 主语 + 动词原形 ...?"
+    ],
+    pitfalls:[
+      "❌ She go to school. → ✅ She goes（三单忘加 -s 是最常见错误）",
+      "❌ He studys hard. → ✅ He studies（辅音+y 要去 y 加 -ies）",
+      "❌ Did she goes? → ✅ Did she go?（Did 后动词用原形）",
+      "❌ A number of students is absent. → ✅ are（a number of 后谓语用复数）",
+      "❌ The number of students are 30. → ✅ is（the number of 后谓语用单数）",
+      "❌ Neither he nor they is ready. → ✅ are（就近原则，they 最近，用复数）"
+    ]
+  },
+  1:{
+    knowledge:[
+      "表达过去某一时刻已完成的动作，常与 yesterday / last week / ago 连用",
+      "规则动词：直接 + -ed（play→played，finish→finished）",
+      "特殊拼写：末尾单辅音双写再加 -ed（stop→stopped，plan→planned）",
+      "辅音 + y 去 y 加 -ied（study→studied，carry→carried）",
+      "不规则动词必须单独记忆：go→went, see→saw, have→had, write→wrote",
+      "be 动词过去式：I/he/she/it → was；we/you/they → were",
+      "否定/疑问：did + 动词原形（不再用过去式）"
+    ],
+    pitfalls:[
+      "❌ She goed to Paris. → ✅ went（go 是不规则动词）",
+      "❌ I didn't went. → ✅ didn't go（did 后动词必须用原形）",
+      "❌ They was tired. → ✅ were（they 对应 were）",
+      "❌ Did he came? → ✅ Did he come?（Did 后用动词原形）",
+      "❌ I stoped the car. → ✅ stopped（单辅音结尾须双写）"
+    ]
+  },
+  2:{
+    knowledge:[
+      "结构：have / has + 过去分词（done）",
+      "表示过去发生但对现在仍有影响的动作",
+      "have been to（曾去过，人已回来）vs have gone to（去了还没回来）",
+      "for + 时间段（for three years），since + 时间点（since 2020）",
+      "常见标志词：already, yet, ever, never, just, recently, so far",
+      "第三人称单数用 has；其余用 have",
+      "不规则过去分词需记忆：go→gone, see→seen, write→written, take→taken"
+    ],
+    pitfalls:[
+      "❌ I have seen him yesterday. → ✅ I saw him yesterday（有明确过去时间用一般过去时）",
+      "❌ She has went there. → ✅ has gone（过去分词不是过去式）",
+      "❌ I have been to Paris once last year. → ✅ I went（具体过去时间不用完成时）",
+      "❌ for 2020 / since 3 years → ✅ since 2020 / for 3 years（介词搭配反了）",
+      "❌ Have you ever went abroad? → ✅ gone（动词用过去分词形式）"
+    ]
+  },
+  3:{
+    knowledge:[
+      "a / an 用于不特指的单数可数名词（第一次提及）",
+      "an 用于读音以元音音素开头的词：an apple, an hour, an honest man",
+      "the 用于特指、上文已提及、独一无二的事物：the sun, the moon",
+      "乐器前加 the（play the piano），球类/棋类运动不加冠词（play football）",
+      "零冠词：专有名词、语言/学科/颜色、三餐、季节（in summer）",
+      "二次提到同一事物改用 the：I saw a dog. The dog was huge."
+    ],
+    pitfalls:[
+      "❌ a hour → ✅ an hour（hour 读 /aʊər/，元音开头）",
+      "❌ a university → ✅ a university ✓（university 读 /juː/，辅音开头，用 a）",
+      "❌ He plays the football. → ✅ plays football（球类运动不加冠词）",
+      "❌ She is best student. → ✅ the best（最高级前须加 the）",
+      "❌ I had the breakfast. → ✅ had breakfast（三餐通常不加冠词）"
+    ]
+  },
+  4:{
+    knowledge:[
+      "at：具体时刻（at 3 pm）、具体地点（at school / at home / at the bus stop）",
+      "on：日期（on July 4th）、星期（on Monday）、表面（on the wall / on the floor）",
+      "in：年/月/季节（in 2024 / in July / in summer）、较大范围（in China / in the room）",
+      "固定短语：in the morning / afternoon / evening，but at noon / at night",
+      "交通方式：by bus / by car（不加冠词），on foot（例外）"
+    ],
+    pitfalls:[
+      "❌ on the morning → ✅ in the morning（早/午/晚用 in，但 at noon/at night）",
+      "❌ in Monday → ✅ on Monday（星期用 on）",
+      "❌ at July → ✅ in July（月份用 in）",
+      "❌ in Christmas Day → ✅ on Christmas Day（具体日期用 on）",
+      "❌ in the end of the book → ✅ at the end（in the end = 最终结果；at the end = 在末尾处）"
+    ]
+  },
+  5:{
+    knowledge:[
+      "零条件句：if + 现在时，现在时（If you heat water to 100°C, it boils.）",
+      "第一条件句（真实可能）：if + 现在时，will + 动词原形",
+      "第二条件句（假设/与现实相反）：if + 一般过去时，would + 动词原形",
+      "第三条件句（过去假设）：if + 过去完成时，would have + 过去分词",
+      "if 从句中永远不用 will / would",
+      "第二条件句中，be 动词无论主语为何，一律用 were（If I were you...）"
+    ],
+    pitfalls:[
+      "❌ If it will rain, I will stay. → ✅ If it rains（if 从句不用 will）",
+      "❌ If I was you, I would try. → ✅ If I were you（虚拟语气 be 动词统一用 were）",
+      "❌ If she studied harder, she will pass. → ✅ would pass（第二条件句用 would）",
+      "❌ If he had worked hard, he would pass. → ✅ would have passed（第三条件句主句用 would have done）",
+      "❌ Unless it doesn't rain... → ✅ Unless it rains（unless = if not，不再加否定）"
+    ]
+  },
+  6:{
+    knowledge:[
+      "情态动词后接动词原形，无三单 -s，无时态变化",
+      "can/could：能力、可能性、礼貌请求（Could you help me?）",
+      "may/might：许可、推测（It may rain. / Might I ask?）",
+      "must：强制义务（You must stop.）或强烈推断（She must be tired.）",
+      "should：建议或义务（You should see a doctor.）",
+      "must not（禁止）≠ don't have to（不必须，但可以做）"
+    ],
+    pitfalls:[
+      "❌ She can swims. → ✅ can swim（情态动词后接原形）",
+      "❌ You mustn't to go. → ✅ mustn't go（情态动词后不加 to）",
+      "❌ You don't have to go = you mustn't go. → ✗（don't have to = 不必须；mustn't = 不允许，含义完全不同）",
+      "❌ He should has done it. → ✅ should have done（情态动词完成式：modal + have + 过去分词）",
+      "❌ Could I to borrow your pen? → ✅ Could I borrow（情态动词后直接跟原形）"
+    ]
+  },
+  7:{
+    knowledge:[
+      "结构：be 动词 + 过去分词（am/is/are/was/were/will be/has been + done）",
+      "主动变被动：主动的宾语变被动的主语，原主语用 by 引出（可省略）",
+      "时态通过改变 be 动词体现：is done（现在），was done（过去），will be done（将来）",
+      "情态动词被动：modal + be + 过去分词（must be checked）",
+      "只有及物动词才能变被动语态"
+    ],
+    pitfalls:[
+      "❌ The book was wrote by her. → ✅ was written（过去分词，不是过去式）",
+      "❌ He was arrested by the police yesterday. by whom → ✅ by the police（施事者用 by + 宾格）",
+      "❌ English is speaking here. → ✅ is spoken（要用过去分词）",
+      "❌ The work must been done. → ✅ must be done（情态动词后用 be）",
+      "❌ He was arrived at 8. → ✗（arrive 是不及物动词，无被动语态）"
+    ]
+  },
+  8:{
+    knowledge:[
+      "单/双音节形容词：直接加 -er / -est（tall→taller→tallest）",
+      "多音节（≥3音节）：more / most + 形容词（more beautiful / most important）",
+      "不规则变化：good→better→best；bad→worse→worst；many/much→more→most",
+      "末尾单辅音需双写：big→bigger，hot→hotter",
+      "as...as 表相等（She is as tall as me.）；not as...as 表不及",
+      "最高级前加 the，且用 in / of 引出范围（the tallest in the class）"
+    ],
+    pitfalls:[
+      "❌ more fast → ✅ faster（单音节直接加 -er）",
+      "❌ more better → ✅ better（不规则形式，不再加 more）",
+      "❌ She is the most tall. → ✅ the tallest（单音节用 -est）",
+      "❌ He is biger than me. → ✅ bigger（单辅音结尾须双写）",
+      "❌ This is the best book of the library. → ✅ in the library（最高级 in + 地点）"
+    ]
+  },
+  9:{
+    knowledge:[
+      "who：指人，作主语或宾语（The man who called is here.）",
+      "which：指物，作主语或宾语（The book which I read was great.）",
+      "that：指人或物，限定性从句中可代替 who/which",
+      "whose：指所属（The girl whose bag was lost cried.）",
+      "where/when：地点/时间先行词后用（the place where, the day when）",
+      "非限定性定语从句（逗号隔开）不能用 that，不可省略关系词"
+    ],
+    pitfalls:[
+      "❌ My brother, that is a doctor, lives in Beijing. → ✅ who（非限定从句不用 that）",
+      "❌ The book which I bought it yesterday. → ✅ 去掉 it（关系代词已充当宾语，不重复加代词）",
+      "❌ This is the reason why I am late for. → ✅ 去掉 for（the reason why 后 for 多余）",
+      "❌ The woman who her bag was stolen cried. → ✅ whose bag（所属用 whose）",
+      "❌ This is the place where I lived in. → ✅ 去掉 in（where 已包含介词含义）"
+    ]
+  },
+  10:{
+    knowledge:[
+      "动名词（-ing 形式）：enjoy/finish/avoid/mind/suggest/consider/keep + doing",
+      "不定式（to do）：want/hope/decide/plan/agree/refuse/manage + to do",
+      "stop doing（停止正在做的事）vs stop to do（停下来去做另一件事）",
+      "remember/forget + doing（记得/忘记曾经做过）vs to do（记得/忘记要去做）",
+      "感官动词（see/hear/watch/feel）+ 宾语 + do（原形）或 doing（进行中）",
+      "let/make/have 使役动词 + 宾语 + 动词原形"
+    ],
+    pitfalls:[
+      "❌ I enjoy to swim. → ✅ enjoy swimming（enjoy 后只接 -ing）",
+      "❌ She stopped to smoke. ≠ 她戒烟了 → ✅ stopped smoking（戒掉要用 doing）",
+      "❌ He suggested to go early. → ✅ suggested going（suggest 后接 -ing）",
+      "❌ I forgot posting the letter（我不记得寄过这封信）vs I forgot to post（我忘了去寄信）——注意语义差异",
+      "❌ Let her to go. → ✅ Let her go（let 后不加 to）"
+    ]
+  },
+  11:{
+    knowledge:[
+      "综合运用所有时态：现在/过去/将来/完成/进行各时态",
+      "被动语态：be + 过去分词，时态通过 be 动词变化",
+      "条件句各类型：零/一/二/三条件句的结构与语义",
+      "情态动词：can/may/must/should 的用法区别",
+      "定语从句：who/which/that/whose/where/when 的选择",
+      "动名词 vs 不定式：哪些动词后接 -ing，哪些接 to do"
+    ],
+    pitfalls:[
+      "❌ 混淆各时态标志词：yesterday(过去式)，since(完成时)，tomorrow(将来时)",
+      "❌ 情态动词后加 -s 或 to：must goes / should to go → ✅ 后接动词原形",
+      "❌ 非限定从句用 that：My sister, that works in Beijing → ✅ who",
+      "❌ 条件句 if 从句用 will：If it will snow → ✅ If it snows",
+      "❌ enjoy/suggest 后接 to do → ✅ 接 -ing 形式"
+    ]
+  },
+  12:{
+    knowledge:[
+      "一般时：do/did/will do——简单陈述动作",
+      "进行时：be + -ing——动作正在进行",
+      "完成时：have/has + 过去分词——过去完成对现在有影响",
+      "完成进行时：have been + -ing——从过去持续到现在仍在进行",
+      "时态标志词：now（进行），yesterday/ago（过去），since/for+完成，tomorrow/next（将来）",
+      "过去进行时：was/were + -ing——过去某时刻正在进行"
+    ],
+    pitfalls:[
+      "❌ I am knowing the answer. → ✅ I know（状态动词 know/like/see 不用进行时）",
+      "❌ She has went there last year. → ✅ went（有过去具体时间用一般过去时）",
+      "❌ When I arrived, he left. → ✅ had left（到达之前已经离开，用过去完成时）",
+      "❌ I work here for 5 years. → ✅ have worked（for + 时间段 + 现在时 → 现在完成时）",
+      "❌ 混用 used to do 与 be used to doing：used to do = 过去曾经；be used to doing = 习惯于"
+    ]
+  },
+  13:{
+    knowledge:[
+      "make：制造、使得（make a cake / make someone happy）",
+      "do：做抽象行为/工作（do homework / do the dishes / do business）",
+      "take：花费时间/拿/乘坐（take time / take a photo / take a bus）",
+      "have：拥有/经历/进行（have lunch / have a meeting / have fun）",
+      "固定搭配必须整组记忆，不可随意替换动词"
+    ],
+    pitfalls:[
+      "❌ do a photo → ✅ take a photo",
+      "❌ make homework → ✅ do homework（作业/工作/清洁类用 do）",
+      "❌ take a decision → ✅ make a decision（决定、计划、进步用 make）",
+      "❌ do a break → ✅ take a break（休息/假期/课程用 take）",
+      "❌ make fun → ✅ have fun（享受/经历类用 have）"
+    ]
+  },
+  14:{
+    knowledge:[
+      "一般疑问句：助动词/情态动词/be 提到主语前（Is she...? Did you...? Can he...?）",
+      "特殊疑问句：疑问词 + 助动词 + 主语 + 动词（What did you eat?）",
+      "主语疑问句：疑问词作主语，直接接谓语动词（Who broke the window?）",
+      "间接疑问句（宾语从句）用陈述句语序（I wonder where he lives.）",
+      "反义疑问句：前肯后否，前否后肯；助动词与主句一致"
+    ],
+    pitfalls:[
+      "❌ What you did yesterday? → ✅ What did you do?（特殊疑问句需倒装）",
+      "❌ I don't know where does he live. → ✅ where he lives（间接疑问句用陈述语序）",
+      "❌ She is beautiful, is she? → ✅ isn't she?（反义疑问句前肯后否）",
+      "❌ Who did break the window? → ✅ Who broke（主语疑问句直接用谓语，不加 did）",
+      "❌ Do you know what is this? → ✅ what this is（宾语从句陈述语序）"
+    ]
+  },
+  15:{
+    knowledge:[
+      "will + 动词原形：临时决定、预测、承诺（I will help you.）",
+      "be going to + 动词原形：有计划的意图、有迹象的预测（It's going to rain.）",
+      "现在进行时表将来：已安排好的事（I am meeting him tomorrow.）",
+      "一般现在时表将来：时刻表/日程（The train leaves at 8.）",
+      "will 表示临时起意，be going to 表示事先计划好的"
+    ],
+    pitfalls:[
+      "❌ Look at the clouds — it will rain. → ✅ it's going to rain（有迹象的预测用 be going to）",
+      "❌ I will visit my parents next Sunday.（已计划好）→ ✅ am going to visit / am visiting",
+      "❌ The train will leave at 8 tomorrow. → ✅ leaves（时刻表用一般现在时）",
+      "❌ She's going to have lunch with me.（临时提出）→ ✅ will have（临时决定用 will）",
+      "❌ I am go to the store tomorrow. → ✅ going to go（be going to 中间要有 going to）"
+    ]
+  },
+  16:{
+    knowledge:[
+      "直接引语→间接引语：时态后退一个（现在→过去，过去→过去完成）",
+      "人称变化：第一/二人称根据语境变化（I→he/she，you→I/he 等）",
+      "时间/地点状语变化：now→then，today→that day，here→there，tomorrow→the next day",
+      "陈述句：say / tell sb + that 从句（that 可省略）",
+      "疑问句：ask sb + if/whether（一般疑问）或疑问词（特殊疑问）+ 陈述语序",
+      "命令句：tell/ask sb + to do / not to do"
+    ],
+    pitfalls:[
+      "❌ He said me that... → ✅ He told me that...（say 后不接间接宾语）",
+      "❌ She asked where did I live. → ✅ where I lived（间接疑问用陈述语序且时态后退）",
+      "❌ He said he will come. → ✅ would come（主句过去时，从句时态后退）",
+      "❌ 忘记变时间状语：now→then, yesterday→the day before, tomorrow→the next day",
+      "❌ He told to go. → ✅ told me to go（tell + 宾语 + to do）"
+    ]
+  },
+  17:{
+    knowledge:[
+      "some：肯定句中的可数/不可数名词（some books, some water）",
+      "any：否定句和疑问句（I don't have any. / Do you have any?）",
+      "much：不可数名词（much water, much time）",
+      "many：可数名词复数（many books, many people）",
+      "a few（有一些，偏肯定）vs few（几乎没有，偏否定）——修饰可数名词",
+      "a little（有一点，偏肯定）vs little（几乎没有，偏否定）——修饰不可数名词"
+    ],
+    pitfalls:[
+      "❌ much books → ✅ many books（可数名词用 many）",
+      "❌ many water → ✅ much water（不可数名词用 much）",
+      "❌ I have few friends.（我几乎没朋友）vs I have a few friends.（我有几个朋友）——注意语气差异",
+      "❌ Would you like some coffee?（请求/邀请时 some 用于疑问句）→ ✅ 这是正确的！",
+      "❌ She has little knowledge.（否定）vs She has a little knowledge.（有一点，肯定）——不要混淆"
+    ]
+  },
+  18:{
+    knowledge:[
+      "短语动词 = 动词 + 介词/副词，整体意义不等于各部分相加",
+      "常见类型：give up（放弃），look for（寻找），put off（推迟），take off（脱掉/起飞）",
+      "可分短语动词：宾语可插入中间（turn off the light / turn the light off）",
+      "代词作宾语时必须插入中间：turn it off（不能 turn off it）",
+      "不可分短语动词：宾语只能跟在后面（look after the baby，不能 look the baby after）"
+    ],
+    pitfalls:[
+      "❌ I gave it up. → ✅ I gave up → ✅ I gave it up（代词必须插入中间 ✓）",
+      "❌ She looked after him ≠ 她看起来跟他很像（look after = 照顾，注意语义）",
+      "❌ He called off the meeting. / He called the meeting off. → 两种都正确（名词宾语可前可后）",
+      "❌ turn off it → ✅ turn it off（代词宾语必须插入）",
+      "❌ 将短语动词拆开理解含义：look up ≠ 向上看（意为：查阅）"
+    ]
+  },
+  19:{
+    knowledge:[
+      "并列连词：and, but, or, so, for, yet, nor（连接相同语法地位的成分）",
+      "从属连词：because, although, if, when, since, unless, while（引导从句）",
+      "转折：however（副词，不能连两个句子），but（连词）",
+      "因果：because（强调原因）；therefore / so（强调结果）",
+      "让步：although / though（不能与 but 同用）；even though（更强调）",
+      "条件：if（真实），unless（除非 = if not）"
+    ],
+    pitfalls:[
+      "❌ Although he is rich, but he is unhappy. → ✅ 去掉 but 或去掉 although（两者不能同用）",
+      "❌ I was tired, however I kept working. → ✅ I was tired; however, I kept working.（however 是副词，需用分号或句号断开）",
+      "❌ Because he was tired, so he slept. → ✅ 去掉 so 或去掉 because（不能并用）",
+      "❌ Unless you don't work hard, you'll fail. → ✅ Unless you work hard（unless 已含否定）",
+      "❌ He is clever while she is kind.（while 用于两者对比，此处可以，但不表时间对比时需注意语义）"
+    ]
+  },
+  20:{
+    knowledge:[
+      "虚拟语气表示假设、愿望、与现实相反的情况",
+      "与现在/将来相反：if + were/did，主句 + would/could/might + do",
+      "与过去相反：if + had done，主句 + would/could + have done",
+      "wish + 过去时（希望现在情况不同）：I wish I were taller.",
+      "wish + 过去完成时（希望过去不同）：I wish I had studied harder.",
+      "It is important/necessary/suggested + that + (should) + 动词原形（虚拟语气中 should 可省略）"
+    ],
+    pitfalls:[
+      "❌ If I was rich, I would travel. → ✅ If I were rich（虚拟语气 be 动词统一用 were）",
+      "❌ I wish I would be taller. → ✅ I wish I were taller（wish 后虚拟用过去时）",
+      "❌ If he had worked hard, he would pass. → ✅ would have passed（过去虚拟主句用 would have done）",
+      "❌ It is important that he studies. → ✅ that he (should) study（虚拟语气用原形）",
+      "❌ If I were you, I would have gone. → ✅ I would go（与现在相反，主句用 would do）"
+    ]
+  },
+  21:{
+    knowledge:[
+      "名词化：动词/形容词 + -tion/-sion/-ness/-ment/-ity 变名词",
+      "形容词化：名词/动词 + -ful/-less/-ous/-ive/-al/-ic 变形容词",
+      "副词化：形容词 + -ly 变副词（但 friendly/lovely 是形容词）",
+      "常见前缀：un-（不），dis-（否），re-（再），over-（过度）",
+      "拼写注意：happy→happiness（去 y 加 iness），true→truth，wide→width"
+    ],
+    pitfalls:[
+      "❌ beautiness → ✅ beauty / beautiful / beautifully（注意词性和词形）",
+      "❌ She danced gracefully. → gracefully ✓，但 She is grace. → ✅ graceful（grace 是名词，形容词是 graceful）",
+      "❌ unhappy→unhappyness → ✅ unhappiness（unhappy→unhappiness）",
+      "❌ enviornment → ✅ environment（注意拼写）",
+      "❌ He is very friend. → ✅ friendly（friendly 是形容词，不是名词）"
+    ]
+  },
+  22:{
+    knowledge:[
+      "It is/was ... that ... 强调除谓语外的任何成分：It was Tom that broke the window.",
+      "What ... is/was ... 强调主语或宾语：What I need is your help.",
+      "否定前移：I don't think / believe / suppose + 从句（否定转移到主句）",
+      "倒装：否定副词（never, seldom, hardly）置于句首，句子须部分倒装",
+      "強调助动词：I do like it. / She did try hard.（用 do/does/did 强调）"
+    ],
+    pitfalls:[
+      "❌ It was in 1990 when he was born. → ✅ that he was born（强调句用 that，不用 when）",
+      "❌ Never I have seen such beauty. → ✅ Never have I seen（否定副词开头要倒装）",
+      "❌ What I need it is your help. → ✅ 去掉 it（What 已作主语，不重复）",
+      "❌ I don't think he is right = He is not right → ✅（否定转移：I don't think = I think... not）",
+      "❌ Hardly she could move. → ✅ Hardly could she move（倒装需将助动词提前）"
+    ]
+  },
+  23:{
+    knowledge:[
+      "affect（动词，影响）vs effect（名词，影响/效果）",
+      "rise（不及物，上升，自身移动）vs raise（及物，举起，使上升）",
+      "borrow（借入）vs lend（借出）",
+      "beside（在...旁边）vs besides（除...之外，还）",
+      "historic（有历史意义的）vs historical（与历史有关的）",
+      "economic（经济的/经济学的）vs economical（节约的/划算的）"
+    ],
+    pitfalls:[
+      "❌ The medicine effected his recovery. → ✅ affected（affect 是动词，effect 是名词）",
+      "❌ The price has raised. → ✅ has risen（rise 是不及物动词，无被动/无宾语）",
+      "❌ Can you borrow me your pen? → ✅ lend me（借出用 lend；借入用 borrow）",
+      "❌ Beside studying, she also works. → ✅ Besides（besides = 除...之外还；beside = 在旁边）",
+      "❌ This is a historical moment. → ✅ historic moment（有历史性意义的用 historic）"
+    ]
+  },
+  24:{
+    knowledge:[
+      "主动变被动：The cat ate the fish. → The fish was eaten by the cat.",
+      "直接引语变间接引语：时态后退，代词/状语相应变化",
+      "强调句改写：It is/was ... that ...",
+      "条件句变换：If you don't hurry = Unless you hurry",
+      "So ... that ... 改写为 too ... to ...：So tired that he couldn't work = Too tired to work",
+      "not ... until 改写为 It was not until ... that ..."
+    ],
+    pitfalls:[
+      "❌ 改写时忘记时态后退（直接→间接引语）",
+      "❌ 强调句改写后用 when/where 代替 that：It was in 2020 when → ✅ that",
+      "❌ too...to... 改写时保留 not：too tired to not work → ✅ too tired to work（too...to已含否定）",
+      "❌ Unless 改写时多加否定：Unless you don't hurry → ✅ Unless you hurry",
+      "❌ 被动改写过去分词写成过去式：was broke → ✅ was broken"
+    ]
+  }
+};
+
+// ══════════════════════════════════════
 // RANKS
 // ══════════════════════════════════════
 const RANKS=[
@@ -2314,6 +2965,7 @@ const UNLOCK_CODE='GQ-DBYW-MX7R-BNF2'; // 兑换码
 // STATE
 // ══════════════════════════════════════
 // ── USER SYSTEM ──
+const ADMIN_USERS=['Bian1230'];
 let CURRENT_USER='';
 function getUsers(){try{return JSON.parse(localStorage.getItem('gq_users')||'{}');}catch{return {};}}
 function saveUsers(u){localStorage.setItem('gq_users',JSON.stringify(u));}
@@ -2335,12 +2987,19 @@ function mergeWithDefault(s){
 
 let _pwdTarget='';
 
+function isAdminUser(name){
+  if(ADMIN_USERS.some(a=>a.toLowerCase()===(name||'').toLowerCase()))return true;
+  const users=getUsers();return !!(users[name]&&users[name].isAdmin);
+}
 function loginAs(name){
   CURRENT_USER=name;
   const users=getUsers();
   SAVE=mergeWithDefault(users[name]||{});
-  const un=document.getElementById('mapUsername');if(un)un.textContent=name;
+  if(isAdminUser(name)) SAVE._isAdmin=true;
+  const un=document.getElementById('mapUsername');if(un)un.textContent=name+(SAVE._isAdmin?' 👑':'');
   updTitleHero();
+  const ab=document.getElementById('adminPanelBtn');if(ab)ab.style.display=SAVE._isAdmin?'block':'none';
+  localStorage.setItem('gq_autologin',JSON.stringify({u:name,t:Date.now()}));
   showScreen('titleScreen');
 }
 
@@ -2368,37 +3027,60 @@ function confirmPwd(){
   loginAs(_pwdTarget);
 }
 
-function updateLoginHint(){
-  const name=(document.getElementById('usernameInput').value||'').trim();
-  const users=getUsers();
-  const exists=Object.keys(users).some(k=>k.toLowerCase()===name.toLowerCase()&&k!=='');
-  const confirmEl=document.getElementById('confirmInput');
-  const btn=document.getElementById('loginMainBtn');
-  if(name.length>=2){
-    if(exists){confirmEl.style.display='none';btn.textContent='登录 →';}
-    else{confirmEl.style.display='block';btn.textContent='注册并进入 →';}
-  }else{confirmEl.style.display='none';btn.textContent='进入游戏 →';}
+function switchLoginTab(tab){
+  document.getElementById('tabLogin').classList.toggle('active',tab==='login');
+  document.getElementById('tabRegister').classList.toggle('active',tab==='register');
+  document.getElementById('panelLogin').classList.toggle('active',tab==='login');
+  document.getElementById('panelRegister').classList.toggle('active',tab==='register');
+  document.getElementById('loginMsg').textContent='';
+  document.getElementById('regMsg').textContent='';
 }
-function doLogin(){
-  const name=(document.getElementById('usernameInput').value||'').trim();
-  const pwd=(document.getElementById('passwordInput').value||'');
+function checkRegName(){
+  const name=(document.getElementById('regName').value||'').trim();
+  const hint=document.getElementById('regNameHint');
+  const inp=document.getElementById('regName');
+  if(name.length<2){hint.textContent='';inp.className='login-input';return;}
+  const users=getUsers();
+  const taken=Object.keys(users).some(k=>k.toLowerCase()===name.toLowerCase());
+  if(taken){
+    hint.textContent='❌ 该用户名已被占用，请换一个';
+    hint.className='reg-hint err';
+    inp.className='login-input input-err';
+  }else{
+    hint.textContent='✅ 用户名可用';
+    hint.className='reg-hint ok';
+    inp.className='login-input input-ok';
+  }
+}
+function doLoginForm(){
+  const name=(document.getElementById('loginName').value||'').trim();
+  const pwd=(document.getElementById('loginPwd').value||'');
   const msg=document.getElementById('loginMsg');
   if(name.length<2){msg.textContent='用户名至少2个字符';return;}
-  if(name.length>12){msg.textContent='用户名最多12个字符';return;}
   if(!pwd){msg.textContent='请输入密码';return;}
   const users=getUsers();
   const existKey=Object.keys(users).find(k=>k.toLowerCase()===name.toLowerCase());
-  if(existKey){
-    if(users[existKey]._pwd && users[existKey]._pwd!==pwd){msg.textContent='密码错误';return;}
-    msg.textContent=''; loginAs(existKey);
-  }else{
-    const cpwd=(document.getElementById('confirmInput').value||'');
-    if(pwd!==cpwd){msg.textContent='两次密码不一致';return;}
-    msg.textContent='';
-    const newSave=defSave(); newSave._pwd=pwd;
-    users[name]=newSave; saveUsers(users); loginAs(name);
-  }
+  if(!existKey){msg.textContent='账号不存在，请先注册';return;}
+  if(users[existKey]._pwd && users[existKey]._pwd!==pwd){msg.textContent='密码错误，请重试';return;}
+  msg.textContent=''; loginAs(existKey);
 }
+function doRegister(){
+  const name=(document.getElementById('regName').value||'').trim();
+  const pwd=(document.getElementById('regPwd').value||'');
+  const pwd2=(document.getElementById('regPwd2').value||'');
+  const msg=document.getElementById('regMsg');
+  if(name.length<2){msg.textContent='用户名至少2个字符';return;}
+  if(name.length>12){msg.textContent='用户名最多12个字符';return;}
+  if(!pwd){msg.textContent='请设置密码';return;}
+  if(pwd!==pwd2){msg.textContent='两次密码不一致';return;}
+  const users=getUsers();
+  const taken=Object.keys(users).some(k=>k.toLowerCase()===name.toLowerCase());
+  if(taken){msg.textContent='该用户名已被占用，请换一个';return;}
+  msg.textContent='';
+  const newSave=defSave(); newSave._pwd=pwd;
+  users[name]=newSave; saveUsers(users); loginAs(name);
+}
+function updateLoginHint(){}
 
 function deleteUser(name,e){
   e.stopPropagation();
@@ -2412,8 +3094,167 @@ function deleteUser(name,e){
 
 function logout(){
   CURRENT_USER='';
+  localStorage.removeItem('gq_autologin');
+  const ab=document.getElementById('adminPanelBtn');if(ab)ab.style.display='none';
   renderUserList();
   showScreen('loginScreen');
+}
+
+// ── ADMIN PANEL ──
+let _adminEditTarget='';
+function openAdminPanel(){if(!SAVE._isAdmin)return;renderAdminPanel();showScreen('adminScreen');}
+function renderAdminPanel(){
+  const users=getUsers();
+  const names=Object.keys(users).filter(k=>k!=='');
+  const totalCoins=names.reduce((s,k)=>(s+(users[k].coins||0)),0);
+  const totalXP=names.reduce((s,k)=>(s+(users[k].xp||0)),0);
+  const sg=document.getElementById('adminStatGrid');
+  if(sg) sg.innerHTML=`
+    <div class="admin-stat-box"><div class="admin-stat-num">${names.length}</div><div class="admin-stat-lbl">注册用户</div></div>
+    <div class="admin-stat-box"><div class="admin-stat-num">${totalCoins}</div><div class="admin-stat-lbl">总金币</div></div>
+    <div class="admin-stat-box"><div class="admin-stat-num">${totalXP}</div><div class="admin-stat-lbl">总 XP</div></div>
+    <div class="admin-stat-box"><div class="admin-stat-num">${names.filter(n=>isAdminUser(n)).length}</div><div class="admin-stat-lbl">管理员账户</div></div>`;
+  const ul=document.getElementById('adminUserList');
+  if(!ul)return;
+  if(!names.length){ul.innerHTML='<div style="color:#64748b;font-size:12px;text-align:center;padding:12px">暂无其他用户</div>';return;}
+  const isSuperAdmin=CURRENT_USER==='Bian1230';
+  ul.innerHTML=names.map(n=>{
+    const u=users[n];const isAdm=isAdminUser(n);
+    const isHardcoded=ADMIN_USERS.some(a=>a.toLowerCase()===n.toLowerCase());
+    const esc=n.replace(/'/g,"\\'");
+    const charCount=typeof CHARACTERS!=='undefined'?CHARACTERS.filter(c=>c.cost===0||(u.ownedChars||[]).includes(c.id)).length:'?';
+    const total=typeof CHARACTERS!=='undefined'?CHARACTERS.length:'?';
+    let rightBtn;
+    if(isAdm){
+      if(isSuperAdmin&&!isHardcoded){
+        rightBtn=`<button class="admin-del-btn" onclick="toggleAdmin('${esc}')">撤销管理</button>`;
+      }else{
+        rightBtn=`<div style="font-size:10px;color:#f87171;border:1px solid rgba(239,68,68,.4);padding:3px 8px;border-radius:4px;display:flex;align-items:center">ADMIN</div>`;
+      }
+    }else{
+      rightBtn=isSuperAdmin
+        ?`<button class="admin-edit-btn" onclick="toggleAdmin('${esc}')">授权管理</button><button class="admin-del-btn" onclick="adminDeleteUser('${esc}')">删除</button>`
+        :`<button class="admin-del-btn" onclick="adminDeleteUser('${esc}')">删除</button>`;
+    }
+    return `<div class="admin-user-row">
+      <div style="flex:1;cursor:pointer" onclick="openAdminEdit('${esc}')">
+        <div class="admin-user-name">${n}${isAdm?'<span class="admin-crown">👑</span>':''}</div>
+        <div class="admin-user-stats">Lv.${u.lv||1} · 🪙${u.coins||0} · XP:${u.xp||0} · 关卡:${Object.keys(u.dungeons||{}).length} · 角色:${charCount}/${total}</div>
+      </div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="admin-edit-btn" onclick="openAdminEdit('${esc}')">编辑</button>
+        ${rightBtn}
+      </div>
+    </div>`;
+  }).join('');
+}
+function toggleAdmin(name){
+  if(CURRENT_USER!=='Bian1230')return;
+  if(ADMIN_USERS.some(a=>a.toLowerCase()===name.toLowerCase()))return;
+  const users=getUsers();if(!users[name])return;
+  users[name].isAdmin=!users[name].isAdmin;
+  saveUsers(users);
+  renderAdminPanel();
+  const granted=users[name].isAdmin;
+  floatText(granted?'👑 已授予管理员权限':'🚫 已撤销管理员权限',granted?'#fbbf24':'#f87171',window.innerWidth/2-100,300);
+}
+function openAdminEdit(name){
+  if(!SAVE._isAdmin)return;
+  _adminEditTarget=name;
+  const users=getUsers();const u=users[name]||{};
+  document.getElementById('adminEditName').textContent=name;
+  document.getElementById('adminEditCoins').value=u.coins||0;
+  document.getElementById('adminEditXP').value=u.xp||0;
+  document.getElementById('adminEditLv').value=u.lv||1;
+  document.getElementById('adminEditModal').style.display='flex';
+}
+function closeAdminEdit(){document.getElementById('adminEditModal').style.display='none';_adminEditTarget='';}
+function applyAdminEdit(){
+  if(!SAVE._isAdmin||!_adminEditTarget)return;
+  const users=getUsers();if(!users[_adminEditTarget])return;
+  users[_adminEditTarget].coins=Math.max(0,parseInt(document.getElementById('adminEditCoins').value)||0);
+  users[_adminEditTarget].xp=Math.max(0,parseInt(document.getElementById('adminEditXP').value)||0);
+  users[_adminEditTarget].lv=Math.max(1,parseInt(document.getElementById('adminEditLv').value)||1);
+  if(_adminEditTarget===CURRENT_USER){SAVE.coins=users[_adminEditTarget].coins;SAVE.xp=users[_adminEditTarget].xp;SAVE.lv=users[_adminEditTarget].lv;}
+  saveUsers(users);closeAdminEdit();renderAdminPanel();
+}
+function adminUnlockAll(name){
+  if(!SAVE._isAdmin)return;
+  const users=getUsers();if(!users[name])return;
+  users[name].ownedChars=typeof CHARACTERS!=='undefined'?CHARACTERS.map(c=>c.id):[];
+  users[name].unlocked=true;
+  if(name===CURRENT_USER){SAVE.ownedChars=users[name].ownedChars;SAVE.unlocked=true;}
+  saveUsers(users);closeAdminEdit();renderAdminPanel();
+  floatText('✅ 已为 '+name+' 解锁全部角色','#4ade80',window.innerWidth/2-100,300);
+}
+function adminUnlockDungeons(name){
+  if(!SAVE._isAdmin)return;
+  const users=getUsers();if(!users[name])return;
+  if(!users[name].dungeons)users[name].dungeons={};
+  if(typeof DUNGEONS!=='undefined')DUNGEONS.forEach(d=>{
+    if(!users[name].dungeons[d.id])users[name].dungeons[d.id]={stars:1,score:3,total:5};
+  });
+  if(name===CURRENT_USER)SAVE.dungeons={...users[name].dungeons};
+  saveUsers(users);renderAdminPanel();
+  floatText('🔓 已为 '+name+' 解锁全部关卡','#4ade80',window.innerWidth/2-100,300);
+}
+function adminCompleteAll(name){
+  if(!SAVE._isAdmin)return;
+  const users=getUsers();if(!users[name])return;
+  if(!users[name].dungeons)users[name].dungeons={};
+  if(typeof DUNGEONS!=='undefined')DUNGEONS.forEach(d=>{
+    users[name].dungeons[d.id]={stars:3,score:5,total:5};
+  });
+  users[name].unlocked=true;
+  if(name===CURRENT_USER){SAVE.dungeons={...users[name].dungeons};SAVE.unlocked=true;}
+  saveUsers(users);closeAdminEdit();renderAdminPanel();
+  floatText('⭐ 已为 '+name+' 全部三星通关','#fbbf24',window.innerWidth/2-100,300);
+}
+function adminResetProgress(name){
+  if(!SAVE._isAdmin)return;
+  document.getElementById('adminConfirmMsg').textContent='确定清空「'+name+'」的全部游戏数据？（金币/等级/关卡/道具全部归零，密码保留）';
+  document.getElementById('adminConfirmBox').style.display='flex';
+  document.getElementById('adminConfirmOk').onclick=function(){
+    document.getElementById('adminConfirmBox').style.display='none';
+    const users=getUsers();
+    const pwd=(users[name]||{})._pwd||'';
+    const fresh=defSave();
+    if(pwd)fresh._pwd=pwd;
+    users[name]=fresh;
+    if(name===CURRENT_USER){const isAdm=SAVE._isAdmin;SAVE=defSave();SAVE._isAdmin=isAdm;}
+    saveUsers(users);closeAdminEdit();renderAdminPanel();
+    floatText('🗑️ 已清空 '+name+' 的全部数据','#f87171',window.innerWidth/2-80,300);
+  };
+  document.getElementById('adminConfirmCancel').onclick=function(){
+    document.getElementById('adminConfirmBox').style.display='none';
+  };
+}
+function adminGetCoins(){return parseInt(document.getElementById('adminEditCoins').value)||0;}
+function adminAddCoins(name,amt){
+  if(!SAVE._isAdmin)return;
+  const users=getUsers();if(!users[name])return;
+  users[name].coins=Math.max(0,(users[name].coins||0)+amt);
+  if(name===CURRENT_USER)SAVE.coins=users[name].coins;
+  saveUsers(users);document.getElementById('adminEditCoins').value=users[name].coins;
+}
+function adminDeleteUser(name){
+  if(!SAVE._isAdmin)return;
+  document.getElementById('adminConfirmMsg').textContent='确定删除用户「'+name+'」？账号将永久消失，不可恢复。';
+  document.getElementById('adminConfirmBox').style.display='flex';
+  document.getElementById('adminConfirmOk').onclick=function(){
+    document.getElementById('adminConfirmBox').style.display='none';
+    const users=getUsers();delete users[name];saveUsers(users);closeAdminEdit();renderAdminPanel();
+  };
+  document.getElementById('adminConfirmCancel').onclick=function(){
+    document.getElementById('adminConfirmBox').style.display='none';
+  };
+}
+function adminExportData(){
+  if(!SAVE._isAdmin)return;
+  const data=JSON.stringify(getUsers(),null,2);
+  const blob=new Blob([data],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='grammar_quest_users_'+new Date().toISOString().slice(0,10)+'.json';a.click();
 }
 
 // ══════════════════════════════════════
@@ -2545,6 +3386,16 @@ function getMonsterAtk(d){
 }
 
 // ══════════════════════════════════════
+// WORLDS — 5 regions, each covering 5 consecutive dungeons
+// ══════════════════════════════════════
+const WORLDS=[
+  {name:'翡翠森林',icon:'🌲',color:'#22c55e',desc:'时态秘境 · 语法之旅的起点',start:0},
+  {name:'深渊海域',icon:'🌊',color:'#0ea5e9',desc:'情态与被动 · 迷雾笼罩的大洋',start:5},
+  {name:'熔岩帝国',icon:'🌋',color:'#f97316',desc:'动名词与综合 · 烈焰试炼之地',start:10},
+  {name:'永恒冰川',icon:'❄️',color:'#38bdf8',desc:'将来与从句 · 冰封的语法圣地',start:15},
+  {name:'雷霆天穹',icon:'⚡',color:'#a78bfa',desc:'高阶语法 · 终极雷霆的审判场',start:20},
+];
+
 // CHARACTERS
 // ══════════════════════════════════════
 const CHARACTERS=[
@@ -2743,57 +3594,137 @@ function goMap(){
   if(svh)svh.textContent=SAVE.survivalHigh||0;
 }
 
-function renderMap(){
-  const el=document.getElementById('mapBody');
-  el.innerHTML=DUNGEONS.map((d,i)=>{
-    const save=SAVE.dungeons[d.id];
-    const payLocked=!SAVE.unlocked&&i>=FREE_COUNT;
-    const locked=!payLocked&&(i>0&&!SAVE.dungeons[DUNGEONS[i-1].id]);
-    const stars=save?save.stars:0;
-    const starStr=['☆☆☆','★☆☆','★★☆','★★★'][stars];
-    if(payLocked){
-      return `<div class="dungeon-card pbox" style="background:rgba(15,15,35,.95);border-color:rgba(202,138,4,.25);opacity:.55;cursor:pointer" onclick="showUnlockModal()">
-        <div class="dc-icon" style="color:#ca8a04">🔑</div>
-        <div class="dc-info">
-          <div class="dc-name" style="color:#78716c">${d.name}</div>
-          <div class="dc-sub">${d.sub}</div>
-          <div class="dc-stars" style="color:#ca8a04;font-size:11px">🔑 点击输入兑换码解锁</div>
-        </div>
+// W/diamond layout: [1]bottom-left [2]bottom-right [3]center [4]top-left [5]top-right(boss)
+const _SNAKE_POS=[{l:20,t:80},{l:74,t:80},{l:47,t:50},{l:20,t:20},{l:74,t:20}];
+// Bezier road segments: 1→2 bottom bar, 2→3 diag up-left, 3→4 diag up-left, 4→5 top bar
+const _SNAKE_SEGS_SVG=['M20,80 Q47,80 74,80','M74,80 Q60,65 47,50','M47,50 Q33,35 20,20','M20,20 Q47,20 74,20'];
+
+const WORLD_BG=[
+  'linear-gradient(185deg,#071a0c 0%,#0e3319 55%,#0a2010 100%)',
+  'linear-gradient(185deg,#020c1f 0%,#041a3d 55%,#061228 100%)',
+  'linear-gradient(185deg,#1c0400 0%,#3d0800 55%,#1a0300 100%)',
+  'linear-gradient(185deg,#040d1c 0%,#091838 55%,#0d2050 100%)',
+  'linear-gradient(185deg,#080514 0%,#160a30 55%,#0e0620 100%)',
+];
+const WORLD_DECO=[
+  [{e:'🌲',l:2,t:16,s:36},{e:'🌿',l:78,t:30,s:28},{e:'🍃',l:10,t:55,s:22},{e:'🌲',l:72,t:68,s:32},{e:'🦋',l:82,t:76,s:18},{e:'🌸',l:55,t:88,s:16},{e:'🌾',l:35,t:73,s:20}],
+  [{e:'🌊',l:2,t:70,s:38},{e:'🐋',l:58,t:50,s:30},{e:'⚓',l:10,t:26,s:24},{e:'🐠',l:76,t:65,s:22},{e:'🌊',l:40,t:82,s:32},{e:'🐚',l:84,t:32,s:18},{e:'💧',l:22,t:42,s:20}],
+  [{e:'🌋',l:4,t:50,s:38},{e:'🔥',l:68,t:35,s:26},{e:'💎',l:16,t:20,s:22},{e:'🔥',l:54,t:70,s:24},{e:'⚔️',l:78,t:60,s:20},{e:'🌋',l:34,t:82,s:28},{e:'🪨',l:20,t:65,s:24}],
+  [{e:'❄️',l:4,t:16,s:28},{e:'🏔️',l:62,t:52,s:38},{e:'❄️',l:76,t:22,s:22},{e:'⛄',l:16,t:66,s:26},{e:'❄️',l:40,t:76,s:20},{e:'🌨️',l:54,t:36,s:24},{e:'🧊',l:82,t:74,s:18}],
+  [{e:'⚡',l:6,t:25,s:28},{e:'☁️',l:62,t:15,s:36},{e:'⚡',l:76,t:55,s:24},{e:'🌩️',l:16,t:60,s:30},{e:'✨',l:48,t:42,s:20},{e:'☁️',l:34,t:76,s:26},{e:'🌀',l:80,t:30,s:20}],
+];
+// Per-world road theme: [border, surface, pebble/texture dot color]
+const WORLD_ROAD=[
+  ['#1e0c04','#3d2008','rgba(120,70,20,.55)'],   // 翡翠森林: 泥土小径
+  ['#020e20','#0a2038','rgba(14,120,180,.4)'],    // 深渊海域: 海底石路
+  ['#140200','#2d0a04','rgba(200,60,10,.45)'],    // 熔岩帝国: 熔岩岩道
+  ['#050f22','#0a2245','rgba(100,200,255,.35)'],  // 永恒冰川: 冰雪小径
+  ['#07031c','#150830','rgba(140,80,240,.4)'],    // 雷霆天穹: 暗云风道
+];
+
+let _pendingReveal=null;
+
+function renderDungeonList(){
+  const el=document.getElementById('mapBody');if(!el)return;
+  el.style.background='';
+  let html='<div class="dung-list">';
+  WORLDS.forEach((w,wi)=>{
+    const ds=DUNGEONS.slice(wi*5,(wi+1)*5);
+    const doneCount=ds.filter(d=>!!SAVE.dungeons[d.id]).length;
+    html+=`<div class="world-sect-head">
+      <span style="font-size:20px">${w.icon}</span>
+      <div class="wsh-texts"><div class="wsh-name" style="color:${w.color}">${w.name}</div><div class="wsh-desc">${w.desc}</div></div>
+      <div class="wsh-prog" style="color:${w.color}">${doneCount === 5 ? '👑' : doneCount+'/5'}</div>
+    </div><div class="wsh-div" style="background:${w.color}20"></div>`;
+    ds.forEach((d,ci)=>{
+      const i=wi*5+ci;
+      const sv=SAVE.dungeons[d.id];
+      const payLocked=!SAVE.unlocked&&i>=FREE_COUNT;
+      const prevDone=i===0||!!SAVE.dungeons[DUNGEONS[i-1].id];
+      const done=!!sv;
+      const frontier=!done&&!payLocked&&prevDone;
+      const locked=!done&&!frontier&&!payLocked;
+      const cls=payLocked?'dr-paylocked':done?'dr-done':frontier?'dr-frontier':'dr-locked';
+      const onclick=payLocked?`onclick="showUnlockModal()"`:locked?`onclick="showLocked()"`:frontier||done?`onclick="openDungeon(${d.id})"`:'';      const stars=sv?sv.stars:0;
+      html+=`<div class="dung-row ${cls}" ${onclick}>
+        <div class="dr-num">${i+1}</div>
+        <div class="dr-icon">${locked||payLocked?'🔒':d.icon}</div>
+        <div class="dr-info"><div class="dr-name">${d.name}</div><div class="dr-sub">${d.sub||''}</div></div>
+        <div class="dr-right">${done?`<div class="dr-stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</div>`:frontier?'<div class="dr-challenge">挑战 ›</div>':'<span style="font-size:14px">🔒</span>'}</div>
       </div>`;
-    }
-    return `<div class="dungeon-card pbox${save?' completed':''}"
-      style="--ac:${d.color};background:rgba(15,15,35,.95);border-color:${locked?'rgba(79,70,229,.2)':d.color+'44'}"
-      onclick="${locked?'showLocked()':'openDungeon('+d.id+')'}"
-    >
-      <div class="dc-icon" style="color:${d.color}">${locked?'🔒':d.icon}</div>
-      <div class="dc-info">
-        <div class="dc-name" style="color:${locked?'#475569':d.color}">${d.name}</div>
-        <div class="dc-sub">${d.sub}</div>
-        <div class="dc-stars">${locked?'🔒 通关前一关解锁':starStr}</div>
-      </div>
-      ${save?`<div class="dc-badge" style="background:${d.color}22;color:${d.color};border:1px solid ${d.color}44">${save.score}/8</div>`:''}
+    });
+  });
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+function goMapOrReveal(){
+  const id=_pendingReveal;_pendingReveal=null;
+  if(id!=null){showWorldReveal(id);}else{goMap();}
+}
+
+function showWorldReveal(dungeonId){
+  const idx=DUNGEONS.findIndex(d=>String(d.id)===String(dungeonId));
+  if(idx<0){goMap();return;}
+  const wi=Math.floor(idx/5);
+  const allDone=DUNGEONS.every(d=>!!SAVE.dungeons[d.id]);
+  const overlay=document.getElementById('worldRevealOverlay');
+  const titleEl=document.getElementById('wroTitle');
+  const subEl=document.getElementById('wroSub');
+  const gridEl=document.getElementById('wroGrid');
+  if(!overlay)return;
+  const w=WORLDS[wi];
+  const wDone=DUNGEONS.slice(wi*5,(wi+1)*5).filter(d=>!!SAVE.dungeons[d.id]).length;
+  if(allDone){
+    titleEl.textContent='🏆 世界地图完全解锁！';
+    subEl.textContent='你征服了全部25个关卡，成为终极语法勇者！';
+  }else if(wDone===5){
+    titleEl.textContent=`${w.icon} ${w.name} · 完全解锁！`;
+    subEl.textContent='此世界已全部探索，前往下一片土地！';
+  }else{
+    titleEl.textContent='✨ 世界地图更新';
+    subEl.textContent=`${w.icon} ${w.name} · ${wDone}/5 区域已探索`;
+  }
+  gridEl.innerHTML=WORLDS.map((wr,i)=>{
+    const ds=DUNGEONS.slice(i*5,(i+1)*5);
+    const dc=ds.filter(d=>!!SAVE.dungeons[d.id]).length;
+    const full=dc===5;
+    const lk=i>0&&DUNGEONS.slice((i-1)*5,(i-1)*5+5).every(d=>!SAVE.dungeons[d.id]);
+    const isActive=i===wi;
+    return `<div class="wro-world ${lk?'wro-locked':''} ${isActive?'wro-active':''} ${full?'wro-full':''} ${i===4?'wro-last':''}" style="--wc:${wr.color};background:linear-gradient(135deg,${wr.color}1a,${wr.color}08)">
+      <div class="wro-wicon">${full?'👑':lk?'🔒':wr.icon}</div>
+      <div class="wro-wname" style="color:${wr.color}">${wr.name}</div>
+      <div class="wro-wprog">${lk?'未解锁':full?'已完成':dc+'/5'}</div>
+      <div class="wro-bar"><div class="wro-bar-fill" style="width:${dc/5*100}%;background:${wr.color}"></div></div>
     </div>`;
   }).join('');
-  // 更新 banner 状态
-  const bi=document.getElementById('payBannerInner');
-  const bt=document.getElementById('payBannerTitle');
-  const bs=document.getElementById('payBannerSub');
-  const ba=document.getElementById('payBannerArrow');
-  const bic=document.getElementById('payBannerIcon');
+  overlay.style.display='flex';
+}
+
+function dismissWorldReveal(){
+  document.getElementById('worldRevealOverlay').style.display='none';
+  goMap();
+}
+
+function renderMap(){
+  renderDungeonList();
+  const bi=document.getElementById('payBannerInner'),bt=document.getElementById('payBannerTitle'),
+        bs=document.getElementById('payBannerSub'),ba=document.getElementById('payBannerArrow'),
+        bic=document.getElementById('payBannerIcon');
   if(bi){
     if(SAVE.unlocked){
-      bi.className='pay-banner-inner unlocked';
-      bic.textContent='✅';bt.textContent='全部关卡已解锁';bt.style.color='#4ade80';
-      bs.textContent='感谢支持！';ba.textContent='';
+      bi.className='pay-banner-inner unlocked';bic.textContent='✅';
+      bt.textContent='全部关卡已解锁';bt.style.color='#4ade80';bs.textContent='感谢支持！';ba.textContent='';
       const sl=document.getElementById('shopUnlockLabel');if(sl)sl.textContent='已解锁';
       const sb=document.getElementById('shopUnlockBtn');if(sb){sb.style.background='rgba(34,197,94,.1)';sb.style.borderColor='rgba(34,197,94,.35)';}
     }else{
-      bi.className='pay-banner-inner';
-      bic.textContent='🔑';bt.textContent='输入兑换码 解锁全部25关';bt.style.color='#fbbf24';
+      bi.className='pay-banner-inner';bic.textContent='🔑';
+      bt.textContent='输入兑换码 解锁全部25关';bt.style.color='#fbbf24';
       bs.textContent=`前${FREE_COUNT}关免费 · 购买后输入兑换码`;ba.textContent='→';
     }
   }
 }
+
 
 function showLocked(){floatText('🔒 通关前一关解锁！','#f87171',window.innerWidth/2-60,300);}
 function showPayLocked(){showUnlockModal();}
@@ -2819,7 +3750,23 @@ function openDungeon(id){
   B.dungeon=DUNGEONS[id];
   B.difficulty=B.difficulty||'normal';
   B.retryFn=()=>openDungeon(id);
-  const save=SAVE.dungeons[id];
+  const dk=DUNGEON_KNOWLEDGE[id];
+  if(dk){
+    document.getElementById('learnIcon').textContent=B.dungeon.icon;
+    document.getElementById('learnDungName').textContent=B.dungeon.name;
+    document.getElementById('learnDungSub').textContent=B.dungeon.sub||'';
+    const kpEl=document.getElementById('learnKpList');
+    kpEl.innerHTML=dk.knowledge.map(k=>`<div class="learn-kp-item"><div class="learn-kp-dot"></div><span>${k}</span></div>`).join('');
+    const pitEl=document.getElementById('learnPitList');
+    pitEl.innerHTML=dk.pitfalls.map(p=>`<div class="learn-pit-item">${p}</div>`).join('');
+    showScreen('learnScreen');
+  }else{
+    showIntroScreen();
+  }
+}
+function goIntroFromLearn(){showIntroScreen();}
+function showIntroScreen(){
+  const save=SAVE.dungeons[B.dungeon.id];
   document.getElementById('introMonster').textContent=B.dungeon.monster.emoji;
   document.getElementById('introName').textContent=`${B.dungeon.icon} ${B.dungeon.name}`;
   document.getElementById('introStory').textContent=B.dungeon.story;
@@ -2895,8 +3842,7 @@ function startBattle(){
   if(stEl){stEl.style.display=isSpeed?'block':'none';if(isSpeed){const mins2=parseInt(d.id.split('_')[1]);const m3=Math.floor(mins2*60/60),s3=0;stEl.textContent='⏱ '+m3+':00';}}
   const slEl=document.getElementById('bSurvivalLv');
   if(slEl){slEl.style.display=isSurvival?'block':'none';if(isSurvival)slEl.textContent='阶段 1';}
-  const pub=document.querySelector('.powerup-bar');
-  if(pub)pub.style.display=isExam?'none':'flex';
+  document.querySelectorAll('.powerup-bar').forEach(pub=>pub.style.display=isExam?'none':'');
   // Dungeon-colored monster bar for normal dungeons
   const mbar=document.getElementById('monsterBar');
   if(mbar){
@@ -2944,7 +3890,7 @@ function updBattleHUD(){
   // Powerups
   ['hint','shield','freeze','timeboost','timelock','timex2','freeze60','slowmo','rewind','skip','timestop','autofreeze','doublestop'].forEach(k=>{
     const n=document.getElementById('pu-'+k+'-n');if(n)n.textContent=B.inv[k]||0;
-    const b=document.getElementById('pu-'+k);if(b)b.disabled=!(B.inv[k]>0);
+    const b=document.getElementById('pu-'+k);if(b){const has=B.inv[k]>0;b.disabled=!has;b.classList.toggle('pu-zero',!has);}
   });
   // Mode banner + screen tint
   const mb=document.getElementById('modeBanner');
@@ -3307,6 +4253,19 @@ function usePU(type){
 
 // ══════════════════════════════════════
 // END BATTLE
+function confirmQuitBattle(){
+  if(confirm('放弃本次关卡并返回地图？'))quitBattle();
+}
+function confirmGoHome(){
+  if(confirm('放弃本次关卡并返回主页？')){quitBattle();goTitle();}
+}
+function quitBattle(){
+  clearInterval(B.timer);
+  if(B.speedInterval){clearInterval(B.speedInterval);B.speedInterval=null;}
+  B={};
+  goMap();
+}
+
 // ══════════════════════════════════════
 function endBattle(won){
   clearInterval(B.timer);
@@ -3316,7 +4275,7 @@ function endBattle(won){
   const acc=tot>0?Math.round(ok/tot*100):0;
   const id=String(B.dungeon.id);
   // Restore powerup bar visibility
-  const pub=document.querySelector('.powerup-bar');if(pub)pub.style.display='flex';
+  document.querySelectorAll('.powerup-bar').forEach(pub=>pub.style.display='');
   const stEl=document.getElementById('bSpeedTimer');if(stEl)stEl.style.display='none';
   const slEl=document.getElementById('bSurvivalLv');if(slEl)slEl.style.display='none';
   // Track max combo for badge check
@@ -3368,7 +4327,20 @@ function endBattle(won){
     // Save dungeon progress (not for special modes)
     const specialIds=['daily','endless','mistakes','rank','survival','mistakeloop'];
     const isSpecial=specialIds.includes(id)||(id&&(id.startsWith('speed_')||id.startsWith('exam_')||id.startsWith('theme_')));
-    if(!isSpecial){const prev=SAVE.dungeons[id];if(!prev||stars>prev.stars)SAVE.dungeons[id]={stars,score:ok,total:tot};}
+    if(!isSpecial){
+      const prev=SAVE.dungeons[id];const isNew=!prev;
+      if(!prev||stars>prev.stars)SAVE.dungeons[id]={stars,score:ok,total:tot};
+      if(isNew){
+        const ni=DUNGEONS.findIndex(d=>String(d.id)===id)+1;
+        if(ni>0&&ni<DUNGEONS.length)SAVE.justUnlocked=DUNGEONS[ni].id;
+        const wi=Math.floor(ni/5);
+        if(wi>0&&wi<WORLDS.length){
+          const prevW=DUNGEONS.slice((wi-1)*5,(wi-1)*5+5);
+          if(prevW.every(d=>!!SAVE.dungeons[d.id]))SAVE.justUnlockedWorld=wi;
+        }
+      }
+      _pendingReveal=id;
+    }
     SAVE.coins+=coinGain;SAVE.xp+=xpGain;
     const newLv=Math.floor(SAVE.xp/100)+1;
     if(newLv>SAVE.lv){SAVE.lv=newLv;floatText(`🎉 升级! Lv.${newLv}`,'#fbbf24',window.innerWidth/2-50,100);}
@@ -3885,7 +4857,20 @@ makeStars();
 // init login screen stars
 (()=>{const c=document.getElementById('starsLogin');if(!c)return;c.innerHTML=Array.from({length:50},()=>{const s=document.createElement('div');s.className='star';const sz=Math.random()*2+1;s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${(Math.random()*3+1).toFixed(1)}s;--delay:${(Math.random()*3).toFixed(1)}s`;return s.outerHTML;}).join('');})();
 renderUserList();
-showScreen('loginScreen');
+(function(){
+  try{
+    const al=localStorage.getItem('gq_autologin');
+    if(al){
+      const obj=JSON.parse(al);
+      if(obj.u&&obj.t&&(Date.now()-obj.t)<7*24*60*60*1000){
+        const users=getUsers();
+        if(users[obj.u]){loginAs(obj.u);return;}
+      }
+      localStorage.removeItem('gq_autologin');
+    }
+  }catch(e){localStorage.removeItem('gq_autologin');}
+  showScreen('loginScreen');
+})();
 </script>
 
 <!-- ══ RANK SCREEN ══ -->
@@ -3933,6 +4918,84 @@ showScreen('loginScreen');
     <div class="mode-title-text">🎖️ 等级养成</div>
   </div>
   <div class="mode-body" id="profileScreenBody"></div>
+</div>
+<!-- ══ ADMIN SCREEN ══ -->
+<div class="screen" id="adminScreen">
+  <div class="admin-wrap">
+    <div class="admin-header-row">
+      <div>
+        <div class="admin-title">⚙️ 管理员面板</div>
+        <div class="admin-badge-lbl">ADMIN · Bian1230</div>
+      </div>
+      <button class="title-btn secondary" onclick="goTitle()" style="padding:8px 14px;font-size:12px;margin:0">← 返回</button>
+    </div>
+    <div class="admin-section">
+      <div class="admin-section-title">系统概览</div>
+      <div class="admin-stat-grid" id="adminStatGrid"></div>
+    </div>
+    <div class="admin-section">
+      <div class="admin-section-title">用户管理 · 点击用户名可编辑</div>
+      <div id="adminUserList"></div>
+    </div>
+    <button class="title-btn secondary" onclick="adminExportData()" style="width:100%;padding:10px;font-size:12px;margin:0;border-color:#4f46e5;color:#818cf8">📤 导出所有用户数据</button>
+  </div>
+</div>
+
+<!-- ══ ADMIN CONFIRM BOX ══ -->
+<div id="adminConfirmBox">
+  <div class="admin-confirm-modal">
+    <div style="font-size:22px;text-align:center">⚠️</div>
+    <div class="admin-confirm-text" id="adminConfirmMsg"></div>
+    <div class="admin-confirm-btns">
+      <button class="admin-confirm-cancel-btn" id="adminConfirmCancel">取消</button>
+      <button class="admin-confirm-ok-btn" id="adminConfirmOk">确认执行</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADMIN EDIT MODAL ══ -->
+<div id="adminEditModal">
+  <div class="admin-modal-box">
+    <div class="admin-modal-title">✏️ 编辑用户：<span id="adminEditName"></span></div>
+    <div class="admin-field-row">
+      <div class="admin-field-lbl">🪙 金币</div>
+      <input id="adminEditCoins" class="admin-field-input" type="number" min="0">
+      <div class="admin-coin-row" style="margin-top:5px">
+        <div class="admin-coin-btn" onclick="adminAddCoins(_adminEditTarget,100)">+100</div>
+        <div class="admin-coin-btn" onclick="adminAddCoins(_adminEditTarget,500)">+500</div>
+        <div class="admin-coin-btn" onclick="adminAddCoins(_adminEditTarget,1000)">+1000</div>
+        <div class="admin-coin-btn" onclick="adminAddCoins(_adminEditTarget,-adminGetCoins())">清零</div>
+      </div>
+    </div>
+    <div class="admin-field-row">
+      <div class="admin-field-lbl">⭐ XP 经验值</div>
+      <input id="adminEditXP" class="admin-field-input" type="number" min="0">
+    </div>
+    <div class="admin-field-row">
+      <div class="admin-field-lbl">🎖️ 等级</div>
+      <input id="adminEditLv" class="admin-field-input" type="number" min="1" max="99">
+    </div>
+    <div class="admin-action-row">
+      <button class="admin-action-success" onclick="adminUnlockAll(_adminEditTarget)">🔓 解锁全部角色</button>
+      <button class="admin-action-danger" onclick="adminResetProgress(_adminEditTarget)">🔄 重置进度</button>
+    </div>
+    <div class="admin-action-row">
+      <button class="admin-action-success" onclick="adminUnlockDungeons(_adminEditTarget)">🗺️ 解锁全部关卡</button>
+      <button class="admin-action-success" onclick="adminCompleteAll(_adminEditTarget)">⭐ 全部三星通关</button>
+    </div>
+    <div class="admin-confirm-row">
+      <button class="admin-cancel-btn" onclick="closeAdminEdit()">取消</button>
+      <button class="admin-save-btn" onclick="applyAdminEdit()">✅ 保存修改</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ WORLD REVEAL OVERLAY ══ -->
+<div id="worldRevealOverlay">
+  <div class="wro-title" id="wroTitle">✨ 世界地图更新</div>
+  <div class="wro-sub" id="wroSub"></div>
+  <div class="wro-grid" id="wroGrid"></div>
+  <button class="title-btn" onclick="dismissWorldReveal()" style="margin-top:24px;width:100%;max-width:320px">继续探险 →</button>
 </div>
 </body>
 </html>
