@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>⚔️ Grammar Quest</title>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script>window.addEventListener('touchstart',function(){},{passive:true});</script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
@@ -803,6 +805,13 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 </div>
 
 <!-- ══ TITLE SCREEN ══ -->
+<!-- ══ 云端连接加载遮罩 ══ -->
+<div id="fbLoadingOverlay" style="display:none;position:fixed;inset:0;z-index:99999;background:#0a0a1a;flex-direction:column;align-items:center;justify-content:center;gap:16px;font-family:'Courier New',monospace">
+  <div style="font-size:44px;animation:heroFloat 2s ease-in-out infinite">⚔️</div>
+  <div style="font-size:15px;color:#818cf8;font-weight:700;letter-spacing:2px">连接云端存档...</div>
+  <div style="font-size:11px;color:#334155;margin-top:4px">Grammar Quest</div>
+</div>
+
 <div class="screen" id="titleScreen">
   <div class="stars" id="stars"></div>
   <div class="title-wrap">
@@ -1277,6 +1286,65 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
 </div>
 
 <script>
+// ══════════════════════════════════════
+// FIREBASE 云端同步配置
+// 使用步骤：
+// 1. 访问 https://console.firebase.google.com 创建项目
+// 2. 左侧选择 Realtime Database → 创建数据库（测试模式）
+// 3. 点击项目设置 → 添加应用（Web）→ 复制配置到下方
+// ══════════════════════════════════════
+const _FB_CFG={
+  apiKey:           "YOUR_API_KEY",
+  authDomain:       "YOUR_PROJECT_ID.firebaseapp.com",
+  databaseURL:      "https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com",
+  projectId:        "YOUR_PROJECT_ID",
+  storageBucket:    "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId:"YOUR_SENDER_ID",
+  appId:            "YOUR_APP_ID"
+};
+const _FB_PATH='gq_users';
+let _userCache={};
+let _fbDB=null;
+
+function getUsers(){return _userCache;}
+function saveUsers(u){
+  _userCache=u;
+  try{localStorage.setItem('gq_users',JSON.stringify(u));}catch(e){}
+  // update() 只更新/新增字段，不会删除其他用户数据（比 set() 更安全）
+  if(_fbDB)_fbDB.ref(_FB_PATH).update(u).catch(err=>console.warn('[FB]',err));
+}
+function _fbRemoveUser(name){
+  // 删除用户时需要单独调 remove()，update() 无法删除 key
+  if(_fbDB)_fbDB.ref(_FB_PATH+'/'+name).remove().catch(err=>console.warn('[FB remove]',err));
+}
+async function _initFirebase(){
+  // 先从 localStorage 加载（保证离线也能秒开）
+  try{_userCache=JSON.parse(localStorage.getItem('gq_users')||'{}');}catch(e){}
+  if(!_FB_CFG.apiKey||_FB_CFG.apiKey==='YOUR_API_KEY'){
+    console.warn('[GQ] Firebase 未配置，仅使用本地存储');return;
+  }
+  try{
+    if(!firebase.apps.length)firebase.initializeApp(_FB_CFG);
+    _fbDB=firebase.database();
+    // 首次拉取全量数据
+    const snap=await _fbDB.ref(_FB_PATH).once('value');
+    _userCache=snap.val()||{};
+    try{localStorage.setItem('gq_users',JSON.stringify(_userCache));}catch(e){}
+    // 实时监听：任何设备写入都会推送过来
+    _fbDB.ref(_FB_PATH).on('value',s=>{
+      _userCache=s.val()||{};
+      try{localStorage.setItem('gq_users',JSON.stringify(_userCache));}catch(e){}
+      const adEl=document.getElementById('adminScreen');
+      if(adEl&&adEl.classList.contains('active'))renderAdminPanel();
+      const lgEl=document.getElementById('loginScreen');
+      if(lgEl&&lgEl.classList.contains('active'))renderUserList();
+    });
+    console.log('[GQ] Firebase 连接成功 ✅');
+  }catch(err){
+    console.warn('[GQ] Firebase 连接失败，使用本地存储:',err.message);
+  }
+}
+
 // ══════════════════════════════════════
 // DATA
 // ══════════════════════════════════════
@@ -2967,8 +3035,7 @@ const UNLOCK_CODE='GQ-DBYW-MX7R-BNF2'; // 兑换码
 // ── USER SYSTEM ──
 const ADMIN_USERS=['Bian1230'];
 let CURRENT_USER='';
-function getUsers(){try{return JSON.parse(localStorage.getItem('gq_users')||'{}');}catch{return {};}}
-function saveUsers(u){localStorage.setItem('gq_users',JSON.stringify(u));}
+// getUsers / saveUsers 已在顶部定义（Firebase 版本）
 
 function mergeWithDefault(s){
   const d=defSave();
@@ -3071,6 +3138,7 @@ function doRegister(){
   const msg=document.getElementById('regMsg');
   if(name.length<2){msg.textContent='用户名至少2个字符';return;}
   if(name.length>12){msg.textContent='用户名最多12个字符';return;}
+  if(/[.#$\[\]/]/.test(name)){msg.textContent='用户名不能包含 . # $ [ ] / 等符号';return;}
   if(!pwd){msg.textContent='请设置密码';return;}
   if(pwd!==pwd2){msg.textContent='两次密码不一致';return;}
   const users=getUsers();
@@ -3088,6 +3156,7 @@ function deleteUser(name,e){
   const users=getUsers();
   delete users[name];
   saveUsers(users);
+  _fbRemoveUser(name);
   if(CURRENT_USER===name){CURRENT_USER='';}
   renderUserList();
 }
@@ -3243,7 +3312,7 @@ function adminDeleteUser(name){
   document.getElementById('adminConfirmBox').style.display='flex';
   document.getElementById('adminConfirmOk').onclick=function(){
     document.getElementById('adminConfirmBox').style.display='none';
-    const users=getUsers();delete users[name];saveUsers(users);closeAdminEdit();renderAdminPanel();
+    const users=getUsers();delete users[name];saveUsers(users);_fbRemoveUser(name);closeAdminEdit();renderAdminPanel();
   };
   document.getElementById('adminConfirmCancel').onclick=function(){
     document.getElementById('adminConfirmBox').style.display='none';
@@ -3429,9 +3498,10 @@ function defSave(){return{coins:0,xp:0,lv:1,inv:{hint:0,shield:0,freeze:0,timebo
 let SAVE=defSave();
 function persist(){
   if(!CURRENT_USER)return;
-  const users=getUsers();
-  users[CURRENT_USER]=SAVE;
-  saveUsers(users);
+  _userCache[CURRENT_USER]=SAVE;
+  try{localStorage.setItem('gq_users',JSON.stringify(_userCache));}catch(e){}
+  // 只写当前用户路径，避免多设备同时写导致互相覆盖
+  if(_fbDB)_fbDB.ref(_FB_PATH+'/'+CURRENT_USER).set(SAVE).catch(e=>console.warn('[FB persist]',e));
 }
 
 // Battle state
@@ -4854,10 +4924,13 @@ function checkBadges(){
 // INIT
 // ══════════════════════════════════════
 makeStars();
-// init login screen stars
 (()=>{const c=document.getElementById('starsLogin');if(!c)return;c.innerHTML=Array.from({length:50},()=>{const s=document.createElement('div');s.className='star';const sz=Math.random()*2+1;s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${(Math.random()*3+1).toFixed(1)}s;--delay:${(Math.random()*3).toFixed(1)}s`;return s.outerHTML;}).join('');})();
-renderUserList();
-(function(){
+(async function(){
+  const ov=document.getElementById('fbLoadingOverlay');
+  if(ov)ov.style.display='flex';
+  await _initFirebase();
+  if(ov)ov.style.display='none';
+  renderUserList();
   try{
     const al=localStorage.getItem('gq_autologin');
     if(al){
