@@ -1163,10 +1163,10 @@ body{font-family:'Courier New',monospace;background:#0a0a1a;color:#e2e8f0;min-he
       <div class="intro-stat"><div class="intro-stat-v" id="introBest">-</div><div>最佳</div></div>
     </div>
     <div class="diff-selector" id="diffWrapper">
-      <button class="diff-btn" id="diff-easy" onclick="setDiff('easy')" style="font-size:10px">⭐ 初中<br><span style="font-size:9px;opacity:.7">中考 ×1</span></button>
-      <button class="diff-btn active-normal" id="diff-normal" onclick="setDiff('normal')" style="font-size:10px">⭐⭐ 高中<br><span style="font-size:9px;opacity:.7">高考 ×1</span></button>
-      <button class="diff-btn" id="diff-hard" onclick="setDiff('hard')" style="font-size:10px">⭐⭐⭐ 大学<br><span style="font-size:9px;opacity:.7">四六级 ×1.5</span></button>
-      <button class="diff-btn" id="diff-expert" onclick="setDiff('expert')" style="font-size:10px">⭐×4 学术<br><span style="font-size:9px;opacity:.7">研究生 ×2</span></button>
+      <button class="diff-btn" id="diff-easy" onclick="setDiff('easy')" style="font-size:10px">🌱 学徒<br><span style="font-size:9px;opacity:.7">入门 ×1</span></button>
+      <button class="diff-btn active-normal" id="diff-normal" onclick="setDiff('normal')" style="font-size:10px">⚔️ 骑士<br><span style="font-size:9px;opacity:.7">标准 ×1</span></button>
+      <button class="diff-btn" id="diff-hard" onclick="setDiff('hard')" style="font-size:10px">🔮 法师<br><span style="font-size:9px;opacity:.7">进阶 ×1.5</span></button>
+      <button class="diff-btn" id="diff-expert" onclick="setDiff('expert')" style="font-size:10px">👑 传奇<br><span style="font-size:9px;opacity:.7">精通 ×2</span></button>
     </div>
     <button class="title-btn" onclick="startBattle()">⚔️ 出发！</button>
     <button class="title-btn secondary" onclick="goMap()">← 返回地图</button>
@@ -2134,6 +2134,46 @@ const DUNGEONS=[
    {q:"He is ___ as talented as his sister, who has won several awards.",lv:3,o:["not so","not nearly as","nearly as","twice"],a:1,e:"not nearly as...as 表示差距很大的否定同级比较（远不如）。"},
    {q:"The higher the altitude, ___ the air becomes.",lv:3,o:["thinner","the thin","the thinner","more thin"],a:2,e:"the + 比较级...the + 比较级（越…越…）→ the thinner。"},
    {q:"She earns ___ times as much as she did when she first started.",lv:3,o:["twice","two","double","second"],a:0,e:"twice as much as 表示两倍（固定表达）→ twice。"},
+   {q:"The soup is getting ___ and hotter — please turn down the heat.",lv:1,o:["hot","hotter","hottest","more hot"],a:1,e:"单音节辅+短元+辅：双写末辅音加 -er → hot→hotter，表示渐进变化。"},
+   {q:"Could you move your chair? I need a ___ space to work in.",lv:1,o:["big","biger","bigger","more big"],a:2,e:"单音节辅+短元+辅形容词，双写末辅音加 -er → big→bigger。"},
+   {q:"My ___ brother taught me how to ride a bike when I was five.",lv:1,o:["older","old","eldest","elder"],a:3,e:"elder 专用于家庭成员（my elder brother），表示年长的兄姐，不可单独用于 than 比较结构。"},
+   {q:"There are ___ chairs in this room than we need for the meeting.",lv:1,o:["less","fewer","little","small"],a:1,e:"fewer 修饰可数名词（chairs），less 修饰不可数名词。"},
+   {q:"She drinks ___ coffee than her colleagues — just one cup a day.",lv:1,o:["fewer","less","little","not as much"],a:1,e:"coffee 不可数，用 less（不用 fewer）→ less coffee。"},
+   {q:"Try to finish the task as ___ as you can before the meeting starts.",lv:1,o:["soon","sooner","soonest","more soon"],a:0,e:"as + 副词原级 + as possible/you can，尽可能地 → as soon as you can，as 结构中用原级。"},
+   {q:"The film was ___ more interesting than the trailer suggested.",lv:1,o:["very","so","even","real"],a:2,e:"even/far/much + 比较级，even 表示出乎意料的程度 → even more interesting。"},
+   {q:"Have you tried their ___ menu? It was updated just this week.",lv:1,o:["last","latest","latter","later"],a:1,e:"latest 指时间最近的（最新的），last 指顺序最后一个（系列终止）。"},
+   {q:"After the course, she feels ___ confident about public speaking.",lv:1,o:["most","more","much","very"],a:1,e:"与以前相比用比较级 more → more confident（比之前更有信心）。"},
+   {q:"He got up ___ than usual to catch the early train.",lv:1,o:["early","earlier","earliest","more early"],a:1,e:"early 的比较级：以辅音+y结尾去 y 加 -ier → earlier（不规则拼写变化）。"},
+   {q:"Please write your answers as ___ as possible on the form.",lv:1,o:["clear","clearly","clearest","more clear"],a:1,e:"as + 副词原级 + as possible → as clearly as possible（尽可能清楚地），as 结构中用原级。"},
+   {q:"Everest is the ___ mountain in the world.",lv:1,o:["high","higher","highest","most high"],a:2,e:"单音节形容词最高级加 -est → the highest mountain（用 in 表示地点范围）。"},
+   {q:"She was the fastest ___ all the participants in the charity race.",lv:1,o:["of","in","from","among"],a:0,e:"最高级后跟群体/复数对象用 of → the fastest of all the participants。"},
+   {q:"The traffic was ___ than we expected, so we arrived early.",lv:1,o:["light","lighter","lightest","more light"],a:1,e:"单音节形容词比较级加 -er → light→lighter（交通比预期的顺畅）。"},
+   {q:"Their new headquarters is ___ times as large as the original office.",lv:2,o:["three","third","triple","triply"],a:0,e:"数字 + times as + 形容词原级 + as，表示倍数 → three times as large as。"},
+   {q:"The committee needs to look ___ into the matter before deciding.",lv:2,o:["farther","further","farthest","furthest"],a:1,e:"further 表示「进一步；更多」（抽象意义），farther 专指物理空间距离。"},
+   {q:"The project turned out to be more expensive than we ___.",lv:2,o:["expect","are expecting","had anticipated","anticipate"],a:2,e:"than 引导比较从句，时间上早于主句，用过去完成时 → had anticipated。"},
+   {q:"She received ___ less than sixty applications for the single vacancy.",lv:2,o:["no","not","never","none"],a:0,e:"no less than + 数字，强调数量大（居然多达…）→ no less than sixty applications。"},
+   {q:"He studied the report carefully but was ___ the wiser afterwards.",lv:2,o:["none","no","not","never"],a:0,e:"none the + 比较级，「并不因此变得更…」→ none the wiser（读完还是没搞懂）。"},
+   {q:"She is ___ more than an entry-level analyst, despite her confident manner.",lv:2,o:["no","not","never","none"],a:0,e:"no more than = only（不过是），强调身份之低 → no more than an entry-level analyst。"},
+   {q:"He prefers listening to podcasts ___ watching videos when commuting.",lv:2,o:["than","to","over","against"],a:1,e:"prefer + 动名词 + to + 动名词（固定搭配），注意用 to 而非 than。"},
+   {q:"Which is ___: the coastal path or the mountain trail?",lv:2,o:["scenic","more scenic","the more scenic","the most scenic"],a:2,e:"两者比较，「哪个更...」→ the + 比较级 → the more scenic（两者中更风景秀丽的）。"},
+   {q:"Our new process is clearly ___ to the previous one in every measurable way.",lv:2,o:["superior","superior than","more superior","superiorer"],a:0,e:"superior/inferior 后接 to（不接 than）；本身含比较义，不加 more → superior to。"},
+   {q:"I would be more than ___ to show you around the campus.",lv:2,o:["happy","happily","happier","the happiest"],a:0,e:"more than happy/willing/glad 固定搭配，表示「非常乐意」（远不止「愿意」那么简单）。"},
+   {q:"The delay was caused by as ___ as fifteen separate approval steps.",lv:2,o:["many","few","much","little"],a:0,e:"as many as + 可数名词，强调数量之多（多达十五个步骤）→ as many as fifteen steps。"},
+   {q:"He is ___ a poet than a novelist — his prose style is very lyrical.",lv:2,o:["more","less","better","rather"],a:0,e:"more X than Y，「与其说是 Y，不如说是 X」→ more a poet than a novelist。"},
+   {q:"That was one of the most thought-provoking lectures I ___ attended.",lv:2,o:["have ever","ever","had ever","never"],a:0,e:"最高级 + I have ever + 过去分词（现在完成时），表示迄今为止最...的经历。"},
+   {q:"The results were ___ better than the research team had originally projected.",lv:3,o:["slightly","slight","a bit of","slightlier"],a:0,e:"slightly/a little/a bit + 比较级，表示轻微程度差异 → slightly better（稍好一些）。"},
+   {q:"She is ___ the more talented of the two finalists and deserves the award.",lv:3,o:["by far","very","so","quite"],a:0,e:"by far + the + 比较级，两者比较中强调差距悬殊 → by far the more talented。"},
+   {q:"Two solutions were offered; the ___ proved far more cost-effective.",lv:3,o:["former","latter","later","last"],a:1,e:"latter 指两项中的后者，former 指前者 → the latter（后面提到的那个方案）。"},
+   {q:"The orchestra performs ___ best when playing in this particular hall.",lv:3,o:["at its","on its","in its","by its"],a:0,e:"at one's best 固定搭配，表示「处于最佳状态」→ at its best（乐团状态最好时）。"},
+   {q:"She is the ___ of the two candidates and clearly meets every requirement.",lv:3,o:["more experienced","most experienced","experience","experienceder"],a:0,e:"「the + 比较级 + of the two」，两者比较用比较级而非最高级，且要加定冠词 the。"},
+   {q:"He writes more precisely than his research assistant ___.",lv:3,o:["does","is","has","was"],a:0,e:"比较级 than 从句用代动词省略重复谓语：does 代替 writes precisely（比较动作对等）。"},
+   {q:"The ___ the initial investment, the higher the potential long-term return.",lv:3,o:["larger","largest","large","more large"],a:0,e:"the + 比较级...the + 比较级，「初始投资越大，潜在长期回报越高」→ the larger。"},
+   {q:"Demand for electric vehicles is becoming ___ difficult to meet.",lv:3,o:["increasingly","more increasingly","most","very"],a:0,e:"increasingly + 形容词，表示「越来越...」，是比较级的正式替代表达，学术/商业写作常用。"},
+   {q:"Renewable energy is ___ more reliable than it was a decade ago.",lv:4,o:["far","very","so","quite"],a:0,e:"far more + adj，学术写作中 far 比 much 更正式，强调差距显著 → far more reliable。"},
+   {q:"There is ___ more critical issue than ensuring data integrity in this pipeline.",lv:4,o:["no","not","none","never"],a:0,e:"no + 比较级 + than，构成隐式最高级表达（没有比X更…的）≈ the most critical issue。"},
+   {q:"The revised approach proved ___ to the original in terms of scalability.",lv:4,o:["superior","superior than","more superior","superiorer"],a:0,e:"proved superior to，superior 本身含比较义（不加 more），后接 to 而非 than。"},
+   {q:"Their sampling strategy was ___ less rigorous than international standards require.",lv:4,o:["considerably","considerable","more considerably","most considerably"],a:0,e:"considerably/substantially + less + adj + than，学术英语表示「显著地不那么...」。"},
+   {q:"A ___ thorough examination than what was initially proposed will be necessary.",lv:4,o:["more","most","far","much more"],a:0,e:"more + adj + than + 名词短语，形容词修饰主语（需要比最初提议更彻底的检查）。"},
    ]},
   {id:9,name:"关系从句蜘蛛网",sub:"Relative Clauses",icon:"🕸️",
    monster:{name:"混乱蜘蛛",emoji:"🕷️"},color:"#a855f7",
@@ -4320,7 +4360,7 @@ function startBattle(){
   }
   document.getElementById('bDungName').textContent=`${d.icon} ${d.name}`;
   document.getElementById('bDungSub').textContent=d.sub;
-  const diffLabel={easy:'⭐ 初中',normal:'⭐⭐ 高中',hard:'⭐⭐⭐ 大学',expert:'⭐⭐⭐⭐ 学术'}[diff]||'⭐⭐ 高中';
+  const diffLabel={easy:'🌱 学徒',normal:'⚔️ 骑士',hard:'🔮 法师',expert:'👑 传奇'}[diff]||'⚔️ 骑士';
   const diffClass={easy:'diff-badge-easy',normal:'diff-badge-normal',hard:'diff-badge-hard',expert:'diff-badge-expert'}[diff]||'diff-badge-normal';
   const badge=document.getElementById('bDiffBadge');
   badge.textContent=diffLabel;badge.className='diff-badge '+diffClass;
